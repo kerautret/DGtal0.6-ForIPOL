@@ -1,0 +1,4 @@
+var searchData=
+[
+  ['first',['FIRST',['../structDGtal_1_1SeparableMetricHelper.html#af7114016436f0e42235a332238b8b1baa49e97e457c93a3f3bd37fe19333c65d5',1,'DGtal::SeparableMetricHelper::FIRST()'],['../structDGtal_1_1SeparableMetricHelper_3_01TPoint_00_01TInternalValue_00_012_01_4.html#a2158b942f4e08345fee7c394fe7973b1ab6db5885df5c5c4605c10d7eca0f6180',1,'DGtal::SeparableMetricHelper&lt; TPoint, TInternalValue, 2 &gt;::FIRST()'],['../structDGtal_1_1SeparableMetricHelper_3_01TPoint_00_01TInternalValue_00_011_01_4.html#a17a38fee40d663c4b27bfff632d05083a9d73a3c065f2ad7e12c17b91b189673e',1,'DGtal::SeparableMetricHelper&lt; TPoint, TInternalValue, 1 &gt;::FIRST()'],['../structDGtal_1_1SeparableMetricHelper_3_01TPoint_00_01TInternalValue_00_010_01_4.html#af6064f8b75e47352a29b395cff995c37a82afb0b0a387e4746443f884cd7f9398',1,'DGtal::SeparableMetricHelper&lt; TPoint, TInternalValue, 0 &gt;::FIRST()']]]
+];

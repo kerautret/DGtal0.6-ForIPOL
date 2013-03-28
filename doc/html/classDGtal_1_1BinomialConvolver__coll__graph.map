@@ -1,0 +1,12 @@
+<map id="G" name="G">
+<area shape="rect" id="node2" href="$classDGtal_1_1Signal.html" title="DGtal::Signal\&lt; Value \&gt;" alt="" coords="1808,107,1979,133"/>
+<area shape="rect" id="node4" href="$classDGtal_1_1CowPtr.html" title="DGtal::CowPtr\&lt; SignalData\l\&lt; Value \&gt; \&gt;" alt="" coords="1093,101,1288,142"/>
+<area shape="rect" id="node6" href="$classDGtal_1_1CountedPtr.html" title="DGtal::CountedPtr\&lt;\l SignalData\&lt; Value \&gt; \&gt;" alt="" coords="687,130,863,171"/>
+<area shape="rect" id="node8" href="$structDGtal_1_1CountedPtr_1_1counter.html" title="DGtal::CountedPtr\&lt;\l T \&gt;::counter" alt="" coords="5,73,155,114"/>
+<area shape="rect" id="node10" href="$classDGtal_1_1CountedPtr.html" title="Aim: Smart pointer based on reference counts." alt="" coords="281,80,455,107"/>
+<area shape="rect" id="node19" href="$classDGtal_1_1CountedPtr.html" title="DGtal::CountedPtr\&lt;\l SignalData\&lt; TValue \&gt; \&gt;" alt="" coords="683,6,866,47"/>
+<area shape="rect" id="node13" href="$classDGtal_1_1CowPtr.html" title="Aim: Copy on write shared pointer." alt="" coords="701,75,848,101"/>
+<area shape="rect" id="node17" href="$classDGtal_1_1CowPtr.html" title="DGtal::CowPtr\&lt; SignalData\l\&lt; TValue \&gt; \&gt;" alt="" coords="1093,35,1288,77"/>
+<area shape="rect" id="node15" href="$classDGtal_1_1Signal.html" title="Aim: Represents a discrete signal, periodic or not. The signal can be passed by value since it is onl..." alt="" coords="1403,48,1581,75"/>
+<area shape="rect" id="node26" title="STL class." alt="" coords="1426,168,1558,195"/>
+</map>

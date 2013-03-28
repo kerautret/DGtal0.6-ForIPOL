@@ -1,0 +1,17 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$structLibBoard_1_1Dot.html" title="A line between two points." alt="" coords="201,5,311,32"/>
+<area shape="rect" id="node5" href="$structLibBoard_1_1Ellipse.html" title="An ellipse." alt="" coords="193,56,319,83"/>
+<area shape="rect" id="node11" href="$structLibBoard_1_1Line.html" title="A line between two points." alt="" coords="200,107,312,133"/>
+<area shape="rect" id="node15" href="$structLibBoard_1_1Polyline.html" title="A polygonal line described by a series of 2D points." alt="" coords="189,157,323,184"/>
+<area shape="rect" id="node25" href="$structLibBoard_1_1ShapeList.html" title="A group of shapes." alt="" coords="181,233,331,260"/>
+<area shape="rect" id="node31" href="$structLibBoard_1_1Text.html" title="A piece of text." alt="" coords="200,284,312,311"/>
+<area shape="rect" id="node7" href="$structLibBoard_1_1Circle.html" title="A circle." alt="" coords="414,5,535,32"/>
+<area shape="rect" id="node9" href="$structLibBoard_1_1Arc.html" title="An arc." alt="" coords="629,5,736,32"/>
+<area shape="rect" id="node13" href="$structLibBoard_1_1Arrow.html" title="A line between two points with an arrow at one extremity." alt="" coords="413,56,536,83"/>
+<area shape="rect" id="node17" href="$structLibBoard_1_1GouraudTriangle.html" title="A triangle with shaded filling according to colors given for each vertex." alt="" coords="379,107,570,133"/>
+<area shape="rect" id="node19" href="$structLibBoard_1_1Rectangle.html" title="A rectangle." alt="" coords="400,157,549,184"/>
+<area shape="rect" id="node23" href="$structLibBoard_1_1Triangle.html" title="A triangle. Basically a Polyline with a convenient constructor." alt="" coords="407,208,542,235"/>
+<area shape="rect" id="node21" href="$structLibBoard_1_1Image.html" title="Used to draw image in figure." alt="" coords="619,157,746,184"/>
+<area shape="rect" id="node27" href="$classLibBoard_1_1Board.html" title="Class for EPS, FIG or SVG drawings." alt="" coords="413,259,537,285"/>
+<area shape="rect" id="node29" href="$structLibBoard_1_1Group.html" title="A group of shapes. A group is basically a ShapeList except that when rendered in either an SVG of a F..." alt="" coords="412,309,537,336"/>
+</map>

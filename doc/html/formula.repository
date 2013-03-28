@@ -1,0 +1,175 @@
+\form#0:$ \Sigma_P $
+\form#1:$ \forall s \in \Sigma_P $
+\form#2:$ (x,y) $
+\form#3:$ \mu \leq ax - by < \mu + \omega $
+\form#4:$ l $
+\form#5:$ n $
+\form#6:$ L_i $
+\form#7:$ 2.\Sigma_{1 \leq i \leq n} L_i $
+\form#8:$ \Sigma_{1 \leq i \leq n} L_i $
+\form#9:$ O(l) $
+\form#10:$\mathbf{Z}$
+\form#11:$\mathbf{Z} \times \mathbf{Z}$
+\form#12:$\mathbf{Z}^n$
+\form#13:$\mathbf{F}^n$
+\form#14:$(\mathbf{F}^n,\subseteq)$
+\form#15:$X$
+\form#16:$\mathcal{U}=\{U \subseteq X / \forall x \in U, x^{\uparrow} \subseteq U \}$
+\form#17:$x^{\uparrow}=\{y \in X, x \le y\}$
+\form#18:$\mathbf{Z}^2$
+\form#19:$\mathbf{F}^2$
+\form#20:$ Z^n $
+\form#21:$ S \subset Z^n $
+\form#22:$ Z^n \setminus S $
+\form#23:$ \alpha $
+\form#24:$ n-1 $
+\form#25:$n-1$
+\form#26:$n-2$
+\form#27:$2n-2$
+\form#28:$ Z^2 $
+\form#29:$ \{(x,y) \in Z^2, \mu \le a x - by < \mu + |a| +|b|-1 \} $
+\form#30:$ (a,b,\mu) $
+\form#31:$ gcd(a,b)=1 $
+\form#32:$ a/b $
+\form#33:$ \mu $
+\form#34:$ ax-by $
+\form#35:$ \mu + |a| +|b|-1 $
+\form#36:$ z=p/q=[u_0;u_1,\ldots,u_n] $
+\form#37:$ E(z_{-1})=1, E(z_{0})=0, E(z_{2k+1})=E(z_{2k})^{u_{2k+1}} E(z_{2k-1}), E(z_{2k})=E(z_{2k-2}) E(z_{2k-1})^{u_{2k}}. $
+\form#38:$ a \ge 0, b \ge 0 $
+\form#39:$(a,b,\mu)$
+\form#40:$\mu+a+b-1$
+\form#41:$ O(n) $
+\form#42:$ O(1) $
+\form#43:$ O(log m) $
+\form#44:$ m $
+\form#45:$\frac{0}{1}$
+\form#46:$\frac{1}{0}$
+\form#47:$\frac{p}{q}$
+\form#48:$u_0,u_1,\ldots,u_k$
+\form#49:$[u_0;u_1,\ldots,u_k]$
+\form#50:$\frac{p}{q}=u_0+\frac{1}{u_1+\frac{1}{\ldots+\frac{1}{u_k}}}$
+\form#51:$\frac{p_i}{q_i}=[u_0;u_1,\ldots,u_i]$
+\form#52:$k < i$
+\form#53:$\frac{p'}{q'}$
+\form#54:$\frac{p+p'}{q+q'}$
+\form#55:$u_0, u_1,\ldots, u_k $
+\form#56:$ u_0 \ge 1 $
+\form#57:$ u_k $
+\form#58:$ u_0 = 0 $
+\form#59:$ u_1,\ldots, u_k $
+\form#60:$ 8/3=[2;1,2] $
+\form#61:$u_k$
+\form#62:$[u_0,...,u_k - 1]$
+\form#63:$[u_0,...,u_{k-1}, m]$
+\form#64:$[u_0,...,u_{k-1}]$
+\form#65:$[0,u_0,...,u_k]$
+\form#66:$u_0 \neq 0 $
+\form#67:$[u_1,...,u_k]$
+\form#68:$[u_0,...,u_m]$
+\form#69:$k-m$
+\form#70:$[u_0,...,u_{k-m}]$
+\form#71:$ x1 \oplus x2 = x $
+\form#72:$ (x1)^{n1} \oplus (x2)^{n2} = x $
+\form#73:$u_0,u_1,...,u_k $
+\form#74:$ p / q $
+\form#75:$[0,u_0,...,u_k,m]$
+\form#76:$(m,k+1)$
+\form#77:$[u_0,...,u_k]$
+\form#78:$[u_0, \ldots, u_k]$
+\form#79:$2\sum_{i=1..k} u_i$
+\form#80:$[u_0,...,u_{k-1},m]$
+\form#81:$ [u_0; u_1, ..., u_n] $
+\form#82:$ [u_0; u_1, ..., u_n, k] $
+\form#83:$ [u_0,...,u_n] $
+\form#84:$ [u_0,...,u_{n-1},1] $
+\form#85:$ [u_0,...,u_{n-1}+1] $
+\form#86:$ [u_0,...,u_n - 1, k] $
+\form#87:$ g = gcd(p,q) \neq 1 $
+\form#88:$ \frac{p'}{q'} $
+\form#89:$ p'=p/g, q'=q/g $
+\form#90:$ (u_i,i) $
+\form#91:$ 0 \le i \le k $
+\form#92:$ z_k $
+\form#93:$ z_{k-1} $
+\form#94:$ z_{k-2} $
+\form#95:$ 103993 / 33102 = [3;7,15,1,292] $
+\form#96:$ k - i $
+\form#97:$ k - i - 1 $
+\form#98:$ [u_0,...,u_{k-1},u_k] $
+\form#99:$ z_i=[u_0,...,u_i] $
+\form#100:$ z_{k-i}=[u_0,...,u_{k-i}] $
+\form#101:$ z'=[u_0,...,u_{k-1},u_{k} - 1] $
+\form#102:$ z'=[u_0,...,u_{k-1},m] $
+\form#103:$ z'=[u_0,...,u_{k-1},1] $
+\form#104:$ G(x)=\frac{1}{x- \lfloor x \rfloor} $
+\form#105:$ \lfloor x \rfloor $
+\form#106:$Z$
+\form#107:$E$
+\form#108:$h\cdot{Z}^n$
+\form#109:$Z^n$
+\form#110:$Integer^{dimension}$
+\form#111:$l_p$
+\form#112:$R^n$
+\form#113:\[ d_{L_p} (u,v) = \left ( \sum_{i=0}^n w_i|u_i-v_i |^p \right )^{\frac{1}{p}}\]
+\form#114:$ X $
+\form#115:$\bar{X}$
+\form#116:$ x\in X$
+\form#117:\[ DT(x) = \min_{y\in\bar{X}} ( d(x,y)) \]
+\form#118:\[ DT(x) =\sqrt{ \min_{y\in\bar{X}} ( (x_0-y_0)^2 + (x_1-y_1)^2 ) } \]
+\form#119:$x(x_0,x_1)\in R^2$
+\form#120:$ (x_i-y_i)^p$
+\form#121:$x_i^p$
+\form#122:$x$
+\form#123:\[ REDT(DT(X)) = X \]
+\form#124:$p$
+\form#125:$l_2$
+\form#126:$l_1$
+\form#127:$l_\infty$
+\form#128:$l_0$
+\form#129:$ xy^2-yz $
+\form#130:$ x^4-y^2z^2+z^4 $
+\form#131:$ 1, x, x^2, xy, y^3, xy^2z, x^4y^4z^4 $
+\form#132:$ K[X_0, ..., X_{-1}] $
+\form#133:$ Pd(x,y,z) = x^3y+xz^3+y^3z+z^3+5z $
+\form#134:$ 1 + xy^2 + x^4yz $
+\form#135:$ x^4yz $
+\form#136:$ 1+x+x^{100000} $
+\form#137:$ x^2y^2+x^2z^2+x^4y^2z+x^4y^2z^3 $
+\form#138:$ x^2(1(z^2)+y^2(1))+x^4(y^2(z+z^3)) $
+\form#139:$ x^2 $
+\form#140:$ y^2 $
+\form#141:$ \| p2 - p1 \|_1 \le n1 $
+\form#142:$ \| p2 - p1 \|_\infty \le 1 $
+\form#143:$ Z^3 $
+\form#144:$ \kappa $
+\form#145:$ \lambda $
+\form#146:$ (\lambda,\kappa) $
+\form#147:$[u_0,...,u_k,m]$
+\form#148:$[u_0,...,u_k - 1, 1]$
+\form#149:$ O(\sum_i u_i) $
+\form#150:$ \sum_i u_i $
+\form#151:$ 2 \sum_i u_i $
+\form#152:$ P $
+\form#153:$ \forall s \in \Sigma_P, P(s) = \textrm{true} $
+\form#154:$\kappa(t) = \frac{x'y''-y'x''}{(x'^2+y'^2)^{3/2}}$
+\form#155:$ O(n^2) $
+\form#156:$ \Phi $
+\form#157:$ \sum_{i = 1 \ldots d } ( \Phi - \Phi_i )^2 $
+\form#158:$ \Phi_i $
+\form#159:$ i $
+\form#160:$ \nabla S . \nabla \Phi = 0 $
+\form#161:$(x_1,\ldots, x_n)$
+\form#162:$x_i$
+\form#163:$ K[X_0, ..., X_{n-1}] $
+\form#164:$ y = ax + b $
+\form#165:$ \{(x,y) | y > ax + b \} $
+\form#166:$ \{(x,y) | y \geq ax + b \} $
+\form#167:$ \{(x,y) | y < ax + b \} $
+\form#168:$ \{(x,y) | y \leq ax + b \} $
+\form#169:$ h_1 Z \times h_2 Z \times \cdots \times h_n Z $
+\form#170:$ (\kappa,\lambda) $
+\form#171:\[ (\lambda,\kappa) \]
+\form#172:$ \omega $
+\form#173:$ \epsilon=\pm 1 $
+\form#174:$ t = \Delta^{\epsilon}_k s, +p = \Delta^{\mu}_{j} t, $

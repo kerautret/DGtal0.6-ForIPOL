@@ -1,0 +1,5 @@
+<map id="G" name="G">
+<area shape="rect" id="node2" href="$classDGtal_1_1detail_1_1PosIndepScaleIndepSCEstimator.html" title="DGtal::detail::PosIndepScale\lIndepSCEstimator\&lt; DSSComputer,\l detail::NormalizedTangentVectorFromDSS \&gt;" alt="" coords="745,35,1055,91"/>
+<area shape="rect" id="node4" href="$structDGtal_1_1detail_1_1NormalizedTangentVectorFromDSS.html" title="DGtal::detail::Normalized\lTangentVectorFromDSS" alt="" coords="253,5,435,46"/>
+<area shape="rect" id="node6" href="$classDGtal_1_1detail_1_1PosIndepScaleIndepSCEstimator.html" title="DGtal::detail::PosIndepScale\lIndepSCEstimator\&lt; TSegmentComputer,\l Functor, ReturnType \&gt;" alt="" coords="201,72,487,128"/>
+</map>

@@ -1,0 +1,21 @@
+<map id="G" name="G">
+<area shape="rect" id="node2" href="$classDGtal_1_1Color.html" title="Structure representing an RGB triple." alt="" coords="2985,295,3084,321"/>
+<area shape="rect" id="node5" href="$classDGtal_1_1COBANaivePlane.html" title="DGtal::COBANaivePlane\l\&lt; Z3, InternalInteger \&gt;" alt="" coords="2947,346,3122,387"/>
+<area shape="rect" id="node7" href="$structDGtal_1_1COBANaivePlane_1_1State.html" title="DGtal::COBANaivePlane\l\&lt; TSpace, TInternalInteger\l \&gt;::State" alt="" coords="2216,327,2408,383"/>
+<area shape="rect" id="node68" href="$classDGtal_1_1COBANaivePlane.html" title="Aim: A class that contains the COBA algorithm (Emilie Charrier, Lilian Buzer, DGCI2008) for recognizi..." alt="" coords="2537,290,2743,331"/>
+<area shape="rect" id="node9" href="$classDGtal_1_1PointVector.html" title="DGtal::PointVector\l\&lt; 3, InternalInteger \&gt;" alt="" coords="1566,161,1727,202"/>
+<area shape="rect" id="node11" href="$classDGtal_1_1PointVector.html" title="Aim: Implements basic operations that will be used in Point and Vector classes." alt="" coords="1184,115,1363,157"/>
+<area shape="rect" id="node15" href="$classDGtal_1_1LatticePolytope2D.html" title="DGtal::LatticePolytope2D\l\&lt; InternalSpace2 \&gt;" alt="" coords="1918,461,2101,502"/>
+<area shape="rect" id="node17" href="$classDGtal_1_1IntegerComputer.html" title="DGtal::IntegerComputer\l\&lt; Integer \&gt;" alt="" coords="1186,482,1361,523"/>
+<area shape="rect" id="node52" href="$classDGtal_1_1LatticePolytope2D.html" title="Aim: Represents a 2D polytope, i.e. a convex polygon, in the two&#45;dimensional digital plane..." alt="" coords="1555,535,1738,577"/>
+<area shape="rect" id="node34" href="$classDGtal_1_1IntegerComputer.html" title="Aim: This class gathers several types and methods to make computation with integers." alt="" coords="875,482,1050,523"/>
+<area shape="rect" id="node21" title="STL class." alt="" coords="191,624,318,651"/>
+<area shape="rect" id="node31" href="$structDGtal_1_1NumberTraits.html" title="Aim: The traits class for all models of Cinteger." alt="" coords="160,355,349,381"/>
+<area shape="rect" id="node49" title="STL class." alt="" coords="374,260,479,287"/>
+<area shape="rect" id="node25" href="$classDGtal_1_1SpaceND.html" title="DGtal::SpaceND\&lt; 2,\l Integer \&gt;" alt="" coords="510,542,663,583"/>
+<area shape="rect" id="node27" href="$classDGtal_1_1SpaceND.html" title="Aim: SpaceND is a utility class that defines the fundamental structure of a Digital Space in ND..." alt="" coords="170,542,339,583"/>
+<area shape="rect" id="node29" href="$structDGtal_1_1NumberTraits.html" title="DGtal::NumberTraits\l\&lt; Integer \&gt;" alt="" coords="693,274,845,315"/>
+<area shape="rect" id="node37" href="$structDGtal_1_1NumberTraits.html" title="DGtal::NumberTraits\l\&lt; TInteger \&gt;" alt="" coords="511,411,663,453"/>
+<area shape="rect" id="node43" href="$structPoint3D.html" title="Point3D" alt="" coords="927,768,999,795"/>
+<area shape="rect" id="node63" title="STL class." alt="" coords="1955,660,2063,687"/>
+</map>

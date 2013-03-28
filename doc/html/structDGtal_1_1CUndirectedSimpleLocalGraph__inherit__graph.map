@@ -1,0 +1,8 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$structDGtal_1_1CAdjacency.html" title="CAdjacency\&lt; T \&gt;" alt="" coords="512,5,645,32"/>
+<area shape="rect" id="node7" href="$structDGtal_1_1CUndirectedSimpleGraph.html" title="Aim: Represents the concept of local graph: each vertex has neighboring vertices, but we do not neces..." alt="" coords="299,51,488,93"/>
+<area shape="rect" id="node9" href="$structDGtal_1_1CUndirectedSimpleLocalGraph.html" title="DGtal::CUndirectedSimple\lLocalGraph\&lt; Adj \&gt;" alt="" coords="299,117,488,158"/>
+<area shape="rect" id="node5" href="$structDGtal_1_1CDomainAdjacency.html" title="Aim: Refines the concept CAdjacency by telling that the adjacency is specific to a given domain of th..." alt="" coords="1141,43,1368,69"/>
+<area shape="rect" id="node11" href="$structDGtal_1_1CAdjacency.html" title="Aim: The concept CAdjacency defines an elementary adjacency relation between points of a digital spac..." alt="" coords="670,77,821,118"/>
+<area shape="rect" id="node13" href="$structDGtal_1_1CAdjacency.html" title="DGtal::CAdjacency\&lt; T \&gt;" alt="" coords="913,75,1090,101"/>
+</map>

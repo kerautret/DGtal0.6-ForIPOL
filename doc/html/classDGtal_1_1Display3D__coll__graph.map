@@ -1,0 +1,16 @@
+<map id="G" name="G">
+<area shape="rect" id="node4" href="$structDGtal_1_1Display3D_1_1quadD3D.html" title="DGtal::Display3D::quadD3D" alt="" coords="169,51,367,77"/>
+<area shape="rect" id="node6" title="STL class." alt="" coords="205,416,331,443"/>
+<area shape="rect" id="node43" title="STL class." alt="" coords="1093,929,1225,956"/>
+<area shape="rect" id="node12" href="$structDGtal_1_1Display3D_1_1clippingPlaneD3D.html" title="DGtal::Display3D::clipping\lPlaneD3D" alt="" coords="175,722,361,763"/>
+<area shape="rect" id="node17" href="$structDGtal_1_1Display3D_1_1triangleD3D.html" title="DGtal::Display3D::triangleD3D" alt="" coords="161,101,375,128"/>
+<area shape="rect" id="node22" href="$structDGtal_1_1Display3D_1_1polygonD3D.html" title="DGtal::Display3D::polygonD3D" alt="" coords="1051,517,1267,544"/>
+<area shape="rect" id="node26" href="$structDGtal_1_1Display3D_1_1pointD3D.html" title="DGtal::Display3D::pointD3D" alt="" coords="169,587,367,613"/>
+<area shape="rect" id="node32" href="$classDGtal_1_1CountedPtr.html" title="DGtal::CountedPtr\&lt;\l DrawableWithDisplay3D \&gt;" alt="" coords="1063,738,1254,779"/>
+<area shape="rect" id="node34" href="$structDGtal_1_1CountedPtr_1_1counter.html" title="DGtal::CountedPtr\&lt;\l T \&gt;::counter" alt="" coords="193,791,343,833"/>
+<area shape="rect" id="node36" href="$classDGtal_1_1CountedPtr.html" title="Aim: Smart pointer based on reference counts." alt="" coords="630,807,805,833"/>
+<area shape="rect" id="node39" title="STL class." alt="" coords="1115,820,1202,847"/>
+<area shape="rect" id="node41" title="STL class." alt="" coords="649,858,786,899"/>
+<area shape="rect" id="node53" href="$structDGtal_1_1Display3D_1_1lineD3D.html" title="DGtal::Display3D::lineD3D" alt="" coords="174,671,362,697"/>
+<area shape="rect" id="node61" href="$classDGtal_1_1Color.html" title="Structure representing an RGB triple." alt="" coords="1589,1061,1688,1088"/>
+</map>

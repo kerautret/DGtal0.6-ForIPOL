@@ -1,0 +1,16 @@
+;; Object tutorial-examples/
+;; SEMANTICDB Tags save file
+(semanticdb-project-database-file "tutorial-examples/"
+  :tables (list 
+   (semanticdb-table "freemanChainFromImage.cpp"
+    :major-mode 'c++-mode
+    :tags '(("DGtal/base/Common.h" include nil nil [1034 1064]) ("ConfigExamples.h" include nil nil [1065 1092]) ("DGtal/kernel/domains/HyperRectDomain.h" include nil nil [1137 1186]) ("DGtal/images/ImageSelector.h" include nil nil [1187 1226]) ("DGtal/kernel/SpaceND.h" include nil nil [1227 1260]) ("DGtal/images/imagesSetsUtils/SetFromImage.h" include nil nil [1261 1315]) ("DGtal/base/BasicTypes.h" include nil nil [1317 1351]) ("DGtal/geometry/curves/representation/FreemanChain.h" include nil nil [1352 1414]) ("DGtal/io/boards/Board2D.h" include nil nil [1415 1451]) ("DGtal/io/Color.h" include nil nil [1452 1479]) ("DGtal/helpers/StdDefs.h" include nil nil [1480 1514]) ("DGtal/topology/helpers/Surfaces.h" include nil nil [1515 1559]) ("DGtal/io/readers/PNMReader.h" include nil nil [1561 1600]) ("DGtal/io/colormaps/GradientColorMap.h" include nil nil [1601 1649]) ("main" function (:type "int") nil [1802 3456]))
+    :file "freemanChainFromImage.cpp"
+    :pointmax 3537
+    :unmatched-syntax 'nil
+    )
+   )
+  :file "semantic.cache"
+  :semantic-tag-version "2.0pre4"
+  :semanticdb-version "2.0pre4"
+  )

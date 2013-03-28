@@ -1,0 +1,8 @@
+<map id="G" name="G">
+<area shape="rect" id="node2" href="$classDGtal_1_1DigitalSetBoundary.html" title="Aim: A model of CDigitalSurfaceContainer which defines the digital surface as the boundary of a given..." alt="" coords="1019,75,1208,117"/>
+<area shape="rect" id="node6" title="STL class." alt="" coords="403,7,530,33"/>
+<area shape="rect" id="node10" href="$classDGtal_1_1SurfelAdjacency.html" title="DGtal::SurfelAdjacency\l\&lt; KSpace::dimension \&gt;" alt="" coords="379,165,554,206"/>
+<area shape="rect" id="node16" href="$classDGtal_1_1SurfelNeighborhood.html" title="DGtal::SurfelNeighborhood\l\&lt; KSpace \&gt;" alt="" coords="1017,165,1210,206"/>
+<area shape="rect" id="node19" href="$classDGtal_1_1SurfelNeighborhood.html" title="Aim: This helper class is useful to compute the neighboring surfels of a given surfel, especially over a digital surface or over an object boundary. Two signed surfels are incident if they share a common n&#45;2 cell. This class uses a SurfelAdjacency so as to determine adjacent surfels (either looking for them from interior to exterior or inversely)." alt="" coords="686,234,879,275"/>
+<area shape="rect" id="node12" href="$classDGtal_1_1SurfelAdjacency.html" title="Aim: Represent adjacencies between surfel elements, telling if it follows an interior to exterior ord..." alt="" coords="5,165,173,206"/>
+</map>
