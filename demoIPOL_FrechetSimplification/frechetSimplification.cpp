@@ -62,157 +62,19 @@ using namespace Z2i;
 static ImaGene::Arguments args;
 
 
-///////////////////////////////////////////////////////////////////////////////
-// Functions for testing class FrechetShortcut.
-///////////////////////////////////////////////////////////////////////////////
-/**
- * Example of a test. To be completed.
- *
- */
-bool testFrechetShortcut()
-{
-  unsigned int nbok = 0;
-  unsigned int nb = 0;
-  
-  typedef PointVector<2,int> Point;
-  typedef std::vector<Point>::iterator Iterator;
-  typedef FrechetShortcut<Iterator,int> Shortcut;  
 
-  std::vector<Point> contour;
-  contour.push_back(Point(0,0));
-  contour.push_back(Point(1,0));
-  contour.push_back(Point(2,0));
-  contour.push_back(Point(3,0));
-  contour.push_back(Point(4,0));
-  contour.push_back(Point(5,0));
-  contour.push_back(Point(6,0));
-  contour.push_back(Point(7,0));
-  contour.push_back(Point(7,1));
-  contour.push_back(Point(6,1));
-  contour.push_back(Point(5,1));
-  contour.push_back(Point(4,1));
-  contour.push_back(Point(3,1));
-  contour.push_back(Point(2,1));
-  contour.push_back(Point(3,2));
-  contour.push_back(Point(4,2));
-  contour.push_back(Point(5,2));
-  contour.push_back(Point(6,2));
-  contour.push_back(Point(7,2));
-  contour.push_back(Point(8,2));
-  contour.push_back(Point(9,2));
-
-  trace.beginBlock ( "Testing block ..." );
-  
-  Shortcut s(5);
-  s.init(contour.begin());
-  
-  trace.info() << s << std::endl;
-  
-  while ( (s.end() != contour.end())
-    &&(s.extendForward()) ) {}
-  
-  trace.info() << s << std::endl;
-  
-  
-  trace.endBlock();
-  
-  return nbok == nb;
+void displayContour(const std::vector<Z2i::Point> &contour, Board &aBoard){
+  aBoard.setPenColor(Color::Blue);
+  aBoard.setLineStyle (LibBoard::Shape::SolidStyle );
+  aBoard.setLineWidth (1);
+  vector<LibBoard::Point> contourPt;
+  for(unsigned int j=0; j<contour.size(); j++){
+    LibBoard::Point pt((double)(contour.at(j)[0]),
+		       (double)(contour.at(j)[1]));
+    contourPt.push_back(pt);
+  } 
+  aBoard.drawPolyline(contourPt);
 }
-
-
-
-void testFrechetShortcutConceptChecking()
-{
-  typedef PointVector<2,int> Point; 
-  typedef std::vector<Point>::const_iterator ConstIterator; 
-  typedef FrechetShortcut<ConstIterator,int> Shortcut; 
-  BOOST_CONCEPT_ASSERT(( CDrawableWithBoard2D<Shortcut> ));
-  BOOST_CONCEPT_ASSERT(( CForwardSegmentComputer<Shortcut> ));
-}
-
-bool testSegmentation()
-{
-  unsigned int nbok = 0;
-  unsigned int nb = 0;
-  
-  typedef PointVector<2,int> Point;
-  //typedef std::vector<Point>::iterator Iterator;
-  //typedef FrechetShortcut<Iterator,int> SegmentComputer;  
-
-  std::vector<Point> contour;
-  contour.push_back(Point(0,0));
-  contour.push_back(Point(1,0));
-  contour.push_back(Point(2,0));
-  contour.push_back(Point(3,0));
-  contour.push_back(Point(4,0));
-  contour.push_back(Point(5,0));
-  contour.push_back(Point(6,0));
-  contour.push_back(Point(7,0));
-  contour.push_back(Point(7,1));
-  contour.push_back(Point(6,1));
-  contour.push_back(Point(5,1));
-  contour.push_back(Point(4,1));
-  contour.push_back(Point(3,1));
-  contour.push_back(Point(2,1));
-  contour.push_back(Point(2,2));
-  contour.push_back(Point(3,2));
-  contour.push_back(Point(4,2));
-  contour.push_back(Point(5,2));
-  contour.push_back(Point(6,2));
-  contour.push_back(Point(7,2));
-  contour.push_back(Point(8,2));
-  contour.push_back(Point(9,2));
-
-  trace.beginBlock ( "Testing block ..." );
-  
-  typedef Curve::PointsRange::ConstIterator Iterator;
-  typedef FrechetShortcut<Iterator,int> SegmentComputer;
-  
-  Curve aCurve; //grid curve
-  aCurve.initFromVector(contour);
-  
-  typedef Curve::PointsRange Range; //range
-  Range r = aCurve.getPointsRange(); //range
-  
-  Board2D board; 
-  board << r;
-  board << aCurve.getArrowsRange();
-  
-
-  double error = 3;
-  nbok =3;
-  
-  trace.beginBlock ( "Greedy segmentation" );
-  {
-    typedef GreedySegmentation<SegmentComputer> Segmentation;
-    Segmentation theSegmentation( r.begin(), r.end(), SegmentComputer(error) );
-    
-    Segmentation::SegmentComputerIterator it = theSegmentation.begin();
-    Segmentation::SegmentComputerIterator itEnd = theSegmentation.end();
-    
-    for ( ; it != itEnd; ++it) {
-      SegmentComputer s(*it);
-      trace.info() << s << std::endl;
-      board << (*it); 
-      nb++;
-    }
-
-    //board << aCurve;
-    trace.info() << theSegmentation << std::endl;
-    board.saveEPS("FrechetShortcutGreedySegmentationTest.eps", Board2D::BoundingBox, 5000 ); 
-  }
-  
-  /* Saturated segmentation does not work for FrechetShortcut
-     computer. Indeed, given two maximal Frechet shortcuts s1(begin, end) et
-     s2(begin, end),  we can have s1.begin < s2.begin < s2.end <
-     s1.end. */ 
-  
-
-  trace.endBlock();
-  
-  return nbok == nb;
-}
-
 
 
 
@@ -222,33 +84,60 @@ bool testSegmentation()
 
 int main( int argc, char** argv )
 {
-  args.addOption( "-error", "-error <val>:  ... ", "0.1" );
+  args.addOption( "-error", "-error <val>:parameter used in the simplification algorithm (Frechet or width) (default is 2)", "2" );
+  args.addOption("-sdp", "-sdp <contour.sdp> : Import a contour as a Sequence of Discrete Points (SDP format)", "contour.sdp" );
+  bool parseOK=  args.readArguments( argc, argv );
   
-  if ( ( argc <= 1 ) ||  ! args.readArguments( argc, argv ) ) 
+  if ( ( argc <= 1 ) ||  ! parseOK ) 
     {
       cerr << args.usage( "frechetSimplification: ", 
-			  "Description...Typical use: \n frechetSimplification -error .... ",
+			  "Description: apply a simplification algorithm using the Frechet distance, or the width distance (default setting: both are computed) : \n frechetSimplification -error .... ",
 			  "" )
 	   << endl;
       return 1;
     }  
  
-  
+  Board2D board;   
   double error = args.getOption("-error")->getFloatValue(0);
+  
 
+  std::vector<Z2i::Point> contour;
 
-  trace.beginBlock ( "Testing class FrechetShortcut" );
-  trace.info() << "Args:";
-  for ( int i = 0; i < argc; ++i )
-    trace.info() << " " << argv[ i ];
-  trace.info() << endl;
+  typedef Curve::PointsRange::ConstIterator Iterator;
+  typedef FrechetShortcut<Iterator,int> SegmentComputer;
+  typedef GreedySegmentation<SegmentComputer> Segmentation;
+  
+  if( args.check("-sdp")){
+    string fileName = args.getOption("-sdp")->getValue(0);
+    contour =   PointListReader< Z2i::Point >::getPointsFromFile(fileName); 
+    Curve aCurve; //grid curve
+   
+    aCurve.initFromVector(contour);
+    typedef Curve::PointsRange Range; //range
+    Range r = aCurve.getPointsRange(); //range
+  
+    Segmentation theSegmentation( r.begin(), r.end(), SegmentComputer(error) );
+    
+    Segmentation::SegmentComputerIterator it = theSegmentation.begin();
+    Segmentation::SegmentComputerIterator itEnd = theSegmentation.end();
+    board.setPenColor(Color::Red);
+    board.setLineStyle (LibBoard::Shape::SolidStyle );
+    board.setLineWidth (3);
+    
+    for ( ; it != itEnd; ++it) {
+      SegmentComputer s(*it);
+      trace.info() << s << std::endl;
+      board << (*it);       
+    }
+    board.setPenColor(Color::Black);
+    displayContour(contour, board);
+    
+    board << r;
+    trace.info() << theSegmentation << std::endl;
+    board.saveEPS("FrechetShortcutGreedySegmentationTest.eps", Board2D::BoundingBox, 5000 ); 
+  }
 
-  testFrechetShortcutConceptChecking();
-
-  bool res = testFrechetShortcut() && testSegmentation(); // && ... other tests
-  trace.emphase() << ( res ? "Passed." : "Error." ) << endl;
-  trace.endBlock();
-  return res ? 0 : 1;
+  return 0;
 }
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
