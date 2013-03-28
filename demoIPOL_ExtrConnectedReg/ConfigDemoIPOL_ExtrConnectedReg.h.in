@@ -9,5 +9,5 @@
 #include <string>
 
 ///Path to the DGtal demoIPOL suite.
-const std::string demoIPOLPath= "@PROJECT_SOURCE_DIR@/demoIPOL/";
+const std::string demoIPOLPath= "@PROJECT_SOURCE_DIR@/demoIPOL_ExtrConnectedReg/";
 

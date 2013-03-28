@@ -10,16 +10,16 @@ include_directories (${PROJECT_SOURCE_DIR}/src/)
 include_directories (${PROJECT_BINARY_DIR}/src)
 
 # Make sure the compiler can find include files.
-include_directories (${PROJECT_SOURCE_DIR}/demoIPOL/)
-include_directories (${PROJECT_BINARY_DIR}/demoIPOL/)
+include_directories (${PROJECT_SOURCE_DIR}/demoIPOL_ExtrConnectedReg/)
+include_directories (${PROJECT_BINARY_DIR}/demoIPOL_ExtrConnectedReg/)
 
 
 # Make sure the linker can find the Hello library once it is built.
 link_directories (${PROJECT_BINARY_DIR})
 
 # ConfigExamples.h instanciation.
-configure_file(${PROJECT_SOURCE_DIR}/demoIPOL/ConfigDemoIPOL.h.in 
-  ${PROJECT_BINARY_DIR}/demoIPOL/ConfigDemoIPOL.h)
+configure_file(${PROJECT_SOURCE_DIR}/demoIPOL_ExtrConnectedReg/ConfigDemoIPOL_ExtrConnectedReg.h.in 
+  ${PROJECT_BINARY_DIR}/demoIPOL_ExtrConnectedReg/ConfigDemoIPOL_ExtrConnectedReg.h)
 
 #------Examples subdirectories ------
 

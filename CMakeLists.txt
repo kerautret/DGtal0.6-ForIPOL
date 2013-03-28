@@ -61,7 +61,7 @@ ENDIF(BUILD_EXAMPLES)
 
 OPTION(BUILD_DEMO_IPOL "Build demo IPOL." ON)
 IF (BUILD_DEMO_IPOL)
-  add_subdirectory (demoIPOL)
+  add_subdirectory (demoIPOL_ExtrConnectedReg)
 ENDIF(BUILD_DEMO_IPOL)
 
 
