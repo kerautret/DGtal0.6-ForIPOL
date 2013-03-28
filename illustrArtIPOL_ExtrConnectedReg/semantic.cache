@@ -1,0 +1,22 @@
+;; Object IllustrationsArticleIPOL/
+;; SEMANTICDB Tags save file
+(semanticdb-project-database-file "IllustrationsArticleIPOL/"
+  :tables (list 
+   (semanticdb-table "illustrationAdjacency.cpp"
+    :major-mode 'c++-mode
+    :tags '(("DGtal/base/Common.h" include (:system-flag t) (dependency-file none) [1 31]) ("DGtal/helpers/StdDefs.h" include (:system-flag t) (dependency-file none) [32 66]) ("DGtal/io/boards/Board2D.h" include (:system-flag t) (dependency-file none) [67 103]) ("DGtal/topology/helpers/Surfaces.h" include (:system-flag t) (dependency-file none) [104 148]) ("DGtal/geometry/curves/FreemanChain.h" include (:system-flag t) (dependency-file none) [149 196]) ("DGtal/io/colormaps/GradientColorMap.h" include (:system-flag t) (dependency-file none) [197 245]) ("DGtal/topology/helpers/Surfaces.h" include (:system-flag t) (dependency-file none) [246 290]) ("main" function (:arguments (("argc" variable (:type "int") (reparse-symbol arg-sub-list) [347 356]) ("argv" variable (:pointer 2 :type "char") (reparse-symbol arg-sub-list) [357 369])) :type "int") nil [338 4216]))
+    :file "illustrationAdjacency.cpp"
+    :pointmax 4218
+    :unmatched-syntax 'nil
+    )
+   (semanticdb-table "illustrationAdjacency3D.cpp"
+    :major-mode 'c++-mode
+    :tags '(("DGtal/base/Common.h" include (:system-flag t) (dependency-file none) [1 31]) ("DGtal/helpers/StdDefs.h" include (:system-flag t) (dependency-file none) [32 66]) ("QtGui/qapplication.h" include (:system-flag t) (dependency-file none) [67 98]) ("DGtal/io/DrawWithDisplay3DModifier.h" include nil (dependency-file none) [99 146]) ("DGtal/topology/helpers/Surfaces.h" include (:system-flag t) (dependency-file none) [148 192]) ("DGtal/geometry/curves/FreemanChain.h" include (:system-flag t) (dependency-file none) [193 240]) ("DGtal/io/colormaps/GradientColorMap.h" include (:system-flag t) (dependency-file none) [241 289]) ("DGtal/topology/helpers/Surfaces.h" include (:system-flag t) (dependency-file none) [290 334]) ("DGtal/io/viewers/Viewer3D.h" include nil (dependency-file none) [335 373]) ("main" function (:arguments (("argc" variable (:type "int") (reparse-symbol arg-sub-list) [435 444]) ("argv" variable (:pointer 2 :type "char") (reparse-symbol arg-sub-list) [445 457])) :type "int") nil [426 4944]))
+    :file "illustrationAdjacency3D.cpp"
+    :pointmax 4946
+    )
+   )
+  :file "semantic.cache"
+  :semantic-tag-version "2.0pre4"
+  :semanticdb-version "2.0pre4"
+  )
