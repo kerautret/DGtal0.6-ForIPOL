@@ -64,6 +64,11 @@ IF (BUILD_DEMO_IPOL)
   add_subdirectory (demoIPOL_ExtrConnectedReg)
 ENDIF(BUILD_DEMO_IPOL)
 
+OPTION(BUILD_DEMO_IPOL "Build demo IPOL." ON)
+IF (BUILD_DEMO_IPOL)
+  add_subdirectory (demoIPOL_FrechetSimplification)
+ENDIF(BUILD_DEMO_IPOL)
+
 
 # -----------------------------------------------------------------------------
 # Install settings
