@@ -59,6 +59,12 @@ IF (BUILD_EXAMPLES)
   add_subdirectory (examples)
 ENDIF(BUILD_EXAMPLES)
 
+OPTION(BUILD_DEMO_IPOL "Build demo IPOL." ON)
+IF (BUILD_DEMO_IPOL)
+  add_subdirectory (demoIPOL)
+ENDIF(BUILD_DEMO_IPOL)
+
+
 # -----------------------------------------------------------------------------
 # Install settings
 # -----------------------------------------------------------------------------

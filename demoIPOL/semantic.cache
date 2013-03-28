@@ -1,0 +1,43 @@
+;; Object demoIPOL/
+;; SEMANTICDB Tags save file
+(semanticdb-project-database-file "demoIPOL/"
+  :tables (list 
+   (semanticdb-table "pgm2freeman.cpp"
+    :major-mode 'c++-mode
+    :tags '(("DGtal/io/colormaps/GrayscaleColorMap.h" include nil (dependency-file none) [1 50]) ("DGtal/io/readers/PNMReader.h" include nil (dependency-file none) [51 90]) ("DGtal/images/ImageContainerBySTLVector.h" include nil (dependency-file none) [91 142]) ("DGtal/images/ImageSelector.h" include nil (dependency-file none) [143 182]) ("DGtal/geometry/curves/representation/FreemanChain.h" include nil (dependency-file none) [184 246]) ("DGtal/geometry/helpers/ContourHelper.h" include nil (dependency-file none) [247 296]) ("DGtal/topology/helpers/Surfaces.h" include nil (dependency-file none) [297 341]) ("vector" include (:system-flag t) (dependency-file none) [343 360]) ("string" include (:system-flag t) (dependency-file none) [361 378]) ("ImaGene/Arguments.h" include nil (dependency-file none) [380 410]) ("args" variable (:typemodifiers ("static") :type ("ImaGene::Arguments" type (:type "class") nil nil)) nil [436 467]) ("saveAllContoursAsFc" function (:arguments (("vectContoursBdryPointels" variable (:type ("std::vector" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [495 563]) ("minSize" variable (:type "unsigned int") (reparse-symbol arg-sub-list) [564 585])) :type "void") nil [470 863]) ("saveSelContoursAsFC" function (:arguments (("vectContoursBdryPointels" variable (:type ("std::vector" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [891 959]) ("minSize" variable (:type "unsigned int") (reparse-symbol arg-sub-list) [965 986]) ("refPoint" variable (:type ("Z2i::Point" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [987 1007]) ("selectDistanceMax" variable (:type "double") (reparse-symbol arg-sub-list) [1008 1033])) :type "void") nil [866 1615]) ("main" function (:arguments (("argc" variable (:type "int") (reparse-symbol arg-sub-list) [1630 1639]) ("argv" variable (:pointer 2 :type "char") (reparse-symbol arg-sub-list) [1640 1653])) :type "int") nil [1620 6380]))
+    :file "pgm2freeman.cpp"
+    :pointmax 6382
+    :unmatched-syntax 'nil
+    )
+   (semanticdb-table "ConfigDemoIPOL.h.in"
+    :major-mode 'c++-mode
+    :tags '(("string" include (:system-flag t) (dependency-file none) [163 180]) ("demoIPOLPath" variable (:constant-flag t :default-value "\"@PROJECT_SOURCE_DIR@/demoIPOL/\"" :type ("std::string" type (:type "class") nil nil)) nil [219 284]))
+    :file "ConfigDemoIPOL.h.in"
+    :pointmax 286
+    :unmatched-syntax 'nil
+    )
+   (semanticdb-table "displayContours.cpp"
+    :major-mode 'c++-mode
+    :tags '(("iostream" include (:system-flag t) (dependency-file none) [1049 1068]) ("DGtal/base/Common.h" include nil (dependency-file none) [1070 1100]) ("DGtal/helpers/StdDefs.h" include nil (dependency-file none) [1102 1136]) ("DGtal/shapes/ShapeFactory.h" include nil (dependency-file none) [1138 1176]) ("DGtal/shapes/Shapes.h" include nil (dependency-file none) [1177 1209]) ("DGtal/topology/helpers/Surfaces.h" include nil (dependency-file none) [1210 1254]) ("DGtal/images/imagesSetsUtils/ImageFromSet.h" include nil (dependency-file none) [1264 1318]) ("DGtal/images/imagesSetsUtils/SetFromImage.h" include nil (dependency-file none) [1319 1373]) ("DGtal/images/ImageContainerBySTLVector.h" include nil (dependency-file none) [1374 1425]) ("DGtal/images/ImageSelector.h" include nil (dependency-file none) [1426 1465]) ("DGtal/io/readers/PointListReader.h" include nil (dependency-file none) [1466 1511]) ("DGtal/io/boards/Board2D.h" include nil (dependency-file none) [1512 1548]) ("DGtal/io/Color.h" include nil (dependency-file none) [1549 1576]) ("DGtal/geometry/curves/representation/FreemanChain.h" include nil (dependency-file none) [1658 1720]) ("vector" include (:system-flag t) (dependency-file none) [1729 1746]) ("string" include (:system-flag t) (dependency-file none) [1747 1764]) ("ImaGene/Arguments.h" include nil (dependency-file none) [1766 1796]) ("args" variable (:typemodifiers ("static") :type ("ImaGene::Arguments" type (:type "class") nil nil)) nil [1824 1855]) ("main" function (:arguments (("argc" variable (:type "int") (reparse-symbol arg-sub-list) [1869 1878]) ("argv" variable (:pointer 2 :type "char") (reparse-symbol arg-sub-list) [1879 1892])) :type "int") nil [1859 8793]))
+    :file "displayContours.cpp"
+    :pointmax 8794
+    :unmatched-syntax 'nil
+    )
+   (semanticdb-table "extract3D.cpp"
+    :major-mode 'c++-mode
+    :tags '(("iostream" include (:system-flag t) nil [1 20]) ("DGtal/base/Common.h" include nil nil [21 51]) ("DGtal/images/imagesSetsUtils/SetFromImage.h" include nil nil [52 106]) ("DGtal/images/ImageSelector.h" include nil nil [108 147]) ("DGtal/helpers/StdDefs.h" include nil nil [148 182]) ("DGtal/io/Display3D.h" include nil nil [184 215]) ("DGtal/io/readers/VolReader.h" include nil nil [216 255]) ("DGtal/io/colormaps/GradientColorMap.h" include nil nil [256 304]) ("DGtal/io/Color.h" include nil nil [305 332]) ("DGtal/topology/KhalimskySpaceND.h" include nil nil [334 378]) ("DGtal/topology/helpers/Surfaces.h" include nil nil [379 423]) ("ImaGene/Arguments.h" include nil nil [425 455]) ("args" variable (:typemodifiers ("static") :type ("ImaGene::Arguments" type (:type "class") nil nil)) nil [525 556]) ("main" function (:arguments (("argc" variable (:type "int") (reparse-symbol arg-sub-list) [569 578]) ("argv" variable (:pointer 2 :type "char") (reparse-symbol arg-sub-list) [579 592])) :type "int") nil [559 3691]))
+    :file "extract3D.cpp"
+    :pointmax 3695
+    :unmatched-syntax 'nil
+    )
+   (semanticdb-table "extract3D.cpp.orig"
+    :major-mode 'c++-mode
+    :tags '(("iostream" include (:system-flag t) nil [1 20]) ("DGtal/base/Common.h" include nil nil [21 51]) ("DGtal/images/imagesSetsUtils/SetFromImage.h" include nil nil [52 106]) ("DGtal/images/ImageSelector.h" include nil nil [108 147]) ("DGtal/helpers/StdDefs.h" include nil nil [148 182]) ("DGtal/io/Display3D.h" include nil nil [184 215]) ("DGtal/io/readers/VolReader.h" include nil nil [216 255]) ("DGtal/io/colormaps/GradientColorMap.h" include nil nil [256 304]) ("DGtal/io/Color.h" include nil nil [305 332]) ("DGtal/topology/KhalimskySpaceND.h" include nil nil [334 378]) ("DGtal/topology/helpers/Surfaces.h" include nil nil [379 423]) ("ImaGene/Arguments.h" include nil nil [425 455]) ("args" variable (:typemodifiers ("static") :type ("ImaGene::Arguments" type (:type "class") nil nil)) nil [525 556]) ("main" function (:arguments (("argc" variable (:type "int") (reparse-symbol arg-sub-list) [569 578]) ("argv" variable (:pointer 2 :type "char") (reparse-symbol arg-sub-list) [579 592])) :type "int") nil [559 4316]))
+    :file "extract3D.cpp.orig"
+    :pointmax 4317
+    )
+   )
+  :file "semantic.cache"
+  :semantic-tag-version "2.0pre4"
+  :semanticdb-version "2.0pre4"
+  )
