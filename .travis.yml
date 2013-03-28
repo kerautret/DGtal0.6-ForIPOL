@@ -1,3 +1,4 @@
+
 language: cpp
 
 compiler:
@@ -6,9 +7,6 @@ compiler:
 
 env:
   - BTYPE="-DCMAKE_BUILD_TYPE=Debug -DWITH_QGLVIEWER=false  -DWITH_CAIRO=false -DWITH_MAGICK=false -DWITH_GMP=false  -DDGTAL_BUILD_TESTING=OFF" 
-
-
-
 script: 
   - cmake . $BTYPE
   - make
