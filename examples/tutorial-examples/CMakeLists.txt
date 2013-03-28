@@ -1,5 +1,5 @@
 SET(DGTAL_TUTO_EXAMPLES_SRC
-  pgm2freeman
+##  pgm2freeman
   imageSetDT
   fileGridCurveRanges
   imageGridCurveEstimator

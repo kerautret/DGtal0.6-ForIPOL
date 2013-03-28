@@ -17,11 +17,14 @@ include(DGtal/math/ModuleSRC.txt)
 include(Board/ModuleSRC.txt)
 
 
+## ImaGeneArgs dependency
+include(ImaGene/ModuleSRC.txt)
+
 #------------------------------------------------------------------------------
 # DGtal Target
 #------------------------------------------------------------------------------
 IF (BUILD_SHARED_LIBS)
-  add_library (DGtal SHARED ${DGTAL_SRC} ${BOARD_SRC} )
+  add_library (DGtal SHARED ${DGTAL_SRC} ${BOARD_SRC} ${ImaGeneArgs_SRC})
   target_link_libraries( DGtal ${DGtalLibDependencies} )
 ELSE(BUILD_SHARED_LIBS)
   add_library (DGtal STATIC ${DGTAL_SRC} ${BOARD_SRC})

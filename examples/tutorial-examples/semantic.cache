@@ -9,6 +9,12 @@
     :pointmax 3537
     :unmatched-syntax 'nil
     )
+   (semanticdb-table "pgm2freeman.cpp"
+    :major-mode 'c++-mode
+    :tags '(("iostream" include (:system-flag t) nil [1047 1066]) ("DGtal/base/Common.h" include nil nil [1068 1098]) ("DGtal/topology/KhalimskySpaceND.h" include nil nil [1100 1144]) ("DGtal/shapes/ShapeFactory.h" include nil nil [1147 1185]) ("DGtal/shapes/Shapes.h" include nil nil [1186 1218]) ("DGtal/helpers/StdDefs.h" include nil nil [1219 1253]) ("DGtal/geometry/helpers/ContourHelper.h" include nil nil [1254 1303]) ("DGtal/io/colormaps/GrayscaleColorMap.h" include nil nil [1306 1355]) ("DGtal/images/imagesSetsUtils/ImageFromSet.h" include nil nil [1356 1410]) ("DGtal/images/imagesSetsUtils/SetFromImage.h" include nil nil [1411 1465]) ("DGtal/images/ImageContainerBySTLVector.h" include nil nil [1466 1517]) ("DGtal/images/ImageSelector.h" include nil nil [1518 1557]) ("DGtal/io/readers/PNMReader.h" include nil nil [1558 1597]) ("DGtal/geometry/curves/FreemanChain.h" include nil nil [1598 1645]) ("DGtal/io/boards/Board2D.h" include nil nil [1647 1683]) ("DGtal/topology/helpers/Surfaces.h" include nil nil [1684 1728]) ("vector" include (:system-flag t) nil [1893 1910]) ("string" include (:system-flag t) nil [1911 1928]) ("main" function (:arguments (("argc" variable (:type "int") (reparse-symbol arg-sub-list) [2089 2098]) ("argv" variable (:pointer 2 :type "char") (reparse-symbol arg-sub-list) [2099 2112])) :type "int") nil [2079 6863]))
+    :file "pgm2freeman.cpp"
+    :pointmax 6865
+    )
    )
   :file "semantic.cache"
   :semantic-tag-version "2.0pre4"
