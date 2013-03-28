@@ -50,11 +50,11 @@
 using namespace std;
 using namespace DGtal;
 
-#include <boost/program_options/options_description.hpp>
-#include <boost/program_options/parsers.hpp>
-#include <boost/program_options/variables_map.hpp>
+// #include <boost/program_options/options_description.hpp>
+// #include <boost/program_options/parsers.hpp>
+// #include <boost/program_options/variables_map.hpp>
 
-namespace po = boost::program_options;
+//namespace po = boost::program_options;
 
 ///////////////////////////////////////////////////////////////////////////////
 template <typename Shape, typename RealPoint>
@@ -154,24 +154,25 @@ int main( int argc, char** argv )
   trace.beginBlock ( "Example exampleCurvature" );
 
   // parse command line 
-  po::options_description general_opt("Allowed options are");
-  general_opt.add_options()
-    ("help,h", "display this message")
-    ("shape,s",  po::value<string>()->default_value("flower"), "Shape to digitize: flower, ellipse, ball" )
-    ("gridStep,g",  po::value<double>()->default_value(0.01), "Grid step" ); 
+  // po::options_description general_opt("Allowed options are");
+  // general_opt.add_options()
+  //   ("help,h", "display this message")
+  //   ("shape,s",  po::value<string>()->default_value("flower"), "Shape to digitize: flower, ellipse, ball" )
+  //   ("gridStep,g",  po::value<double>()->default_value(0.01), "Grid step" ); 
   
-  po::variables_map vm;
-  po::store(po::parse_command_line(argc, argv, general_opt), vm);  
-  po::notify(vm);    
-  trace.info()<< "curvature estimation" << std::endl
-	      << "Basic usage: "<<std::endl
-	      << argv[0] << " [other options] -i <vol file> -t <threshold> " << std::endl
-	      << general_opt << "\n";
+  // po::variables_map vm;
+  // po::store(po::parse_command_line(argc, argv, general_opt), vm);  
+  // po::notify(vm);    
+  // trace.info()<< "curvature estimation" << std::endl
+  // 	      << "Basic usage: "<<std::endl
+  // 	      << argv[0] << " [other options] -i <vol file> -t <threshold> " << std::endl
+  // 	      << general_opt << "\n";
   
-  // grid step
-  double h = vm["gridStep"].as<double>(); 
+  
+// grid step
+  double h = 0.01;//vm["gridStep"].as<double>(); 
   // shape
-  string shapeName = vm["shape"].as<string>(); 
+  string shapeName ="flower";// vm["shape"].as<string>(); 
 
   
   // parse shape
