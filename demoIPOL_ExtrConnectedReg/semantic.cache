@@ -9,14 +9,7 @@
     :pointmax 6367
     :unmatched-syntax 'nil
     )
-   (semanticdb-table "ConfigDemoIPOL.h.in"
-    :major-mode 'c++-mode
-    :tags '(("string" include (:system-flag t) (dependency-file none) [163 180]) ("demoIPOLPath" variable (:constant-flag t :default-value "\"@PROJECT_SOURCE_DIR@/demoIPOL/\"" :type ("std::string" type (:type "class") nil nil)) nil [219 284]))
-    :file "ConfigDemoIPOL.h.in"
-    :pointmax 286
-    :unmatched-syntax 'nil
-    )
-   (semanticdb-table "displayContours.cpp"
+    (semanticdb-table "displayContours.cpp"
     :major-mode 'c++-mode
     :tags '(("iostream" include (:system-flag t) (dependency-file none) [1049 1068]) ("DGtal/base/Common.h" include nil (dependency-file none) [1070 1100]) ("DGtal/helpers/StdDefs.h" include nil (dependency-file none) [1102 1136]) ("DGtal/shapes/ShapeFactory.h" include nil (dependency-file none) [1138 1176]) ("DGtal/shapes/Shapes.h" include nil (dependency-file none) [1177 1209]) ("DGtal/topology/helpers/Surfaces.h" include nil (dependency-file none) [1210 1254]) ("DGtal/images/imagesSetsUtils/ImageFromSet.h" include nil (dependency-file none) [1264 1318]) ("DGtal/images/imagesSetsUtils/SetFromImage.h" include nil (dependency-file none) [1319 1373]) ("DGtal/images/ImageContainerBySTLVector.h" include nil (dependency-file none) [1374 1425]) ("DGtal/images/ImageSelector.h" include nil (dependency-file none) [1426 1465]) ("DGtal/io/readers/PointListReader.h" include nil (dependency-file none) [1466 1511]) ("DGtal/io/boards/Board2D.h" include nil (dependency-file none) [1512 1548]) ("DGtal/io/Color.h" include nil (dependency-file none) [1549 1576]) ("DGtal/geometry/curves/FreemanChain.h" include nil (dependency-file none) [1658 1705]) ("vector" include (:system-flag t) (dependency-file none) [1714 1731]) ("string" include (:system-flag t) (dependency-file none) [1732 1749]) ("ImaGene/Arguments.h" include nil (dependency-file none) [1751 1781]) ("args" variable (:typemodifiers ("static") :type ("ImaGene::Arguments" type (:type "class") nil nil)) nil [1809 1840]) ("main" function (:arguments (("argc" variable (:type "int") (reparse-symbol arg-sub-list) [1854 1863]) ("argv" variable (:pointer 2 :type "char") (reparse-symbol arg-sub-list) [1864 1877])) :type "int") nil [1844 8778]))
     :file "displayContours.cpp"
@@ -30,7 +23,7 @@
     :pointmax 3695
     :unmatched-syntax 'nil
     )
-    )
+   )
   :file "semantic.cache"
   :semantic-tag-version "2.0pre4"
   :semanticdb-version "2.0pre4"
