@@ -86,6 +86,8 @@ int main( int argc, char** argv )
 {
   args.addOption( "-error", "-error <val>:parameter used in the simplification algorithm (Frechet or width) (default is 2)", "2" );
   args.addOption("-sdp", "-sdp <contour.sdp> : Import a contour as a Sequence of Discrete Points (SDP format)", "contour.sdp" );
+  args.addOption("-w", "-w: compute the simplification using the width only","");
+  
   bool parseOK=  args.readArguments( argc, argv );
   
   if ( ( argc <= 1 ) ||  ! parseOK ) 
@@ -96,27 +98,31 @@ int main( int argc, char** argv )
 	   << endl;
       return 1;
     }  
- 
+  
   Board2D board;   
   double error = args.getOption("-error")->getFloatValue(0);
   
 
   std::vector<Z2i::Point> contour;
-
+  
   typedef Curve::PointsRange::ConstIterator Iterator;
   typedef FrechetShortcut<Iterator,int> SegmentComputer;
   typedef GreedySegmentation<SegmentComputer> Segmentation;
+  
+  bool flagWidthOnly = false;
+  if(args.check("-w"))
+    flagWidthOnly = true;
   
   if( args.check("-sdp")){
     string fileName = args.getOption("-sdp")->getValue(0);
     contour =   PointListReader< Z2i::Point >::getPointsFromFile(fileName); 
     Curve aCurve; //grid curve
-   
+    
     aCurve.initFromVector(contour);
     typedef Curve::PointsRange Range; //range
     Range r = aCurve.getPointsRange(); //range
-  
-    Segmentation theSegmentation( r.begin(), r.end(), SegmentComputer(error) );
+    
+    Segmentation theSegmentation( r.begin(), r.end(), SegmentComputer(error,flagWidthOnly) );
     
     Segmentation::SegmentComputerIterator it = theSegmentation.begin();
     Segmentation::SegmentComputerIterator itEnd = theSegmentation.end();

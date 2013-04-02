@@ -710,8 +710,17 @@ namespace DGtal
   /**
    * Constructor with initialisation
    * @param error an iterator on 2D points
+   * @param flagWidthOnly a flag indicating if a width shortcut should be computed instead of a Frechet shortcut
    */
-  FrechetShortcut(double error);
+    FrechetShortcut(double error, bool flagWidthOnly);
+    
+    
+  /**
+   * Constructor with initialisation
+   * @param error an iterator on 2D points
+   */
+    FrechetShortcut(double error);
+    
 
   /**
    * Initialisation.
@@ -811,15 +820,22 @@ public:
    */
   bool isValid() const;
   
-  // ------------------------- Protected Datas ------------------------------
- protected:
-  
-  /**
-     Error parameter used to compute the shortcut
+    // ------------------------- Protected Datas ------------------------------
+    protected:
+    
+    /**
+       Error parameter used to compute the shortcut
   */
     double myError;
     
-  /**
+    /** 
+	Flag set to true if the width simplification is computed instead of the Frechet simplification 
+    */ 
+    
+    bool myFlagWidthOnly;
+
+    
+    /**
      Vector of 8 backpaths, one per octant. Stores all the information
      needed to update the length of the longest backpath. 
   */
