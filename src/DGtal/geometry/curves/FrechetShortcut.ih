@@ -550,6 +550,7 @@ DGtal::FrechetShortcut<TIterator,TInteger>::FrechetShortcut()
 {
   myError = 0;
   myCone = Cone();
+  myFlagWidthOnly  = false;
   
   for(int i=0;i<8;i++)
     {
@@ -563,10 +564,11 @@ DGtal::FrechetShortcut<TIterator,TInteger>::FrechetShortcut()
 
 template <typename TIterator, typename TInteger>
 inline
-DGtal::FrechetShortcut<TIterator,TInteger>::FrechetShortcut(double error)
+DGtal::FrechetShortcut<TIterator,TInteger>::FrechetShortcut(double error, bool flagWidthOnly)
 {
   myError = error;
   myCone = Cone();
+  myFlagWidthOnly = flagWidthOnly;
   
   for(int i=0;i<8;i++)
     {
@@ -594,14 +596,14 @@ template <typename TIterator, typename TInteger>
 inline
 DGtal::FrechetShortcut<TIterator,TInteger>  DGtal::FrechetShortcut<TIterator,TInteger>::getSelf()
 {
-  FrechetShortcut<TIterator,TInteger> other = FrechetShortcut(myError);
+  FrechetShortcut<TIterator,TInteger> other = FrechetShortcut(myError,myFlagWidthOnly);
   return other;
 }
 
 
 template <typename TIterator, typename TInteger>
 inline
-DGtal::FrechetShortcut<TIterator,TInteger>::FrechetShortcut (const FrechetShortcut<TIterator,TInteger> & other ) : myError(other.myError), myBackpath(other.myBackpath),    myCone(other.myCone), myBegin(other.myBegin), myEnd(other.myEnd){    
+DGtal::FrechetShortcut<TIterator,TInteger>::FrechetShortcut (const FrechetShortcut<TIterator,TInteger> & other ) : myError(other.myError), myBackpath(other.myBackpath),    myCone(other.myCone), myBegin(other.myBegin), myEnd(other.myEnd),myFlagWidthOnly(other.myFlagWidthOnly){    
   resetBackpath();
   resetCone();
   
@@ -619,6 +621,7 @@ DGtal::FrechetShortcut<TIterator,TInteger> & DGtal::FrechetShortcut<TIterator,TI
       myCone = other.myCone;
       myBegin = other.myBegin;
       myEnd = other.myEnd;
+      myFlagWidthOnly = other.myFlagWidthOnly;
     }
   return *this;
 }
@@ -629,7 +632,7 @@ DGtal::FrechetShortcut<std::reverse_iterator<TIterator>,TInteger>
 DGtal::FrechetShortcut<TIterator,TInteger>
 ::getReverse() const
 {
-  return Reverse(myError);
+  return Reverse(myError,myFlagWidthOnly);
 }
 
 template <typename TIterator, typename TInteger>
@@ -637,7 +640,7 @@ inline
 bool
 DGtal::FrechetShortcut<TIterator,TInteger>::operator==(
  const DGtal::FrechetShortcut<TIterator,TInteger>& other) const {
-   return ((myBegin == other.myBegin) && (myEnd == other.myEnd) && (myError == other.myError));
+  return ((myBegin == other.myBegin) && (myEnd == other.myEnd) && (myError == other.myError) && (myFlagWidthOnly == other.myFlagWidthOnly));
 }
 
 
@@ -656,8 +659,13 @@ inline
 bool
 DGtal::FrechetShortcut<TIterator,TInteger>::extendForward()
 {
-  bool flag = (updateWidth() && updateBackpath());
+  bool flag;
   
+  if(!myFlagWidthOnly)
+    flag = (updateWidth() && updateBackpath());
+  else
+    flag = updateWidth();
+
   if(flag)
     ++myEnd;
   
@@ -670,8 +678,10 @@ inline
 bool
 DGtal::FrechetShortcut<TIterator,TInteger>::isExtendableForward()
 {
-  
-  return (testUpdateWidth() && testUpdateBackpath());
+  if(!myFlagWidthOnly)
+    return (testUpdateWidth() && testUpdateBackpath());
+  else
+    return testUpdateWidth();
   
 }
 

@@ -613,6 +613,9 @@ inline
 
 
 
+
+
+
 // GridCurve
 template <typename TKSpace>
 void DGtal::Display2DFactory::draw( DGtal::Board2D & aBoard, 
