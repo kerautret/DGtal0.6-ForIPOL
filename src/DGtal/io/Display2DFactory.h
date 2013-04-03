@@ -176,6 +176,9 @@ template <typename TIterator, typename TInteger>
 static  void draw(DGtal::Board2D & aBoard, const DGtal::FrechetShortcut<TIterator,TInteger> & );
 //FrechetShortcut
 
+
+   
+
     
 // GridCurve
 template <typename TKSpace>

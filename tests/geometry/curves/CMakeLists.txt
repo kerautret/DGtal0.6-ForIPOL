@@ -14,7 +14,7 @@ SET(DGTAL_TESTS_SRC
   # testGeometricalDCA
   # testBinomialConvolver
   testFrechetShortcut	
-  )
+   )
 
 FOREACH(FILE ${DGTAL_TESTS_SRC})
   add_executable(${FILE} ${FILE})
