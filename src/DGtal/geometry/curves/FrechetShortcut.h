@@ -710,16 +710,10 @@ namespace DGtal
   /**
    * Constructor with initialisation
    * @param error an iterator on 2D points
-   * @param flagWidthOnly a flag indicating if a width shortcut should be computed instead of a Frechet shortcut
+   * @param flagWidthOnly a flag indicating if a width shortcut should be computed instead of a Frechet shortcut (false by default)
    */
-    FrechetShortcut(double error, bool flagWidthOnly);
+    FrechetShortcut(double error, bool flagWidthOnly=false);
     
-    
-  /**
-   * Constructor with initialisation
-   * @param error an iterator on 2D points
-   */
-    FrechetShortcut(double error);
     
 
   /**

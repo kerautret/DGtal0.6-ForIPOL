@@ -580,25 +580,6 @@ DGtal::FrechetShortcut<TIterator,TInteger>::FrechetShortcut(double error, bool f
 
 
 
-template <typename TIterator, typename TInteger>
-inline
-DGtal::FrechetShortcut<TIterator,TInteger>::FrechetShortcut(double error)
-{
-  myError = error;
-  myCone = Cone();
-  myFlagWidthOnly = false;
-  
-  for(int i=0;i<8;i++)
-    {
-      //backpath  b(i,error);
-       Backpath b(this,i);
-       myBackpath.push_back(b);
-    }
-}
-
-
-
-
 
 template <typename TIterator, typename TInteger>
 inline
