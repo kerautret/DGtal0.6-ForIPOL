@@ -40,12 +40,11 @@ int main(int argc, char** argv)
   std::set<SCell> bdry;
   Z2i::KSpace ks;  
   ks.init( ptL, ptU, true );
-  SetPredicate<Z2i::DigitalSet> set2dPredicate( aSet );
 
   boardAdj << aSet;
   
   // Extracting the surface boundary of the shape
-  Surfaces<Z2i::KSpace>::sMakeBoundary( bdry, ks, set2dPredicate, ks.lowerBound(), ks.upperBound() );
+  Surfaces<Z2i::KSpace>::sMakeBoundary( bdry, ks, aSet, ks.lowerBound(), ks.upperBound() );
 
   SurfelAdjacency<Z2i::KSpace::dimension>  sAdjInt( true );
   SurfelAdjacency<Z2i::KSpace::dimension>  sAdjExt( false );
@@ -107,7 +106,7 @@ int main(int argc, char** argv)
   std::set<SCell> aContour1;
   Surfaces<Z2i::KSpace>::trackBoundary( aContour1, ks, 
 					sAdjExt,
-					set2dPredicate, surfel ); 
+					aSet, surfel ); 
 		    
   Board2D boardContour1;
   boardContour1 << d;
@@ -134,7 +133,7 @@ int main(int argc, char** argv)
   std::set<SCell> aContour2;
   Surfaces<Z2i::KSpace>::trackBoundary( aContour2, ks, 
 					sAdjInt,
-					set2dPredicate, surfel ); 
+					aSet, surfel ); 
   Board2D boardContour2;
   boardContour2 << d;
   std::set<SCell>::iterator iterOnContour2;
