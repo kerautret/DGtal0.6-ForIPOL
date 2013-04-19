@@ -39,7 +39,7 @@
 // Class backpath
 ////////////////////////////////////////////////////////////////
 
-#define PRECISION 0.00001
+
 
 
 //creation of a backPath
@@ -167,7 +167,7 @@ void DGtal::FrechetShortcut<TIterator,TInteger>::Backpath::updateOcculters()
 	  
 	  // pi is after p for all directions -> p is not an occulter
 	  if(ic.dotProduct(v,u1) < 0 && ic.dotProduct(v,u2) <0)
-	  {
+	    {
 	      ok = false; 
 	      occ = false;
 	    }
@@ -182,23 +182,23 @@ void DGtal::FrechetShortcut<TIterator,TInteger>::Backpath::updateOcculters()
 		angle_max = M_PI_4;
 	      }
 	    else
-	      // p is after pi on [0,alpha], before pi on [alpha,pi/4]
-	      if(ic.dotProduct(v,u1) > 0 && ic.dotProduct(v,u2) <= 0)
+	      // p is after pi on [0,beta], before pi on [beta,pi/4]
+	      if(ic.dotProduct(v,u1) > 0 && ic.dotProduct(v,u2) < 0)
 		{
-		  double alpha = Tools::angleVectVect(v,dir_ortho);
+		  double beta = Tools::angleVectVect(v,dir_ortho);
 		  
-		  if(alpha >= iter->second.angle_min && alpha <=
+		  if(beta >= iter->second.angle_min && beta <=
 		     iter->second.angle_max)
 		    {
 		      // p is a new occulter
 		      occ = true;
 		      angle_min = 0;
-		      angle_max = alpha;
+		      angle_max = beta;
 		      // pi's angle_min is updated
-		      iter->second.angle_min = alpha;
+		      iter->second.angle_min = beta;
 		    }
 		  else
-		    if(alpha > iter->second.angle_max)
+		    if(beta > iter->second.angle_max)
 		      {
 			//pi is not an occulter anymore 
 			myOcculters.erase(iter);
@@ -206,26 +206,26 @@ void DGtal::FrechetShortcut<TIterator,TInteger>::Backpath::updateOcculters()
 			angle_min = 0;
 			angle_max = M_PI_4;
 		      }
-		  // if alpha < iter->second.angle_min, pi does not
+		  // if beta < iter->second.angle_min, pi does not
 		  // change, p may be an occulter -> do nothing
 		} 
 	      else // scalar_product(v,u1) < 0 && scalar_product(v,u2) > 0
-		// p is after pi on [alpha,pi/4], before pi on [0,alpha]
+		// p is after pi on [beta,pi/4], before pi on [0,beta]
 		{
-		  double alpha = Tools::angleVectVect(v,dir_ortho);
-		  alpha = M_PI - alpha;
+		  double beta = Tools::angleVectVect(v,dir_ortho);
+		  beta = M_PI - beta;
 		  
-		  if(alpha >= iter->second.angle_min && alpha <=
+		  if(beta >= iter->second.angle_min && beta <=
 		     iter->second.angle_max)
 		    {
 		      occ = true;
-		      angle_min = alpha;
+		      angle_min = beta;
 		      angle_max = M_PI_4;
 		      // pi's angle_max is updated
-		      iter->second.angle_max = alpha;
+		      iter->second.angle_max = beta;
 		    }
 		  else
-		    if(alpha < iter->second.angle_min)
+		    if(beta < iter->second.angle_min)
 		      {
 			//pi is not an occulter anymore 
 			myOcculters.erase(iter);
@@ -233,7 +233,7 @@ void DGtal::FrechetShortcut<TIterator,TInteger>::Backpath::updateOcculters()
 			angle_min = 0;
 			angle_max = M_PI_4;
 		      }
-		  // if(alpha > iter->second.angle_max), pi does not
+		  // if(beta > iter->second.angle_max), pi does not
 		  // change, p may be an occulter -> do nothing
 		  
 		}
@@ -362,26 +362,28 @@ void DGtal::FrechetShortcut<TIterator, TInteger>::Backpath::addNegativePoint()
 
 template <typename TIterator, typename TInteger>
 inline
-DGtal::FrechetShortcut<TIterator,TInteger>::Cone::Cone()
+DGtal::FrechetShortcut<TIterator,TInteger>::Cone::Cone(double precision)
 {
   myInf = true;
   myMin = 0;
   myMax = 0;
+  myPrecision = precision;
 }
 
 
 
 template <typename TIterator, typename TInteger>
 inline
-DGtal::FrechetShortcut<TIterator,TInteger>::Cone::Cone(double angle0, double angle1)
+DGtal::FrechetShortcut<TIterator,TInteger>::Cone::Cone(double angle0, double angle1, double precision)
 {
   
+  myPrecision = precision;
   // angle0 and angle1 are ordered in direct orientation such that the
   // angle made by the two directions is lower than PI.  
 
   
   // case angle0-angle1 = PI -> infinite cone
-  if(fabs(fabs(angle0-angle1)-M_PI) < PRECISION)
+  if(fabs(fabs(angle0-angle1)-M_PI) < myPrecision)
     {
       // the orientation is supposed to be ok (depends on the points involved)
       myMin = angle0;
@@ -420,8 +422,9 @@ DGtal::FrechetShortcut<TIterator,TInteger>::Cone::Cone(double angle0, double ang
 
 template <typename TIterator, typename TInteger>
 inline
-DGtal::FrechetShortcut<TIterator,TInteger>::Cone::Cone(double x, double y, double x0, double y0, double x1, double y1)
+DGtal::FrechetShortcut<TIterator,TInteger>::Cone::Cone(double x, double y, double x0, double y0, double x1, double y1, double precision)
 {
+  myPrecision = precision;
   double angle0 = Tools::computeAngle(x, y, x0, y0);
   double angle1 = Tools::computeAngle(x, y, x1, y1);
   
@@ -564,11 +567,12 @@ DGtal::FrechetShortcut<TIterator,TInteger>::FrechetShortcut()
 
 template <typename TIterator, typename TInteger>
 inline
-DGtal::FrechetShortcut<TIterator,TInteger>::FrechetShortcut(double error, bool flagWidthOnly)
+DGtal::FrechetShortcut<TIterator,TInteger>::FrechetShortcut(double error, bool flagWidthOnly, double precision)
 {
   myError = error;
   myCone = Cone();
   myFlagWidthOnly = flagWidthOnly;
+  myPrecision = precision;
   
   for(int i=0;i<8;i++)
     {
@@ -577,25 +581,6 @@ DGtal::FrechetShortcut<TIterator,TInteger>::FrechetShortcut(double error, bool f
        myBackpath.push_back(b);
     }
 }
-
-
-
-template <typename TIterator, typename TInteger>
-inline
-DGtal::FrechetShortcut<TIterator,TInteger>::FrechetShortcut(double error)
-{
-  myError = error;
-  myCone = Cone();
-  myFlagWidthOnly = false;
-  
-  for(int i=0;i<8;i++)
-    {
-      //backpath  b(i,error);
-       Backpath b(this,i);
-       myBackpath.push_back(b);
-    }
-}
-
 
 
 
@@ -727,7 +712,7 @@ DGtal::FrechetShortcut<TIterator,TInteger>::computeNewCone()
       // define a cone according to the new tangent points
       Cone c;
       // case where there is one single tangent point
-      if(fabs(x0-x1) < PRECISION && fabs(y0-y1) < PRECISION)
+      if(fabs(x0-x1) < myPrecision && fabs(y0-y1) < myPrecision)
 	{
 	  double angle = Tools::computeAngle(firstP[0],firstP[1],newP[0],newP[1]);
 	  assert(angle != -1);

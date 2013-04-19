@@ -102,6 +102,7 @@ namespace DGtal
    *
    */
   
+
   
   template <typename TIterator,typename TInteger = typename IteratorCirculatorTraits<TIterator>::Value::Coordinate>
     class FrechetShortcut
@@ -263,6 +264,12 @@ namespace DGtal
   class Cone{
     
   public:
+
+    /**
+       Precision for the cone computation
+    */ 
+    double myPrecision;
+
     /**
        Angle min of the cone
     */
@@ -278,14 +285,14 @@ namespace DGtal
      */
     bool myInf; // true if the cone is infinite (the whole plane)
     
-    Cone();
+    Cone(double precision = 0.00001);
     
     /**
        Constructor from two angles
        @param a0 an angle
        @param a1 a second angle
     */
-    Cone(double a0, double a1);
+    Cone(double a0, double a1, double precision = 0.00001);
 
     /**
        Constructor from three points x, x0, x1. The cone is defined by
@@ -297,7 +304,7 @@ namespace DGtal
      @param x1 x1
      @param y1 y1
     */
-    Cone(double x, double y, double x0, double y0, double x1, double y1);
+    Cone(double x, double y, double x0, double y0, double x1, double y1, double precision = 0.00001);
     
     /**
        Test if the cone is empty
@@ -710,17 +717,11 @@ namespace DGtal
   /**
    * Constructor with initialisation
    * @param error an iterator on 2D points
-   * @param flagWidthOnly a flag indicating if a width shortcut should be computed instead of a Frechet shortcut
+   * @param flagWidthOnly a flag indicating if a width shortcut should be computed instead of a Frechet shortcut - default value is false
    */
-    FrechetShortcut(double error, bool flagWidthOnly);
+    FrechetShortcut(double error, bool flagWidthOnly = false, double precision = 0.00001);
     
-    
-  /**
-   * Constructor with initialisation
-   * @param error an iterator on 2D points
-   */
-    FrechetShortcut(double error);
-    
+        
 
   /**
    * Initialisation.
@@ -823,6 +824,12 @@ public:
     // ------------------------- Protected Datas ------------------------------
     protected:
     
+    /** 
+	Precision used to compute the cones 
+	Default value is 0.00001. 
+    */ 
+    double myPrecision;
+    
     /**
        Error parameter used to compute the shortcut
   */
@@ -830,6 +837,7 @@ public:
     
     /** 
 	Flag set to true if the width simplification is computed instead of the Frechet simplification 
+	Default value is false.
     */ 
     
     bool myFlagWidthOnly;

@@ -180,7 +180,7 @@ bool testSegmentation()
   trace.beginBlock ( "Greedy segmentation" );
   {
     typedef GreedySegmentation<SegmentComputer> Segmentation;
-    Segmentation theSegmentation( r.begin(), r.end(), SegmentComputer(error) );
+    Segmentation theSegmentation( r.begin(), r.end(), SegmentComputer(error) ); // SegmentComputer(error,true) if the computation using the width only is wanted)
     
     Segmentation::SegmentComputerIterator it = theSegmentation.begin();
     Segmentation::SegmentComputerIterator itEnd = theSegmentation.end();
