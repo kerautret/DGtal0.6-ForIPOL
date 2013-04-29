@@ -87,13 +87,13 @@ int main( int argc, char** argv )
   args.addOption( "-error", "-error <val>:parameter used in the simplification algorithm (Frechet or width) (default is 2)", "2" );
   args.addOption("-sdp", "-sdp <contour.sdp> : Import a contour as a Sequence of Discrete Points (SDP format)", "contour.sdp" );
   args.addOption("-w", "-w: compute the simplification using the width only","");
-  
+ 
   bool parseOK=  args.readArguments( argc, argv );
   
   if ( ( argc <= 1 ) ||  ! parseOK ) 
     {
       cerr << args.usage( "frechetSimplification: ", 
-			  "Description: apply a simplification algorithm using the Frechet distance, or the width distance (default setting: both are computed) : \n frechetSimplification -error .... ",
+			  "Description: apply a simplification algorithm using the Frechet distance, or the width distance (default setting: Frechet is used) : \n frechetSimplification -error .... ",
 			  "" )
 	   << endl;
       return 1;
@@ -122,25 +122,46 @@ int main( int argc, char** argv )
     typedef Curve::PointsRange Range; //range
     Range r = aCurve.getPointsRange(); //range
     
+
+    clock_t time1, time2;
+    time1 = clock();
     Segmentation theSegmentation( r.begin(), r.end(), SegmentComputer(error,flagWidthOnly) );
+    time2 = clock();
+    double cpuTime;
+    cpuTime =  ((double)time2-(double)time1)/((double)CLOCKS_PER_SEC/1000);
     
     Segmentation::SegmentComputerIterator it = theSegmentation.begin();
     Segmentation::SegmentComputerIterator itEnd = theSegmentation.end();
+    
+    int simplificationSize=0;
+    
     board.setPenColor(Color::Red);
     board.setLineStyle (LibBoard::Shape::SolidStyle );
     board.setLineWidth (3);
     
+    ofstream f;
+    f.open("output.vertices");
+    
     for ( ; it != itEnd; ++it) {
       SegmentComputer s(*it);
-      trace.info() << s << std::endl;
+      //trace.info() << s << std::endl;
       board << (*it);       
+      
+      //output vertices of the simplification 
+      f << (*(s.begin()))[0] << " " << (*(s.begin()))[1] << std::endl;
+      // size of the simpification
+      simplificationSize++;
     }
+    f.close();
+
+    trace.info() << aCurve.size() << " " << error << " " << simplificationSize << " " << cpuTime << std::endl;
+
     board.setPenColor(Color::Black);
     displayContour(contour, board);
     
     board << r;
-    trace.info() << theSegmentation << std::endl;
-    board.saveEPS("FrechetShortcutGreedySegmentationTest.eps", Board2D::BoundingBox, 5000 ); 
+    //trace.info() << theSegmentation << std::endl;
+    board.saveEPS("output.eps", Board2D::BoundingBox, 5000 ); 
   }
 
   return 0;
