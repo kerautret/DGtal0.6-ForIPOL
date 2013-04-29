@@ -47,8 +47,7 @@ int main(int argc, char** argv)
   std::set<SCell> bdry;
   Z3i::KSpace ks;  
   ks.init( ptL, ptU, true );
-  SetPredicate<Z3i::DigitalSet> set3dPredicate( aSet );
-
+ 
 
   SCell v0 = ks.sSpel(pt0, KSpace::POS);
   SCell v1 = ks.sSpel(pt1, KSpace::POS);
@@ -79,7 +78,7 @@ int main(int argc, char** argv)
 
   
   // Extracting the surface boundary of the shape
-  Surfaces<Z3i::KSpace>::sMakeBoundary( bdry, ks, set3dPredicate, ks.lowerBound(), ks.upperBound() );
+  Surfaces<Z3i::KSpace>::sMakeBoundary( bdry, ks, aSet, ks.lowerBound(), ks.upperBound() );
 
   SurfelAdjacency<Z3i::KSpace::dimension>  sAdjInt( true );
   SurfelAdjacency<Z3i::KSpace::dimension>  sAdjExt( false );
@@ -132,7 +131,7 @@ int main(int argc, char** argv)
   std::set<SCell> aContour1;
   Surfaces<Z3i::KSpace>::trackBoundary( aContour1, ks, 
   					sAdjExt,
-  					set3dPredicate, surfel ); 
+  					aSet, surfel ); 
 
 
   Viewer3D viewerContour1;
@@ -161,7 +160,7 @@ int main(int argc, char** argv)
   std::set<SCell> aContour2;
   Surfaces<Z3i::KSpace>::trackBoundary( aContour2, ks, 
   					sAdjInt,
-  					set3dPredicate, surfel ); 
+  					aSet, surfel ); 
 
   Viewer3D viewerContour2;
 

@@ -720,10 +720,11 @@ namespace DGtal
    * Constructor with initialisation
    * @param error an iterator on 2D points
    * @param flagWidthOnly a flag indicating if a width shortcut should be computed instead of a Frechet shortcut - default value is false
+   * @param precision a double defining the precision used in the cone computation - default value is given by the constant PRECISION
    */
     FrechetShortcut(double error, bool flagWidthOnly = false, double precision = PRECISION);
     
-        
+
 
   /**
    * Initialisation.
