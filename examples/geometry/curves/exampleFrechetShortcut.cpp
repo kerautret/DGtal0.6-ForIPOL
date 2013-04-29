@@ -54,11 +54,16 @@ int main( int argc, char** argv )
   for ( int i = 0; i < argc; ++i )
     trace.info() << " " << argv[ i ];
   trace.info() << endl;
-
+  if(argc==1)
+    {
+      trace.info() << "Missing parameter: please enter the error value\n"; 
+      return 0;
+    }
+  
   std::string filename = examplesPath + "samples/plant-frechet.dat";
   ifstream instream; // input stream
   instream.open (filename.c_str(), ifstream::in);
-
+  
   
   double error = atof(argv[1]);
   trace.info() << error << endl;
@@ -72,7 +77,7 @@ int main( int argc, char** argv )
   board << c.getArrowsRange();
   
   trace.beginBlock("Simple example");
-
+  
   //! [FrechetShortcutUsage]
   Curve::PointsRange r = c.getPointsRange(); 
   
@@ -80,13 +85,13 @@ int main( int argc, char** argv )
   
   // Computation of one shortcut
   Shortcut s(error);
+  // Shortcut s(error,true); // if the simplification must be computed using the width only (not the Frechet distance)
   
   s.init( r.begin() );
   while ( ( s.end() != r.end() )
   	  &&( s.extendForward() ) ) {}
   
-
-
+  
   // Computation of a greedy segmentation
   
   typedef GreedySegmentation<Shortcut> Segmentation;
