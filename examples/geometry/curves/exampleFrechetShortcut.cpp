@@ -54,11 +54,16 @@ int main( int argc, char** argv )
   for ( int i = 0; i < argc; ++i )
     trace.info() << " " << argv[ i ];
   trace.info() << endl;
-
+  if(argc==1)
+    {
+      trace.info() << "Missing parameter: please enter the error value\n"; 
+      return 0;
+    }
+  
   std::string filename = examplesPath + "samples/plant-frechet.dat";
   ifstream instream; // input stream
   instream.open (filename.c_str(), ifstream::in);
-
+  
   
   double error = atof(argv[1]);
   trace.info() << error << endl;
