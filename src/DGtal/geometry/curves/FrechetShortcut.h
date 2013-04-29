@@ -52,6 +52,8 @@
 
 #include "DGtal/geometry/curves/SegmentComputerUtils.h"
 
+#define PRECISION 0.00001
+
 namespace DGtal
 {
   
@@ -285,14 +287,14 @@ namespace DGtal
      */
     bool myInf; // true if the cone is infinite (the whole plane)
     
-    Cone(double precision = 0.00001);
+    Cone(double precision = PRECISION);
     
     /**
        Constructor from two angles
        @param a0 an angle
        @param a1 a second angle
     */
-    Cone(double a0, double a1, double precision = 0.00001);
+    Cone(double a0, double a1, double precision = PRECISION);
 
     /**
        Constructor from three points x, x0, x1. The cone is defined by
@@ -304,7 +306,7 @@ namespace DGtal
      @param x1 x1
      @param y1 y1
     */
-    Cone(double x, double y, double x0, double y0, double x1, double y1, double precision = 0.00001);
+    Cone(double x, double y, double x0, double y0, double x1, double y1, double precision = PRECISION);
     
     /**
        Test if the cone is empty
@@ -719,7 +721,7 @@ namespace DGtal
    * @param error an iterator on 2D points
    * @param flagWidthOnly a flag indicating if a width shortcut should be computed instead of a Frechet shortcut - default value is false
    */
-    FrechetShortcut(double error, bool flagWidthOnly = false, double precision = 0.00001);
+    FrechetShortcut(double error, bool flagWidthOnly = false, double precision = PRECISION);
     
         
 
