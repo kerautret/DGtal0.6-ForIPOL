@@ -77,7 +77,7 @@ int main( int argc, char** argv )
   board << c.getArrowsRange();
   
   trace.beginBlock("Simple example");
-
+  
   //! [FrechetShortcutUsage]
   Curve::PointsRange r = c.getPointsRange(); 
   
@@ -85,13 +85,13 @@ int main( int argc, char** argv )
   
   // Computation of one shortcut
   Shortcut s(error);
+  // Shortcut s(error,true); // if the simplification must be computed using the width only (not the Frechet distance)
   
   s.init( r.begin() );
   while ( ( s.end() != r.end() )
   	  &&( s.extendForward() ) ) {}
   
-
-
+  
   // Computation of a greedy segmentation
   
   typedef GreedySegmentation<Shortcut> Segmentation;
