@@ -120,7 +120,7 @@ int main( int argc, char** argv )
 #ifdef WITH_MAGICK
   double alpha=args.getOption("-alphaBG")->getFloatValue(0);
   if(args.check("-backgroundImage")){
-    string imageName = args.check("-backgroundImage")->getValue(0);
+    std::string imageName = args.check("-backgroundImage")->getValue(0);
     typedef ImageSelector<Z2i::Domain, unsigned char>::Type Image;
     DGtal::MagickReader<Image> reader;
     Image img = reader.importImage( imageName );
@@ -133,15 +133,15 @@ int main( int argc, char** argv )
 #endif
  
   if(args.check("-backgroundImageXFIG")){
-    string imageName = args.getOption("-backgroundImageXFIG")->getValue(0);
+    std::string imageName = args.getOption("-backgroundImageXFIG")->getValue(0);
     unsigned int width = args.getOption("-backgroundImageXFIG")->getIntValue(1);
     unsigned int height = args.getOption("-backgroundImageXFIG")->getIntValue(2);
     aBoard.drawImage(imageName, 0,height-1, width, height, -1, 1.0 );
     }
  
   if(args.check("-fc")){
-    string fileName = args.getOption("-fc")->getValue(0);
-    vector< FreemanChain<int> > vectFc =  PointListReader< Z2i::Point>:: getFreemanChainsFromFile<int> (fileName); 
+    std::string fileName = args.getOption("-fc")->getValue(0);
+    std::vector< FreemanChain<int> > vectFc =  PointListReader< Z2i::Point>:: getFreemanChainsFromFile<int> (fileName); 
     //aBoard <<  SetMode( vectFc.at(0).className(), "InterGrid" );
     aBoard << CustomStyle( vectFc.at(0).className(), 
 			   new CustomColors( Color::Red  ,  (filled ? (Color::Black) : (Color::None))  ) );    
@@ -157,10 +157,10 @@ int main( int argc, char** argv )
     
     double pointSize = args.getOption("-drawContourPoint")->getFloatValue(0);
     
-    vector<LibBoard::Point> contourPt;
+    std::vector<LibBoard::Point> contourPt;
     if(args.check("-sdp")){
-      string fileName = args.getOption("-sdp")->getValue(0);
-      vector< Z2i::Point >  contour = 
+      std::string fileName = args.getOption("-sdp")->getValue(0);
+      std::vector< Z2i::Point >  contour = 
 	PointListReader< Z2i::Point >::getPointsFromFile(fileName); 
       for(unsigned int j=0; j<contour.size(); j++){
 	LibBoard::Point pt((double)(contour.at(j)[0]),
@@ -173,8 +173,8 @@ int main( int argc, char** argv )
     }
     
     if(args.check("-sfp")){
-      string fileName = args.getOption("-sfp")->getValue(0);
-      vector< PointVector<2,double>  >  contour = 
+      std::string fileName = args.getOption("-sfp")->getValue(0);
+      std::vector< PointVector<2,double>  >  contour = 
 	PointListReader<  PointVector<2,double>  >::getPointsFromFile(fileName); 
       for(unsigned int j=0; j<contour.size(); j++){
 	LibBoard::Point pt((double)(contour.at(j)[0]),
@@ -200,34 +200,34 @@ int main( int argc, char** argv )
  
   
   if (args.check("-outputSVG")){
-    string outputFileName= args.getOption("-outputSVG")->getValue(0);
+    std::string outputFileName= args.getOption("-outputSVG")->getValue(0);
     aBoard.saveSVG(outputFileName.c_str());
   } else   
     if (args.check("-outputFIG")){
-      string outputFileName= args.getOption("-outputFIG")->getValue(0);
+      std::string outputFileName= args.getOption("-outputFIG")->getValue(0);
       aBoard.saveFIG(outputFileName.c_str());
     } else
       if (args.check("-outputEPS")){
-	string outputFileName= args.getOption("-outputEPS")->getValue(0);
+	std::string outputFileName= args.getOption("-outputEPS")->getValue(0);
 	aBoard.saveEPS(outputFileName.c_str());
       }  
 #ifdef WITH_CAIRO
       else
 	if (args.check("-outputEPS")){
-	  string outputFileName= args.getOption("-outputSVG")->getValue(0);
+	  std::string outputFileName= args.getOption("-outputSVG")->getValue(0);
 	  aBoard.saveCairo(outputFileName.c_str(),Board2D::CairoEPS );
 	} else 
 	  if (args.check("-outputPDF")){
-	    string outputFileName= args.getOption("-outputPDF")->getValue(0);
+	    std::string outputFileName= args.getOption("-outputPDF")->getValue(0);
 	    aBoard.saveCairo(outputFileName.c_str(),Board2D::CairoPDF );
 	  } else 
 	    if (args.check("-outputPNG")){
-	      string outputFileName= args.getOption("-outputPNG")getValue(0);
+	      std::string outputFileName= args.getOption("-outputPNG")getValue(0);
 	      aBoard.saveCairo(outputFileName.c_str(),Board2D::CairoPNG );
 	    }
 #endif
 	    else { //default output
-	      string outputFileName= "output.eps";
+	      std::string outputFileName= "output.eps";
 	      aBoard.saveEPS(outputFileName.c_str());
 	    }
   

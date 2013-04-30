@@ -73,7 +73,7 @@ bool testMagickReader()
 
   std::string filename = testPath + "samples/color64.png";
 
-  trace.info()<<"Importing: "<<filename<<endl;
+  trace.info()<<"Importing: "<<filename<<std::endl;
 
   MagickReader<Image> reader;
   Image img = reader.importImage( filename );
