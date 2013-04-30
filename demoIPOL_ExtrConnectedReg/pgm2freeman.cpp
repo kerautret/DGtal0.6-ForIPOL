@@ -21,7 +21,7 @@ void saveAllContoursAsFc(std::vector< std::vector< Z2i::Point >  >  vectContours
   for(unsigned int k=0; k<vectContoursBdryPointels.size(); k++){
     if(vectContoursBdryPointels.at(k).size()>minSize){
       FreemanChain<Z2i::Integer> fc (vectContoursBdryPointels.at(k));    
-      cout << fc.x0 << " " << fc.y0   << " " << fc.chain << endl; 
+      std::cout << fc.x0 << " " << fc.y0   << " " << fc.chain << std::endl; 
 	  
     }
   }
@@ -37,7 +37,7 @@ void saveSelContoursAsFC(std::vector< std::vector< Z2i::Point >  >  vectContours
 						      (ptMean[1]-refPoint[1])*(ptMean[1]-refPoint[1])));
       if(distance<=selectDistanceMax){
 	FreemanChain<Z2i::Integer> fc (vectContoursBdryPointels.at(k));    
-	cout << fc.x0 << " " << fc.y0   << " " << fc.chain << endl; 
+	std::cout << fc.x0 << " " << fc.y0   << " " << fc.chain << std::endl; 
       }      
     }    
   }
@@ -66,10 +66,10 @@ int main( int argc, char** argv )
     
   if ( ( argc <= 1 ) ||  ! args.readArguments( argc, argv ) ) 
     {
-      cerr << args.usage( "pgm2freeman: ", 
+      std::cerr << args.usage( "pgm2freeman: ", 
 			  "Extracts all 2D contours from a PGM image given on the standard input and writes them on the standard output as FreemanChain's. \nTypical use: \n pgm2freeman -threshold 200 -image image.pgm > imageContour.fc ",
 			  "" )
-	   << endl;
+	   << std::endl;
       return 1;
     }  
  
@@ -104,13 +104,13 @@ int main( int argc, char** argv )
  
   typedef ImageSelector < Z2i::Domain, unsigned char>::Type Image;
   typedef IntervalThresholder<Image::Value> Binarizer; 
-  string imageFileName = args.getOption("-image")->getValue(0);
+  std::string imageFileName = args.getOption("-image")->getValue(0);
   Image image = PNMReader<Image>::importPGM( imageFileName ); 
   
   Z2i::KSpace ks;
   if(! ks.init( image.domain().lowerBound(), 
 		image.domain().upperBound(), true )){
-    trace.error() << "Problem in KSpace initialisation"<< endl;
+    trace.error() << "Problem in KSpace initialisation"<< std::endl;
   }
   
   bool badj = (args.getOption("-badj")->getIntValue(0))!=1;
@@ -130,7 +130,7 @@ int main( int argc, char** argv )
     }else{
       saveAllContoursAsFc(vectContoursBdryPointels,  minSize); 
     }
-    trace.info()<< " [done] " << endl;
+    trace.info()<< " [done] " << std::endl;
   }else{
     for(int i=0; minThreshold+(i+1)*increment< maxThreshold; i++){
       min = minThreshold;
@@ -149,7 +149,7 @@ int main( int argc, char** argv )
       }else{
   	saveAllContoursAsFc(vectContoursBdryPointels,  minSize); 
       }
-      trace.info() << " [done]" << endl;
+      trace.info() << " [done]" << std::endl;
     }
   }
   return 0;

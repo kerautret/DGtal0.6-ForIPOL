@@ -15,6 +15,12 @@
     :file "pgm2freeman.cpp"
     :pointmax 6865
     )
+   (semanticdb-table "fileGridCurveRanges.cpp"
+    :major-mode 'c++-mode
+    :tags '(("iostream" include (:system-flag t) nil [1047 1066]) ("fstream" include (:system-flag t) nil [1067 1085]) ("algorithm" include (:system-flag t) nil [1086 1106]) ("DGtal/base/Common.h" include nil nil [1228 1258]) ("DGtal/helpers/StdDefs.h" include nil nil [1259 1293]) ("ConfigExamples.h" include nil nil [1294 1321]) ("DGtal/io/boards/Board2D.h" include nil nil [1405 1441]) ("main" function (:type "int") nil [1591 2932]))
+    :file "fileGridCurveRanges.cpp"
+    :pointmax 3014
+    )
    )
   :file "semantic.cache"
   :semantic-tag-version "2.0pre4"
