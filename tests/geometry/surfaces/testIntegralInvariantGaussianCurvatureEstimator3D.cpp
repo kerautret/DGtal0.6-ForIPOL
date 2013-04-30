@@ -76,7 +76,7 @@ bool testIntegralInvariantGaussianCurvatureEstimator3D( double h, double delta )
   typedef MyIIGaussianEstimator::Quantity Quantity;
   typedef MyShape::RealPoint RealPoint;
 
-  string poly_str = "x^2 + y^2 + z^2 - 25";
+  std::string poly_str = "x^2 + y^2 + z^2 - 25";
   double border_min[3] = { -10, -10, -10 };
   double border_max[3] = { 10, 10, 10 };
   double re_convolution_kernel = 6.217163327;
@@ -132,7 +132,7 @@ bool testIntegralInvariantGaussianCurvatureEstimator3D( double h, double delta )
   }
 
   std::vector< Quantity > resultsIICurvature;
-  back_insert_iterator< std::vector< Quantity > > resultsIICurvatureIterator( resultsIICurvature );
+  std::back_insert_iterator< std::vector< Quantity > > resultsIICurvatureIterator( resultsIICurvature );
 
   VisitorRange range( new Visitor( digSurfShape, *digSurfShape.begin() ) );
   SurfelConstIterator abegin = range.begin();
@@ -183,7 +183,7 @@ int main( int argc, char** argv )
   trace.info() << "Args:";
   for ( int i = 0; i < argc; ++i )
     trace.info() << " " << argv[ i ];
-  trace.info() << endl;
+  trace.info() << std::endl;
 
   bool res = testIntegralInvariantGaussianCurvatureEstimator3D( 0.6, 0.007 ); // && ... other tests
   trace.emphase() << ( res ? "Passed." : "Error." ) << endl;

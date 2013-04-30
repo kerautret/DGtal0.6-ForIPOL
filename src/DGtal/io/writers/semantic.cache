@@ -49,6 +49,12 @@
     :file "RawWriter.ih"
     :pointmax 2125
     )
+   (semanticdb-table "PPMWriter.ih"
+    :major-mode 'c++-mode
+    :tags '(("cstdlib" include (:system-flag t) nil [1089 1107]) ("fstream" include (:system-flag t) nil [1108 1126]) ("DGtal/io/Color.h" include nil nil [1127 1154]) ("DGtal" type (:members (("exportPPM" function (:template (("I" type (:type "class") nil nil) ("C" type (:type "class") nil nil)) :type "bool" :arguments (("filename" variable (:constant-flag t :type ("std::string" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [1522 1551]) ("aImage" variable (:constant-flag t :type ("I" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [1552 1569]) ("aFunctor" variable (:constant-flag t :type ("Functor" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [1577 1602]) ("topbotomOrder" variable (:type "bool") (reparse-symbol arg-sub-list) [1603 1622])) :parent "PPMWriter") (reparse-symbol namespacesubparts) [1455 3249]) ("exportPPM3D" function (:template (("I" type (:type "class") nil nil) ("C" type (:type "class") nil nil)) :type "bool" :arguments (("filename" variable (:constant-flag t :type ("std::string" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [3320 3349]) ("aImage" variable (:constant-flag t :type ("I" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [3350 3367]) ("aFunctor" variable (:constant-flag t :type ("Functor" type (:type "class") nil nil)) (reparse-symbol arg-sub-list) [3375 3398])) :parent "PPMWriter") (reparse-symbol namespacesubparts) [3255 4298])) :type "namespace") nil [1434 4302]))
+    :file "PPMWriter.ih"
+    :pointmax 4314
+    )
    )
   :file "semantic.cache"
   :semantic-tag-version "2.0pre4"
