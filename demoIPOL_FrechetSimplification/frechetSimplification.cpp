@@ -61,12 +61,11 @@ using namespace Z2i;
 
 static ImaGene::Arguments args;
 
-
-
 void displayContour(const std::vector<Z2i::Point> &contour, Board &aBoard){
   aBoard.setPenColor(Color::Blue);
+  aBoard.setFillColor(Color::White);
   aBoard.setLineStyle (LibBoard::Shape::SolidStyle );
-  aBoard.setLineWidth (1);
+  aBoard.setLineWidth (3);
   vector<LibBoard::Point> contourPt;
   for(unsigned int j=0; j<contour.size(); j++){
     LibBoard::Point pt((double)(contour.at(j)[0]),
@@ -86,7 +85,7 @@ int main( int argc, char** argv )
 {
   args.addOption( "-error", "-error <val>:parameter used in the simplification algorithm (Frechet or width) (default is 2)", "2" );
   args.addOption("-sdp", "-sdp <contour.sdp> : Import a contour as a Sequence of Discrete Points (SDP format)", "contour.sdp" );
-  args.addOption("-w", "-w: compute the simplification using the width only","");
+  args.addBooleanOption("-w", "-w: compute the simplification using the width only");
  
   bool parseOK=  args.readArguments( argc, argv );
   
@@ -137,16 +136,14 @@ int main( int argc, char** argv )
     
     board.setPenColor(Color::Red);
     board.setLineStyle (LibBoard::Shape::SolidStyle );
-    board.setLineWidth (3);
     
+
     ofstream f;
-    f.open("output.vertices");
-    
+    f.open("output.txt");
+    std::vector<SegmentComputer> vectSeg;
     for ( ; it != itEnd; ++it) {
       SegmentComputer s(*it);
-      //trace.info() << s << std::endl;
-      board << (*it);       
-      
+      vectSeg.push_back(*it);
       //output vertices of the simplification 
       f << (*(s.begin()))[0] << " " << (*(s.begin()))[1] << std::endl;
       // size of the simpification
@@ -154,14 +151,26 @@ int main( int argc, char** argv )
     }
     f.close();
 
-    trace.info() << aCurve.size() << " " << error << " " << simplificationSize << " " << cpuTime << std::endl;
-
+    std::cout << "curve size=" << aCurve.size()<<std::endl
+		 << "error: " << error<<std::endl
+		 << "simplificationSize : " << simplificationSize<<std::endl
+		 << "cpu time:" << cpuTime << std::endl;
+    
     board.setPenColor(Color::Black);
     displayContour(contour, board);
     
     board << r;
+    
+    for( int i=0; i < vectSeg.size(); i++){
+      board << CustomStyle( vectSeg.at(i).className(),  new CustomPen( Color::Red, Color::Red, 8.0, 
+							   Board2D::Shape::SolidStyle,
+							   Board2D::Shape::RoundCap,
+							   Board2D::Shape::RoundJoin ) );
+      board<< vectSeg.at(i);
+    }
+    
     //trace.info() << theSegmentation << std::endl;
-    board.saveEPS("output.eps", Board2D::BoundingBox, 5000 ); 
+    board.saveEPS("output.eps", 800, 800 ); 
   }
 
   return 0;
