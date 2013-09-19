@@ -16,6 +16,59 @@ using namespace DGtal;
 
 static ImaGene::Arguments args;
 
+ typedef ImageSelector < Z2i::Domain, unsigned char>::Type Image;
+
+std::vector<unsigned int> getHistoFromImage(const Image &image){
+  const Image::Domain &imgDom = image.domain();
+  std::vector<unsigned int> vectHisto(imgDom.size());
+  for(Image::Domain::ConstIterator it=imgDom.begin(); it!= imgDom.end(); ++it){
+    vectHisto[image(*it)]++;
+  }
+  return vectHisto;
+}
+
+
+
+
+unsigned int 
+getOtsuThreshold(const Image &image){
+  std::vector<unsigned int> histo = getHistoFromImage(image);
+  unsigned int imageSize = image.domain().size();
+  unsigned int sumA = 0;
+  unsigned int sumB = imageSize;
+  unsigned int muA=0;
+  unsigned int muB=0;
+  unsigned int sumMuAll= 0;
+  for( unsigned int t=0; t< histo.size();t++){
+    sumMuAll+=histo[t]*t;
+  }
+  
+  unsigned int thresholdRes=0;
+  double valMax=0.0;
+  for( unsigned int t=0; t< histo.size(); t++){
+    sumA+=histo[t];
+    if(sumA==0)
+      continue; 
+    sumB=imageSize-sumA;
+    if(sumB==0){
+      break;
+    }
+    
+    muA+=histo[t]*t;
+    muB=sumMuAll-muA;
+    double muAr=muA/(double)sumA;
+    double muBr=muB/(double)sumB;
+    double sigma=  (double)sumA*(double)sumB*(muAr-muBr)*(muAr-muBr);
+    if(valMax<=sigma){
+      valMax=sigma;
+      thresholdRes=t;
+    }
+  }
+  return thresholdRes;
+}
+
+
+
 
 void saveAllContoursAsFc(std::vector< std::vector< Z2i::Point >  >  vectContoursBdryPointels, unsigned int minSize){
   for(unsigned int k=0; k<vectContoursBdryPointels.size(); k++){
