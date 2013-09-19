@@ -70,6 +70,11 @@ getOtsuThreshold(const Image &image){
 
 
 
+struct compContours {
+  bool operator() ( std::vector< Z2i::Point > cntA, std::vector< Z2i::Point > cntB ) { return (cntA.size()>cntB.size());}
+} myCompContour;
+
+
 void saveAllContoursAsFc(std::vector< std::vector< Z2i::Point >  >  vectContoursBdryPointels, unsigned int minSize){
   for(unsigned int k=0; k<vectContoursBdryPointels.size(); k++){
     if(vectContoursBdryPointels.at(k).size()>minSize){
@@ -78,6 +83,21 @@ void saveAllContoursAsFc(std::vector< std::vector< Z2i::Point >  >  vectContours
 	  
     }
   }
+}
+
+
+void saveLargestContourAsSDP(std::vector< std::vector< Z2i::Point >  >  vectContoursBdryPointels, unsigned int minSize){
+  std::vector< std::vector< Z2i::Point >  >  vectContoursToSort;
+  for(unsigned int k=0; k<vectContoursBdryPointels.size(); k++){
+    if(vectContoursBdryPointels.at(k).size()>minSize){
+      vectContoursToSort.push_back(vectContoursBdryPointels.at(k));
+    }
+  }
+  std::sort (vectContoursToSort.begin(), vectContoursToSort.end(), myCompContour);
+  for(unsigned int i=0; i<vectContoursToSort.at(0).size(); i++){
+    std::cout << vectContoursToSort.at(0).at(i)[0] << " " <<  vectContoursToSort.at(0).at(i)[1] << std::endl; 
+  }
+
 }
 
 
@@ -94,6 +114,28 @@ void saveSelContoursAsFC(std::vector< std::vector< Z2i::Point >  >  vectContours
       }      
     }    
   }
+}
+
+void saveLargestContourSelContoursAsSDP(std::vector< std::vector< Z2i::Point >  >  vectContoursBdryPointels, 
+			 unsigned int minSize, Z2i::Point refPoint, double selectDistanceMax){
+  std::vector< std::vector< Z2i::Point >  >  vectContoursToSort;
+  
+  for(unsigned int k=0; k<vectContoursBdryPointels.size(); k++){
+    if(vectContoursBdryPointels.at(k).size()>minSize){
+      Z2i::Point ptMean = ContourHelper::getMeanPoint(vectContoursBdryPointels.at(k));
+      unsigned int distance = (unsigned int)ceil(sqrt((double)(ptMean[0]-refPoint[0])*(ptMean[0]-refPoint[0])+
+						      (ptMean[1]-refPoint[1])*(ptMean[1]-refPoint[1])));
+      if(distance<=selectDistanceMax){
+	vectContoursToSort.push_back(vectContoursBdryPointels.at(k));
+      }
+      
+    }    
+  }
+  std::sort (vectContoursToSort.begin(), vectContoursToSort.end(), myCompContour);
+  for(unsigned int i=0; i<vectContoursToSort.at(0).size(); i++){
+    std::cout << vectContoursToSort.at(0).at(i)[0] << " " <<  vectContoursToSort.at(0).at(i)[1] << std::endl; 
+  }
+ 
 }
 
 
@@ -114,8 +156,8 @@ int main( int argc, char** argv )
   
   args.addOption("-selectContour", "-selectContour <x0> <y0> <distanceMax>: select the contours for which the first point is near (x0, y0) with a distance less than <distanceMax>","0", "0", "0" );
   args.addBooleanOption("-invertVerticalAxis", "-invertVerticalAxis used to transform the contour representation (need for DGtal), used o nly for the contour displayed, not for the contour selection (-selectContour). ");
-      
-    
+  args.addBooleanOption("-outputSDP", "export as a sequence of discrete points instead of freemanchain (use the largest contour if more contours appears)");
+  
     
   if ( ( argc <= 1 ) ||  ! args.readArguments( argc, argv ) ) 
     {
@@ -136,7 +178,8 @@ int main( int argc, char** argv )
  
   bool select=false;
   bool thresholdRange= args.check("-thresholdRange");
- 
+  bool exportSDP=args.check("-outputSDP");
+  
   int min, max, increment;
   if(thresholdRange){
     minThreshold = args.getOption("-thresholdRange")->getIntValue(0);
@@ -190,9 +233,17 @@ int main( int argc, char** argv )
     Surfaces<Z2i::KSpace>::extractAllPointContours4C( vectContoursBdryPointels,
   						      ks, predicate, sAdj );  
     if(select){
-      saveSelContoursAsFC(vectContoursBdryPointels,  minSize, selectCenter,  selectDistanceMax);
+      if(!exportSDP){
+	saveSelContoursAsFC(vectContoursBdryPointels,  minSize, selectCenter,  selectDistanceMax);
+      }else{
+	saveLargestContourSelContoursAsSDP(vectContoursBdryPointels,  minSize, selectCenter,  selectDistanceMax);
+      }
     }else{
-      saveAllContoursAsFc(vectContoursBdryPointels,  minSize); 
+      if(!exportSDP){
+	saveAllContoursAsFc(vectContoursBdryPointels,  minSize); 
+      }else{
+	saveLargestContourAsSDP(vectContoursBdryPointels,  minSize) ;
+      }
     }
     trace.info()<< " [done] " << std::endl;
   }else{
@@ -209,9 +260,17 @@ int main( int argc, char** argv )
       Surfaces<Z2i::KSpace>::extractAllPointContours4C( vectContoursBdryPointels,
   							ks, predicate, sAdj );  
       if(select){
-  	saveSelContoursAsFC(vectContoursBdryPointels,  minSize, selectCenter,  selectDistanceMax);
+  	if(!exportSDP){
+	  saveSelContoursAsFC(vectContoursBdryPointels,  minSize, selectCenter,  selectDistanceMax);
+	}else{
+	  saveLargestContourSelContoursAsSDP(vectContoursBdryPointels,  minSize, selectCenter,  selectDistanceMax);
+	}
       }else{
-  	saveAllContoursAsFc(vectContoursBdryPointels,  minSize); 
+	if(!exportSDP){
+	  saveAllContoursAsFc(vectContoursBdryPointels,  minSize); 
+	}else{
+	  saveLargestContourAsSDP(vectContoursBdryPointels,  minSize); 
+	}
       }
       trace.info() << " [done]" << std::endl;
     }
