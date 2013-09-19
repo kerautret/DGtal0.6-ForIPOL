@@ -120,7 +120,7 @@ int main( int argc, char** argv )
   if ( ( argc <= 1 ) ||  ! args.readArguments( argc, argv ) ) 
     {
       std::cerr << args.usage( "pgm2freeman: ", 
-			  "Extracts all 2D contours from a PGM image given on the standard input and writes them on the standard output as FreemanChain's. \nTypical use: \n pgm2freeman -threshold 200 -image image.pgm > imageContour.fc ",
+			       "Extracts all 2D contours from a PGM image given on the standard input and writes them on the standard output as FreemanChain's. \nTypical use: \n pgm2freeman -threshold 200 -image image.pgm > imageContour.fc \n  Note that if you don't specify any threshold a threshold t is automatically defined from the Otsu algorithm. ",
 			  "" )
 	   << std::endl;
       return 1;
@@ -170,6 +170,17 @@ int main( int argc, char** argv )
   
   
   if (!thresholdRange){
+    if(!args.check("-minThreshold")){
+      trace.info() << "Min threshold value not specified, computing it with the otsu algorithm...";
+      minThreshold = getOtsuThreshold(image);      
+      trace.info() << "[done] (min= " << minThreshold << ") "<< std::endl;
+    }else if(!args.check("-maxThreshold")){
+      trace.info() << "Max threshold value not specified, , computing it with the otsu algorithm...";
+      maxThreshold = getOtsuThreshold(image);
+      trace.info() << "[done] (max= " << maxThreshold << ") "<< std::endl;
+    }
+
+
     Binarizer b(minThreshold, maxThreshold); 
     PointFunctorPredicate<Image,Binarizer> predicate(image, b); 
     trace.info() << "DGtal contour extraction from thresholds ["<<  minThreshold << "," << maxThreshold << "]" ;
