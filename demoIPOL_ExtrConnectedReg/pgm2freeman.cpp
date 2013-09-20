@@ -211,14 +211,10 @@ int main( int argc, char** argv )
   
   bool badj = (args.getOption("-badj")->getIntValue(0))!=1;
   
-  
   if (!thresholdRange){
-    if(!args.check("-minThreshold")){
-      trace.info() << "Min threshold value not specified, computing it with the otsu algorithm...";
-      minThreshold = getOtsuThreshold(image);      
-      trace.info() << "[done] (min= " << minThreshold << ") "<< std::endl;
-    }else if(!args.check("-maxThreshold")){
-      trace.info() << "Max threshold value not specified, , computing it with the otsu algorithm...";
+    if (!args.check("-maxThreshold")&& !args.check("-minThreshold")){
+      minThreshold=0;
+      trace.info() << "Min/Max threshold values not specified, set min to 0 and computing max with the otsu algorithm...";
       maxThreshold = getOtsuThreshold(image);
       trace.info() << "[done] (max= " << maxThreshold << ") "<< std::endl;
     }
