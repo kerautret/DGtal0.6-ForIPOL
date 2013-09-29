@@ -123,11 +123,7 @@ void processContour(const std::vector<Z2i::Point> &contour, Board2D & aBoard, do
   }
   f << endl;
 
-  
-  std::cout << "curve size=" << aCurve.size()<<std::endl
-	    << "error: " << error<<std::endl
-	    << "simplificationSize : " << simplificationSize<<std::endl
-	    << "cpu time:" << cpuTime << std::endl;
+  std::cout << aCurve.size()<<" " << error<<" " << simplificationSize<<" "<< cpuTime << std::endl;
   
   aBoard.setPenColor(Color::Black);
   displayContour(contour, aBoard);
@@ -142,8 +138,6 @@ void processContour(const std::vector<Z2i::Point> &contour, Board2D & aBoard, do
     aBoard<< vectSeg.at(i);
   }
 }
-
-
 
 
 
@@ -173,10 +167,6 @@ int main( int argc, char** argv )
   double error = args.getOption("-error")->getFloatValue(0);
   ofstream f;
   f.open("output.txt", std::ofstream::out);
-
-
-
-  
   
   bool flagWidthOnly = false;
   if(args.check("-w"))
@@ -186,6 +176,7 @@ int main( int argc, char** argv )
     std::vector<Z2i::Point> contour;
     string fileName = args.getOption("-sdp")->getValue(0);
     contour =   PointListReader< Z2i::Point >::getPointsFromFile(fileName); 
+    std::cout << "# curve_size error simplification_size cpu_time  "<< std::endl;
     processContour(contour, board, error, f, flagWidthOnly, false);     
     board.saveEPS("output.eps", 800, 800 ); 
   }
@@ -194,7 +185,9 @@ int main( int argc, char** argv )
   if( args.check("-sdp") && args.check("-allContours")  ){
     string fileName = args.getOption("-sdp")->getValue(0);
     std::vector< std::vector<Z2i::Point> > vectContours =   PointListReader< Z2i::Point >::getPolygonsFromFile(fileName);
+    std::cout << "# curve_size error simplification_size cpu_time  " << std::endl;
     for (int j=0; j<vectContours.size(); j++){
+      trace.info() << "# Processing contour " << j << endl;
       processContour(vectContours.at(j), board, error,  f, flagWidthOnly, true); 
     }    
     board.saveEPS("output.eps", 800, 800 ); 
