@@ -101,6 +101,23 @@ void saveLargestContourAsSDP(std::vector< std::vector< Z2i::Point >  >  vectCont
 }
 
 
+void saveAllContourAsSDP(std::vector< std::vector< Z2i::Point >  >  vectContoursBdryPointels, unsigned int minSize){
+  std::vector< std::vector< Z2i::Point >  >  vectContoursToSort;
+  for(unsigned int k=0; k<vectContoursBdryPointels.size(); k++){
+    if(vectContoursBdryPointels.at(k).size()>minSize){
+      vectContoursToSort.push_back(vectContoursBdryPointels.at(k));
+    }
+  }
+  std::sort (vectContoursToSort.begin(), vectContoursToSort.end(), myCompContour);  
+  for( int j=0; j < vectContoursToSort.size(); j++){
+    for(unsigned int i=0; i<vectContoursToSort.at(j).size(); i++){
+      std::cout << vectContoursToSort.at(j).at(i)[0] << " " <<  vectContoursToSort.at(j).at(i)[1] << " "; 
+    }
+    std::cout << std::endl;
+  }
+}
+
+
 void saveSelContoursAsFC(std::vector< std::vector< Z2i::Point >  >  vectContoursBdryPointels, 
 			 unsigned int minSize, Z2i::Point refPoint, double selectDistanceMax){
   for(unsigned int k=0; k<vectContoursBdryPointels.size(); k++){
@@ -156,7 +173,8 @@ int main( int argc, char** argv )
   
   args.addOption("-selectContour", "-selectContour <x0> <y0> <distanceMax>: select the contours for which the first point is near (x0, y0) with a distance less than <distanceMax>","0", "0", "0" );
   args.addBooleanOption("-invertVerticalAxis", "-invertVerticalAxis used to transform the contour representation (need for DGtal), used o nly for the contour displayed, not for the contour selection (-selectContour). ");
-  args.addBooleanOption("-outputSDP", "export as a sequence of discrete points instead of freemanchain (use the largest contour if more contours appears)");
+  args.addBooleanOption("-outputSDP", "-outputSDP export as a sequence of discrete points instead of freemanchain (use the largest contour if more contours appears)");
+  args.addBooleanOption("-outputSDPAll", "-outputSDPAll export as a sequence of discrete points instead of freemanchain (all contours are exported: one per line)");
   
     
   if ( ( argc <= 1 ) ||  ! args.readArguments( argc, argv ) ) 
@@ -179,6 +197,7 @@ int main( int argc, char** argv )
   bool select=false;
   bool thresholdRange= args.check("-thresholdRange");
   bool exportSDP=args.check("-outputSDP");
+  bool exportSDPALL= args.check("-outputSDPAll");
   
   int min, max, increment;
   if(thresholdRange){
@@ -235,10 +254,14 @@ int main( int argc, char** argv )
 	saveLargestContourSelContoursAsSDP(vectContoursBdryPointels,  minSize, selectCenter,  selectDistanceMax);
       }
     }else{
-      if(!exportSDP){
+      if(!exportSDP && ! exportSDPALL){
 	saveAllContoursAsFc(vectContoursBdryPointels,  minSize); 
       }else{
-	saveLargestContourAsSDP(vectContoursBdryPointels,  minSize) ;
+	if(exportSDPALL){
+	  saveAllContourAsSDP(vectContoursBdryPointels,  minSize) ;
+	}else{
+	  saveLargestContourAsSDP(vectContoursBdryPointels,  minSize) ;
+	}
       }
     }
     trace.info()<< " [done] " << std::endl;
