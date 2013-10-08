@@ -99,7 +99,7 @@ int main( int argc, char** argv )
   
   
   exportSurfel << CustomColors3D(Color(250, 0,0),Color(250, 200,200, 200));
-  exportSurfel << imageSet;  
+  //exportSurfel << imageSet;  
   exportSurfel >> outputFileName;
 
   if(args.check("-exportSRC")){

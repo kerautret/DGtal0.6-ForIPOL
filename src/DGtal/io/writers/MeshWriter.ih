@@ -32,6 +32,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <set>
+#include <map>
 #include "DGtal/io/Color.h"
 //////////////////////////////////////////////////////////////////////////////
 
@@ -122,6 +123,97 @@ DGtal::MeshWriter<TPoint>::export2OBJ(std::ostream &out,
 
 
 
+template<typename TPoint>
+inline
+bool 
+DGtal::MeshWriter<TPoint>::export2OBJcolor(std::ostream &out, std::ostream &outMTL, 
+					   std::string mtlName,
+					   const  DGtal::MeshFromPoints<TPoint>  &aMesh) throw(DGtal::IOException)
+
+{
+  DGtal::IOException dgtalio;
+  try
+    {
+      out << "#  OBJ format"<< std::endl;
+      out << "# generated from MeshWriter from the DGTal library"<< std::endl;
+      out << std::endl;
+      out << "o anObj" << std::endl;
+      out << std::endl;
+      out << "mtllib " <<  mtlName << " " << std::endl;
+      // processing vertex
+      for(unsigned int i=0; i< aMesh.nbVertex(); i++){
+	out << "v " << aMesh.getVertex(i)[0] << " " << aMesh.getVertex(i)[1] << " "<< aMesh.getVertex(i)[2] << std::endl;	
+      }
+      out << std::endl;
+      // processing faces:
+      // For each color, we store the set of faces (to deal with OBJ material)
+      std::multimap<DGtal::Color, unsigned int, MeshWriter::CompareColor > mapColorToFaces;
+      std::vector<DGtal::Color> vectColors;
+      for (unsigned int i=0; i< aMesh.nbFaces(); i++){
+	DGtal::Color col = aMesh.getFaceColor(i);
+	if(mapColorToFaces.count(col)==0){
+	  vectColors.push_back(col);
+	}
+	mapColorToFaces.insert(std::pair<DGtal::Color, unsigned int>(col, i));
+      }
+      
+      // Creation of all material according to the set ordered colors:
+      outMTL << " # " << std::endl << "# Wavefront material file" << std::endl;
+      outMTL << " # Generated with the DGtal library" << std::endl << " #  "<< std::endl << std::endl;
+      for(unsigned int i=0; i<vectColors.size(); i++){
+	DGtal::Color col = vectColors.at(i);
+	outMTL << "newmtl material_" << i << std::endl;
+	outMTL << "Ka 0.200000 0.200000 0.200000" << std::endl;
+	outMTL << "Kd " << ((double) col.red())/255.0 << " "
+	       << ((double) col.green())/255.0 << " "<< ((double) col.blue())/255.0 << std::endl;
+	outMTL << "Ks 1.000000 1.000000 1.000000" << std::endl;
+	outMTL << "Tr 1.000000" << std::endl;
+	outMTL << "illum 2" << std::endl;
+	outMTL << "Ns  0.000000" << std::endl;
+	outMTL << std::endl;
+      }
+      
+      
+      
+      
+      //Generating faces by sorting them with same material labels
+      for(unsigned int i=0; i<vectColors.size(); i++)
+	{
+	  DGtal::Color col = vectColors.at(i);
+	  std::multimap<DGtal::Color, unsigned int>::iterator it;
+	  
+	  std::pair <std::multimap<DGtal::Color,unsigned int>::iterator, std::multimap<DGtal::Color, unsigned int>::iterator> ret;
+	  ret = mapColorToFaces.equal_range(col);
+	  out << "usemtl material_" << i<< std::endl; 
+	  for (std::multimap<DGtal::Color,unsigned int>::iterator it= ret.first; it!=ret.second; ++it)
+	    {
+	      std::vector<unsigned int> aFace =  aMesh.getFace((*it).second);
+	      out << "f " ;
+	      for(unsigned int j=0; j<aFace.size(); j++)
+		{
+		  unsigned int indexVertex = aFace.at(j);
+		  out << (indexVertex+1) << "//" << (indexVertex+1) << " " ;	    
+		}
+	      out << std::endl;	     
+	    }
+	out << std::endl; 
+	}
+    
+
+
+
+    }catch( ... )
+    {
+      trace.error() << "OBJ writer IO error on export "  << std::endl;
+      throw dgtalio;
+    }
+  return true;
+
+
+
+
+}
+
 
 
 template <typename TPoint>
@@ -129,12 +221,17 @@ inline
 bool
 DGtal::operator>> (   MeshFromPoints<TPoint> & aMesh, const std::string & aFilename ){
   std::string extension = aFilename.substr(aFilename.find_last_of(".") + 1);
+  std::string basename = aFilename.substr(0, aFilename.find_last_of("."));
   std::ofstream out;
   out.open(aFilename.c_str());
+
+  std::ofstream outMTL;
+  outMTL.open((aFilename+".mtl").c_str());
+  
   if(extension== "off") {
     return DGtal::MeshWriter<TPoint>::export2OFF(out, aMesh, true);
   }else if(extension== "obj") {
-    return DGtal::MeshWriter<TPoint>::export2OBJ(out, aMesh);
+    return DGtal::MeshWriter<TPoint>::export2OBJcolor(out, outMTL, aFilename+".mtl",  aMesh);
   }
   out.close();
   return false;
