@@ -76,8 +76,27 @@ namespace DGtal
   struct MeshWriter
   {
     // ----------------------- Standard services ------------------------------
-
-   
+    
+    // Used to exploit Color in Multimap
+    struct CompareColor{
+      bool operator() ( DGtal::Color c1, DGtal::Color c2 ) const
+      {
+	if( c1.red()==c2.red() ){
+	  if( c1.green()==c2.green() ){  
+	    if( c1.blue()==c2.blue() ){  
+	      return false;
+	    }else{
+	      return c1.blue() < c2.blue();
+	    }
+	  }else{
+	    return c1.green() < c2.green();
+	  }
+	}else{
+	  return c1.red() < c2.red();
+	}
+      }
+      
+    };
 
 
     /** 
@@ -104,6 +123,18 @@ namespace DGtal
      */
     
     static bool export2OBJ(std::ostream &out, const  MeshFromPoints<TPoint>  &aMesh) throw(DGtal::IOException);
+       
+ 
+    /** 
+     * Export a MeshFromPoints towards a OBJ format with color.
+     * 
+     * @param out the output stream of the exported OBJ object.
+     * @param out the output stream of the exported material part of OBJ object.
+     * @param aMesh the MeshFromPoints object to be exported.
+     * @return true if no errors occur.
+     */
+    static bool export2OBJcolor(std::ostream &out, std::ostream &outMTL, 
+				std::string mtlName, const  MeshFromPoints<TPoint>  &aMesh) throw(DGtal::IOException);
        
     
   };
