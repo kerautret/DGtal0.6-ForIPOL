@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <string>
+#include <climits>
 
 #include "ImaGene/Arguments.h"
 
@@ -20,7 +21,7 @@ static ImaGene::Arguments args;
 
 std::vector<unsigned int> getHistoFromImage(const Image &image){
   const Image::Domain &imgDom = image.domain();
-  std::vector<unsigned int> vectHisto(imgDom.size());
+  std::vector<unsigned int> vectHisto(UCHAR_MAX);
   for(Image::Domain::ConstIterator it=imgDom.begin(); it!= imgDom.end(); ++it){
     vectHisto[image(*it)]++;
   }
