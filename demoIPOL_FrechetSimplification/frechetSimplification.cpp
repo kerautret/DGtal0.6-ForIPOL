@@ -72,7 +72,7 @@ void displayContour(const std::vector<Z2i::Point> &contour, Board2D &aBoard){
   aBoard.setPenColor(Color::Blue);
   aBoard.setFillColor(Color::White);
   aBoard.setLineStyle (LibBoard::Shape::SolidStyle );
-  aBoard.setLineWidth (3);
+  aBoard.setLineWidth (2);  
   vector<LibBoard::Point> contourPt;
   for(unsigned int j=0; j<contour.size(); j++){
     LibBoard::Point pt((double)(contour.at(j)[0]),
@@ -103,7 +103,7 @@ void processContour(const std::vector<Z2i::Point> &contour, Board2D & aBoard, do
   Segmentation::SegmentComputerIterator itEnd = theSegmentation.end();
   
   int simplificationSize=0;
- 
+
   aBoard.setPenColor(Color::Red);
   aBoard.setLineStyle (LibBoard::Shape::SolidStyle );
   
@@ -125,13 +125,12 @@ void processContour(const std::vector<Z2i::Point> &contour, Board2D & aBoard, do
 
   std::cout << aCurve.size()<<" " << error<<" " << simplificationSize<<" "<< cpuTime << std::endl;
   
-  aBoard.setPenColor(Color::Black);
   displayContour(contour, aBoard);
   
   aBoard << r;
   
   for( int i=0; i < vectSeg.size(); i++){
-    aBoard << CustomStyle( vectSeg.at(i).className(),  new CustomPen( Color::Red, Color::Red, 8.0, 
+    aBoard << CustomStyle( vectSeg.at(i).className(),  new CustomPen( Color::Red, Color::Red, 4.0, 
 								      Board2D::Shape::SolidStyle,
 								      Board2D::Shape::RoundCap,
 								      Board2D::Shape::RoundJoin ) );
@@ -150,8 +149,10 @@ int main( int argc, char** argv )
 {
   args.addOption( "-error", "-error <val>:parameter used in the simplification algorithm (Frechet or width) (default is 2)", "2" );
   args.addOption("-sdp", "-sdp <contour.sdp> : Import a contour as a Sequence of Discrete Points (SDP format)", "contour.sdp" );
+  args.addOption( "-imageSize", "-imageSize <width> <height>: used to improve the output display to correspond to an source image by displaying an empty box of width 0 (to force the correspondance of the BB)", "", "" );
   args.addBooleanOption("-w", "-w: compute the simplification using the width only");
   args.addBooleanOption("-allContours", "-allContours: compute the simplification of all the contours (one contour per line given in sdp file)");
+  
   bool parseOK=  args.readArguments( argc, argv );
   
   if ( ( argc <= 1 ) ||  ! parseOK ) 
@@ -172,6 +173,7 @@ int main( int argc, char** argv )
   if(args.check("-w"))
     flagWidthOnly = true;
 
+
   if( args.check("-sdp") && !args.check("-allContours")){
     std::vector<Z2i::Point> contour;
     string fileName = args.getOption("-sdp")->getValue(0);
@@ -190,8 +192,19 @@ int main( int argc, char** argv )
       trace.info() << "# Processing contour " << j << endl;
       processContour(vectContours.at(j), board, error,  f, flagWidthOnly, true); 
     }    
-    board.saveEPS("output.eps", 800, 800 ); 
+
+      if(args.check("-imageSize")){
+    unsigned int width = args.getOption("-imageSize")->getIntValue(0);
+    unsigned int height = args.getOption("-imageSize")->getIntValue(1);
+    board.setLineWidth(0.0);
+    board.setFillColor( DGtal::Color::None);
+    board.drawRectangle(0,height, width, height);
   }
+
+    board.saveEPS("output.eps", 800, 800); 
+  }
+
+
   
   
   return 0;
