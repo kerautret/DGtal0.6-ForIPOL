@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <string>
+#include <climits>
 
 #include "ImaGene/Arguments.h"
 
@@ -16,11 +17,14 @@ using namespace DGtal;
 
 static ImaGene::Arguments args;
 
- typedef ImageSelector < Z2i::Domain, unsigned char>::Type Image;
+
+typedef ImageSelector < Z2i::Domain, unsigned char>::Type Image;
+static const std::string PROG_VERSION="version 1.2 (17-04-2014)";
+
 
 std::vector<unsigned int> getHistoFromImage(const Image &image){
   const Image::Domain &imgDom = image.domain();
-  std::vector<unsigned int> vectHisto(imgDom.size());
+  std::vector<unsigned int> vectHisto(UCHAR_MAX+1);
   for(Image::Domain::ConstIterator it=imgDom.begin(); it!= imgDom.end(); ++it){
     vectHisto[image(*it)]++;
   }
@@ -175,7 +179,7 @@ int main( int argc, char** argv )
   args.addBooleanOption("-invertVerticalAxis", "-invertVerticalAxis used to transform the contour representation (need for DGtal), used o nly for the contour displayed, not for the contour selection (-selectContour). ");
   args.addBooleanOption("-outputSDP", "-outputSDP export as a sequence of discrete points instead of freemanchain (use the largest contour if more contours appears)");
   args.addBooleanOption("-outputSDPAll", "-outputSDPAll export as a sequence of discrete points instead of freemanchain (all contours are exported: one per line)");
-  
+  args.addBooleanOption("-version", "-version : display version");  
     
   if ( ( argc <= 1 ) ||  ! args.readArguments( argc, argv ) ) 
     {
@@ -185,7 +189,12 @@ int main( int argc, char** argv )
 	   << std::endl;
       return 1;
     }  
- 
+
+  if(args.check("-version")){
+    std::cout << "version: " << PROG_VERSION << std::endl;
+    return 0;
+  }
+
   
  
  
