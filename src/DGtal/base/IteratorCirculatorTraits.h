@@ -225,17 +225,17 @@ struct ToDGtalCategory<boost::random_access_traversal_tag> {
 };
 
 template <>
-struct ToDGtalCategory<boost::detail::iterator_category_with_traversal<std::input_iterator_tag,boost::forward_traversal_tag> > {
+struct ToDGtalCategory<boost::iterators::detail::iterator_category_with_traversal<std::input_iterator_tag,boost::forward_traversal_tag> > {
     typedef  ForwardCategory Category;
 };
 
 template <>
-struct ToDGtalCategory<boost::detail::iterator_category_with_traversal<std::input_iterator_tag,boost::bidirectional_traversal_tag> > {
+struct ToDGtalCategory<boost::iterators::detail::iterator_category_with_traversal<std::input_iterator_tag,boost::bidirectional_traversal_tag> > {
     typedef  BidirectionalCategory Category;
 };
 
 template <>
-struct ToDGtalCategory<boost::detail::iterator_category_with_traversal<std::input_iterator_tag,boost::random_access_traversal_tag> > {
+struct ToDGtalCategory<boost::iterators::detail::iterator_category_with_traversal<std::input_iterator_tag,boost::random_access_traversal_tag> > {
     typedef  RandomAccessCategory Category;
 };
 

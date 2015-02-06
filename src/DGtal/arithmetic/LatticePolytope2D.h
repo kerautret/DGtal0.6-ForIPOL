@@ -41,6 +41,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 // Inclusions
+
 #include <iostream>
 #include <list>
 #include <vector>
@@ -50,6 +51,7 @@
 #include "DGtal/kernel/domains/HyperRectDomain.h"
 #include "DGtal/arithmetic/IntegerComputer.h"
 #include "DGtal/arithmetic/ClosedIntegerHalfPlane.h"
+
 //////////////////////////////////////////////////////////////////////////////
 
 namespace DGtal
@@ -111,7 +113,9 @@ namespace DGtal
     typedef typename ClockwiseVertexSequence::iterator Iterator;
     typedef typename ClockwiseVertexSequence::const_iterator ConstIterator;
     typedef typename std::size_t Size;
-    typedef std::pair<Size,Size> SizeCouple;
+
+
+    typedef typename std::pair<Size,Size> SizeCouple;
 
     // The sequence must contain points.
     BOOST_STATIC_ASSERT

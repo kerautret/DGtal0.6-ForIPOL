@@ -366,18 +366,17 @@ numberInteriorPoints() const
 template <typename TSpace, typename TSequence>
 inline
 typename DGtal::LatticePolytope2D<TSpace,TSequence>::SizeCouple
-DGtal::LatticePolytope2D<TSpace,TSequence>::
-findCut( Iterator & it_next_is_outside, Iterator & it_next_is_inside, 
+DGtal::LatticePolytope2D<TSpace,TSequence>::findCut( Iterator & it_next_is_outside, Iterator & it_next_is_inside, 
          const HalfSpace & hs )
 {
-  Size nbWithin = NumberTraits<Size>::ZERO;
-  Size nb = NumberTraits<Size>::ZERO;
+  Size nbWithin = (Size) 0 ;//  Fix compile macos old: NumberTraits<Size>::ZERO;
+  Size nb = (Size) 0;  //  Fix compile macos old: NumberTraits<Size>::ZERO;
   Iterator it = begin();
   Iterator it_prev = it;
   Iterator it_end = end();
   it_next_is_outside = it_next_is_inside = it_end;
-  if ( it == it_end ) 
-    return std::make_pair( NumberTraits<Size>::ZERO, NumberTraits<Size>::ZERO );
+  if ( it == it_end ) //  Fix compile macos old: NumberTraits<Size>::ZERO
+    return (SizeCouple) std::make_pair( (Size) 0 , (Size) 0);
   bool visibility_begin_vtx; // visibility of begin vertex.
   bool visibility_prev_vtx;  // visibility of previous vertex when visiting the list.
   bool visibility_vtx;       // visibility of current vertex when visiting the list.
@@ -419,7 +418,7 @@ cut( const HalfSpace & hs )
 
   // Take care of easy cases.
   if ( nbs.first == nbs.second )               { return false; }
-  if ( nbs.first == NumberTraits<Size>::ZERO ) { clear(); return true; }
+  if ( nbs.first == (Size) 0  ) { clear(); return true; } //  Fix compile macos old:  NumberTraits<Size>::ZERO
   
   // Otherwise, determines A1B1 and A2B2.
   twiceArea(); // result in _a;
@@ -444,8 +443,13 @@ cut( const HalfSpace & hs )
   // Both iterators point on the right place.
   if ( _a > NumberTraits<Integer>::ZERO ) 
     { //convex not reduced to a straight line segment
-      std::insert_iterator<ClockwiseVertexSequence> itOut 
-        = std::inserter<ClockwiseVertexSequence,Iterator>( myVertices, it_next_is_outside );
+#ifdef WITH_C11
+      std::insert_iterator<ClockwiseVertexSequence> itOut
+        = std::inserter<ClockwiseVertexSequence>( myVertices, it_next_is_outside );
+#else
+      std::insert_iterator<ClockwiseVertexSequence> itOut
+        = std::inserter( myVertices, it_next_is_outside );
+#endif
       computeConvexHullBorder( itOut, _A1, _A2, hs1, hs, hs3 );
     }
   else //convex reduced to a straight line segment

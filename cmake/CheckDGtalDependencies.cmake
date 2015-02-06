@@ -19,7 +19,7 @@ set(ImaGeneArg_USE_STATIC_RUNTIME OFF)
 set(ImaGeneArg_FOUND TRUE)
 message(STATUS "ImaGeneArg found.")
 
-SET(Boost_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src/boost-1.48)
+SET(Boost_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src/boost-1.57)
 SET(ImaGeneArg_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src/ImaGene)
 include_directories( ${Boost_INCLUDE_DIRS} )
 include_directories( ${ImaGeneArg_INCLUDE_DIRS} )
