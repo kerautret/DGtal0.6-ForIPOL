@@ -410,7 +410,7 @@ public:
    */
   bool operator()( const Point & p ) const
   {
-    return myShapeA( p ) && !myShapeB.orientation(p) == INSIDE;
+    return myShapeA( p ) && !(myShapeB.orientation(p) == INSIDE);
   }
 
   /**
