@@ -18,7 +18,7 @@
  * @file   Style2DFactory.ih
  * @author Martial Tola <http://liris.cnrs.fr/martial.tola/>
  * @date   lundi 24 octobre 2011
- * 
+ *
  * @brief
  *
  * Implementation of inline methods defined in Style2DFactory.h
@@ -109,7 +109,7 @@ namespace DGtal
   
   
   // DigitalSetBySTLSet
-  /** 
+  /**
    * Default style.
    */
   struct DefaultDrawStyle_DigitalSetBySTLSet : public DrawableWithBoard2D
@@ -125,7 +125,7 @@ namespace DGtal
 
 
   // DigitalSetBySTLVector
-  /** 
+  /**
    * Default style.
    */
   struct DefaultDrawStyle_DigitalSetBySTLVector : public DrawableWithBoard2D
@@ -469,7 +469,7 @@ template <typename TIterator, typename TInteger, int connectivity>
 inline
 DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::ArithmeticalDSS<TIterator,TInteger,connectivity> & /*a*/, std::string mode = "" )
 {
-  if ( ( mode == "" ) || ( mode == "BoundingBox" ) ) 
+  if ( ( mode == "" ) || ( mode == "BoundingBox" ) )
     return new DGtal::DefaultDrawStyleBB_ArithmeticalDSS;
   else // mode == "Points"
     return new DGtal::DefaultDrawStylePoints_ArithmeticalDSS;
@@ -483,7 +483,7 @@ inline
 DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::CircleFrom2Points<TPoint> & /*cf2p*/, std::string mode = "" )
 {
   UNUSED_ARGUMENT(mode);
-  return new DGtal::DrawableWithBoard2D; 
+  return new DGtal::DrawableWithBoard2D;
 }
 // CircleFrom2Points
 
@@ -494,7 +494,7 @@ inline
 DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::CircleFrom3Points<TPoint> & /*cf3p*/, std::string mode = "" )
 {
   UNUSED_ARGUMENT(mode);
-  return new DGtal::DrawableWithBoard2D; 
+  return new DGtal::DrawableWithBoard2D;
 }
 // CircleFrom3Points
 
@@ -524,7 +524,7 @@ DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::DigitalSetBySTLVector<Doma
 // FP
 template <typename TIterator, typename TInteger, int connectivity>
 inline
-DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::FP<TIterator,TInteger,connectivity> & /*fp*/, 
+DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::FP<TIterator,TInteger,connectivity> & /*fp*/,
                                          std::string mode = "" )
 {
   UNUSED_ARGUMENT(mode);
@@ -536,13 +536,13 @@ DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::FP<TIterator,TInteger,conn
 // FreemanChain
 template <typename TInteger>
 inline
-DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::FreemanChain<TInteger> & /*f*/, 
+DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::FreemanChain<TInteger> & /*f*/,
                                          std::string mode = "" )
 {
-  if ( ( mode == "" ) || ( mode == "Grid" ) ) 
+  if ( ( mode == "" ) || ( mode == "Grid" ) )
     return new DGtal::DefaultDrawStyleGrid_FreemanChain;
-  else 
-    return new DGtal::DefaultDrawStyleInterGrid_FreemanChain;  
+  else
+    return new DGtal::DefaultDrawStyleInterGrid_FreemanChain;
 }
 // FreemanChain
 
@@ -550,11 +550,11 @@ DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::FreemanChain<TInteger> & /
 // GeometricalDSS
 template <typename TConstIterator>
 inline
-DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::GeometricalDSS<TConstIterator> & /*g*/, 
+DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::GeometricalDSS<TConstIterator> & /*g*/,
                                          std::string mode = "" )
 {
   UNUSED_ARGUMENT(mode);
-  return new DGtal::DefaultDrawStyle_GeometricalDSS; 
+  return new DGtal::DefaultDrawStyle_GeometricalDSS;
 }
 // GeometricalDSS
 
@@ -562,10 +562,10 @@ DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::GeometricalDSS<TConstItera
 template <typename TConstIterator>
 inline
 DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::GeometricalDCA<TConstIterator> & /*g*/,
-					 std::string mode = "" )
+           std::string mode = "" )
 {
   UNUSED_ARGUMENT(mode);
-  return new DGtal::DefaultDrawStyle_GeometricalDCA; 
+  return new DGtal::DefaultDrawStyle_GeometricalDCA;
 }
 // GeometricalDCA
 
@@ -575,7 +575,7 @@ inline
 DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::FrechetShortcut<TIterator,TInteger> & /*f*/, std::string mode = "" )
 {
   UNUSED_ARGUMENT(mode);
-  return new DGtal::DefaultDrawStyle_FrechetShortcut; 
+  return new DGtal::DefaultDrawStyle_FrechetShortcut;
 }
 // // FrechetShortcut
 
@@ -583,92 +583,92 @@ DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::FrechetShortcut<TIterator,
 
 // GridCurve
 template <typename TKSpace>
-DGtal::DrawableWithBoard2D* 
-defaultStyle(const DGtal::GridCurve<TKSpace> & /*object*/, 
+DGtal::DrawableWithBoard2D*
+defaultStyle(const DGtal::GridCurve<TKSpace> & /*object*/,
              std::string mode = "" )
 {
   UNUSED_ARGUMENT(mode);
-  return new DGtal::DrawableWithBoard2D; 
+  return new DGtal::DrawableWithBoard2D;
 }
 // GridCurve
 
 // SCellsRange
 template <typename TIterator, typename TSCell>
-DGtal::DrawableWithBoard2D* 
-defaultStyle(const DGtal::ConstRangeAdapter<TIterator, DGtal::DefaultFunctor, TSCell> & /*object*/, 
+DGtal::DrawableWithBoard2D*
+defaultStyle(const DGtal::ConstRangeAdapter<TIterator, DGtal::DefaultFunctor, TSCell> & /*object*/,
              std::string mode = "" )
 {
   UNUSED_ARGUMENT(mode);
-  return new DGtal::DrawableWithBoard2D; 
+  return new DGtal::DrawableWithBoard2D;
 }
 // SCellsRange
 
 // PointsRange
 template <typename TIterator, typename TKSpace>
-DGtal::DrawableWithBoard2D* 
-defaultStyle(const DGtal::ConstRangeAdapter<TIterator, DGtal::SCellToPoint<TKSpace>, typename TKSpace::Point> & /*object*/, 
+DGtal::DrawableWithBoard2D*
+defaultStyle(const DGtal::ConstRangeAdapter<TIterator, DGtal::SCellToPoint<TKSpace>, typename TKSpace::Point> & /*object*/,
              std::string mode = "" )
 {
   UNUSED_ARGUMENT(mode);
-  return new DGtal::DrawableWithBoard2D; 
+  return new DGtal::DrawableWithBoard2D;
 }
 // PointsRange
 
 // MidPointsRange
 template <typename TIterator, typename TKSpace>
-DGtal::DrawableWithBoard2D* 
-defaultStyle(const DGtal::ConstRangeAdapter<TIterator, DGtal::SCellToMidPoint<TKSpace>, 
-             typename TKSpace::Space::RealPoint> & /*object*/, 
+DGtal::DrawableWithBoard2D*
+defaultStyle(const DGtal::ConstRangeAdapter<TIterator, DGtal::SCellToMidPoint<TKSpace>,
+             typename TKSpace::Space::RealPoint> & /*object*/,
              std::string mode = "" )
 {
   UNUSED_ARGUMENT(mode);
-  return new DGtal::DrawableWithBoard2D; 
+  return new DGtal::DrawableWithBoard2D;
 }
 // MidPointsRange
 
 // ArrowsRange
 template <typename TIterator, typename TKSpace>
-DGtal::DrawableWithBoard2D* 
-defaultStyle(const DGtal::ConstRangeAdapter<TIterator, DGtal::SCellToArrow<TKSpace>, 
-             std::pair<typename TKSpace::Point, typename TKSpace::Vector> > & /*object*/, 
+DGtal::DrawableWithBoard2D*
+defaultStyle(const DGtal::ConstRangeAdapter<TIterator, DGtal::SCellToArrow<TKSpace>,
+             std::pair<typename TKSpace::Point, typename TKSpace::Vector> > & /*object*/,
              std::string mode = "" )
 {
   UNUSED_ARGUMENT(mode);
-  return new DGtal::DrawableWithBoard2D; 
+  return new DGtal::DrawableWithBoard2D;
 }
 // ArrowsRange
 
 // InnerPointsRange
 template <typename TIterator, typename TKSpace>
-DGtal::DrawableWithBoard2D* 
-defaultStyle(const DGtal::ConstRangeAdapter<TIterator, DGtal::SCellToInnerPoint<TKSpace>, typename TKSpace::Point> & /*object*/, 
+DGtal::DrawableWithBoard2D*
+defaultStyle(const DGtal::ConstRangeAdapter<TIterator, DGtal::SCellToInnerPoint<TKSpace>, typename TKSpace::Point> & /*object*/,
              std::string mode = "" )
 {
   UNUSED_ARGUMENT(mode);
-  return new DGtal::DrawableWithBoard2D; 
+  return new DGtal::DrawableWithBoard2D;
 }
 // InnerPointsRange
 
 // OuterPointsRange
 template <typename TIterator, typename TKSpace>
-DGtal::DrawableWithBoard2D* 
-defaultStyle(const DGtal::ConstRangeAdapter<TIterator, DGtal::SCellToOuterPoint<TKSpace>, typename TKSpace::Point> & /*object*/, 
+DGtal::DrawableWithBoard2D*
+defaultStyle(const DGtal::ConstRangeAdapter<TIterator, DGtal::SCellToOuterPoint<TKSpace>, typename TKSpace::Point> & /*object*/,
              std::string mode = "" )
 {
   UNUSED_ARGUMENT(mode);
-  return new DGtal::DrawableWithBoard2D; 
+  return new DGtal::DrawableWithBoard2D;
 }
 // OuterPointsRange
 
 // IncidentPointsRange
 template <typename TIterator, typename TKSpace>
-DGtal::DrawableWithBoard2D* 
-defaultStyle(const DGtal::ConstRangeAdapter<TIterator, DGtal::SCellToIncidentPoints<TKSpace>, 
-             std::pair<typename TKSpace::Point, typename TKSpace::Point> > & /*object*/, 
+DGtal::DrawableWithBoard2D*
+defaultStyle(const DGtal::ConstRangeAdapter<TIterator, DGtal::SCellToIncidentPoints<TKSpace>,
+             std::pair<typename TKSpace::Point, typename TKSpace::Point> > & /*object*/,
              std::string mode = "" )
 {
   UNUSED_ARGUMENT(mode);
-  return new DGtal::DrawableWithBoard2D; 
+  return new DGtal::DrawableWithBoard2D;
 }
 // IncidentPointsRange
 
@@ -677,7 +677,7 @@ template<typename TSpace>
 inline
 DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::HyperRectDomain<TSpace> & /*h*/, std::string mode = "" )
 {
-  if ( ( mode == "" ) || ( mode == "Both" ) || ( mode == "Grid" ) ) 
+  if ( ( mode == "" ) || ( mode == "Both" ) || ( mode == "Grid" ) )
     return new DGtal::DefaultDrawStyleGrid_HyperRectDomain;
   else // mode == "Paving"
     return new DGtal::DefaultDrawStylePaving_HyperRectDomain;
@@ -730,14 +730,14 @@ DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::Object<TDigitalTopology, T
 
 
 // PointVector
-template<DGtal::Dimension dim, typename TComponent>
+template<typename TComponent>
 inline
-DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::PointVector<dim,TComponent> & /*p*/, std::string mode = "")
+DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::PointVector<2,TComponent > & /*p*/, std::string mode = "")
 {
-  if ( ( mode == "" ) || ( mode == "Paving" ) ) 
+  if ( ( mode == "" ) || ( mode == "Paving" ) )
     return new DGtal::DefaultDrawStylePaving_PointVector;
   else // mode == "Grid"
-    return new DGtal::DefaultDrawStyleGrid_PointVector;  
+    return new DGtal::DefaultDrawStyleGrid_PointVector;
 }
 // PointVector
 
@@ -748,7 +748,7 @@ inline
 DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::Preimage2D<Shape> & /*p*/, std::string mode = "")
 {
   UNUSED_ARGUMENT(mode);
-  return new DGtal::DrawableWithBoard2D; 
+  return new DGtal::DrawableWithBoard2D;
 }
 // Preimage2D
 
@@ -777,11 +777,11 @@ DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::StraightLineFrom2Points<TP
 // LatticePolytope2D
 template < typename TSpace, typename TSequence>
 inline
-DGtal::DrawableWithBoard2D* 
-defaultStyle( const DGtal::LatticePolytope2D<TSpace,TSequence> & /*cip*/, 
+DGtal::DrawableWithBoard2D*
+defaultStyle( const DGtal::LatticePolytope2D<TSpace,TSequence> & /*cip*/,
               std::string mode = "" )
 {
-  if ( ( mode == "" ) || ( mode == "Transparent" ) ) 
+  if ( ( mode == "" ) || ( mode == "Transparent" ) )
     return new DGtal::DefaultDrawStyleTransparent_LatticePolytope2D;
   else // "Filled"
     return new DGtal::DefaultDrawStyleFilled_LatticePolytope2D;
@@ -808,5 +808,6 @@ DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::SetMode & /*sm*/, std::str
 
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
+
 
 

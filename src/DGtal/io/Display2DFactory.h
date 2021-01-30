@@ -20,7 +20,7 @@
  * @file   Display2DFactory.h
  * @author Martial Tola <http://liris.cnrs.fr/martial.tola/>
  * @date   mercredi 28 septembre 2011
- * 
+ *
  * @brief
  *
  * Header file for module Display2DFactory
@@ -66,6 +66,8 @@
 #include "DGtal/shapes/fromPoints/StraightLineFrom2Points.h"
 #include "DGtal/arithmetic/LatticePolytope2D.h"
 
+#include "DGtal/helpers/StdDefs.h"
+
 //#include "DGtal/io/boards/Board2D.h"
 
 //////////////////////////////////////////////////////////////////////////////
@@ -83,7 +85,8 @@ namespace DGtal
   struct Display2DFactory
  {
 
-    
+ public:
+   
 // AngleLinearMinimizer
 static void draw( DGtal::Board2D & board, const DGtal::AngleLinearMinimizer & );
 // AngleLinearMinimizer
@@ -91,12 +94,12 @@ static void draw( DGtal::Board2D & board, const DGtal::AngleLinearMinimizer & );
     
 // ArithmeticalDSS
 template <typename TIterator, typename TInteger, int connectivity>
-  static void drawAsBoundingBox( DGtal::Board2D & aBoard, 
-			  const DGtal::ArithmeticalDSS<TIterator,TInteger,connectivity> & );
+  static void drawAsBoundingBox( DGtal::Board2D & aBoard,
+        const DGtal::ArithmeticalDSS<TIterator,TInteger,connectivity> & );
 
 template <typename TIterator, typename TInteger, int connectivity>
-  static void drawAsDigitalPoints( DGtal::Board2D & aBoard, 
-			    const DGtal::ArithmeticalDSS<TIterator,TInteger,connectivity> & );
+  static void drawAsDigitalPoints( DGtal::Board2D & aBoard,
+          const DGtal::ArithmeticalDSS<TIterator,TInteger,connectivity> & );
 
 template <typename TIterator, typename TInteger, int connectivity>
   static void draw( DGtal::Board2D & board, const DGtal::ArithmeticalDSS<TIterator,TInteger,connectivity> & );
@@ -182,7 +185,7 @@ static  void draw(DGtal::Board2D & aBoard, const DGtal::FrechetShortcut<TIterato
     
 // GridCurve
 template <typename TKSpace>
-static void draw( DGtal::Board2D & aBoard, 
+static void draw( DGtal::Board2D & aBoard,
            const GridCurve<TKSpace> & object );
 template <typename TKSpace>
 static void drawFill( DGtal::Board2D & aBoard, const GridCurve<TKSpace> & object );
@@ -190,48 +193,48 @@ static void drawFill( DGtal::Board2D & aBoard, const GridCurve<TKSpace> & object
     
 // SCellsRange
 template <typename TIterator, typename TSCell>
-static void draw( DGtal::Board2D & aBoard, 
+static void draw( DGtal::Board2D & aBoard,
            const ConstRangeAdapter<TIterator, DefaultFunctor, TSCell> & object );
 // SCellsRange
     
 // PointsRange
 template <typename TIterator, typename TKSpace>
-static void draw( DGtal::Board2D & aBoard, 
+static void draw( DGtal::Board2D & aBoard,
            const ConstRangeAdapter<TIterator, SCellToPoint<TKSpace>, typename TKSpace::Point> & object );
 // PointsRange
 
 // MidPointsRange
 template <typename TIterator, typename TKSpace>
-static void draw( DGtal::Board2D & aBoard, 
-           const ConstRangeAdapter<TIterator, SCellToMidPoint<TKSpace>, 
+static void draw( DGtal::Board2D & aBoard,
+           const ConstRangeAdapter<TIterator, SCellToMidPoint<TKSpace>,
            typename TKSpace::Space::RealPoint> & object );
 // MidPointsRange
 
 // ArrowsRange
 template <typename TIterator, typename TKSpace>
-static void draw( DGtal::Board2D & aBoard, 
-           const ConstRangeAdapter<TIterator, SCellToArrow<TKSpace>, 
+static void draw( DGtal::Board2D & aBoard,
+           const ConstRangeAdapter<TIterator, SCellToArrow<TKSpace>,
            std::pair<typename TKSpace::Point, typename TKSpace::Vector > > & object );
 // ArrowsRange
 
 // InnerPointsRange
 template <typename TIterator, typename TKSpace>
-static void draw( DGtal::Board2D & aBoard, 
-           const ConstRangeAdapter<TIterator, SCellToInnerPoint<TKSpace>, 
+static void draw( DGtal::Board2D & aBoard,
+           const ConstRangeAdapter<TIterator, SCellToInnerPoint<TKSpace>,
            typename TKSpace::Point > & object );
 // InnerPointsRange
 
 // OuterPointsRange
 template <typename TIterator, typename TKSpace>
-static void draw( DGtal::Board2D & aBoard, 
-           const ConstRangeAdapter<TIterator, SCellToOuterPoint<TKSpace>, 
+static void draw( DGtal::Board2D & aBoard,
+           const ConstRangeAdapter<TIterator, SCellToOuterPoint<TKSpace>,
            typename TKSpace::Point > & object );
 // OuterPointsRange
 
 // IncidentPointsRange
 template <typename TIterator, typename TKSpace>
-static void draw( DGtal::Board2D & aBoard, 
-           const ConstRangeAdapter<TIterator, SCellToIncidentPoints<TKSpace>, 
+static void draw( DGtal::Board2D & aBoard,
+           const ConstRangeAdapter<TIterator, SCellToIncidentPoints<TKSpace>,
            std::pair<typename TKSpace::Point, typename TKSpace::Point> > & object );
 // IncidentPointsRange
 
@@ -249,7 +252,7 @@ static void draw( DGtal::Board2D & board, const DGtal::HyperRectDomain<TSpace> &
     
 // ImageContainerByHashTree
 template <typename C, typename Domain, typename Value, typename HashKey>
-static void drawImageRecursive( DGtal::Board2D & aBoard, 
+static void drawImageRecursive( DGtal::Board2D & aBoard,
                          const DGtal::experimental::ImageContainerByHashTree<Domain, Value, HashKey> & i,
                          HashKey key,
                          const double p[2],
@@ -296,13 +299,13 @@ template<Dimension dim, typename TComponent>
 template<Dimension dim, typename TComponent>
   static void drawAsGrid( DGtal::Board2D & board, const DGtal::PointVector<dim,TComponent> & );
 
-template<Dimension dim, typename TComponent>
-  static void draw( DGtal::Board2D & board, const DGtal::PointVector<dim,TComponent> & );
+template< typename TComponent>
+  static void draw( DGtal::Board2D & board, const DGtal::PointVector<2,TComponent> & );
 
-template<Dimension dim, typename TComponent>
-  static void draw( DGtal::Board2D & board, 
-	     const DGtal::PointVector<dim,TComponent> &, 
-	     const DGtal::PointVector<dim,TComponent> & );
+template<typename TComponent>
+  static void draw( DGtal::Board2D & board,
+       const DGtal::PointVector<2,TComponent> &,
+       const DGtal::PointVector<2,TComponent> & );
 // PointVector
     
     
@@ -339,7 +342,7 @@ static void draw( DGtal::Board2D & board, const DGtal::SetMode & );
    */
    template <typename TSpace, typename TSequence>
    static
-   void draw( DGtal::Board2D & aBoard, 
+   void draw( DGtal::Board2D & aBoard,
               const DGtal::LatticePolytope2D<TSpace, TSequence> & cip );
 
     
@@ -349,7 +352,7 @@ static void draw( DGtal::Board2D & board, const DGtal::SetMode & );
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// Includes inline functions/methods 
+// Includes inline functions/methods
 #include "DGtal/io/Display2DFactory.ih"
 
 //                                                                           //
@@ -359,3 +362,4 @@ static void draw( DGtal::Board2D & board, const DGtal::SetMode & );
 
 #undef Display2DFactory_RECURSES
 #endif // else defined(Display2DFactory_RECURSES)
+
