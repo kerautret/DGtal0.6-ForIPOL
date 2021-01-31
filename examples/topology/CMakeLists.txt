@@ -4,7 +4,7 @@ SET(DGTAL_EXAMPLES_TOPO_SRC
   khalimskySpaceScanner
   volMarchingCubes
   volToOFF  
-  trackImplicitPolynomialSurfaceToOFF
+#  trackImplicitPolynomialSurfaceToOFF
   generateSimplicityTables2D
   generateSimplicityTables3D
 )

@@ -3,7 +3,7 @@ SET(DGTAL_EXAMPLES_SRC
         convergents
         fraction
         pattern
-        lower-integer-convex-hull
+#        lower-integer-convex-hull
 )
 
 FOREACH(FILE ${DGTAL_EXAMPLES_SRC})
