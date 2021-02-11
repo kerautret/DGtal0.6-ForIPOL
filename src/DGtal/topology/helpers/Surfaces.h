@@ -113,7 +113,7 @@ namespace DGtal
     static
     SCell findABel( const KSpace & K,
         const PointPredicate & pp,
-        unsigned int nbtries = 1000 ) 
+        unsigned int nbtries = 1000 ) ;
     /**
        Find a bel in some digital set given two hints (one point
        inside, one point outside).
