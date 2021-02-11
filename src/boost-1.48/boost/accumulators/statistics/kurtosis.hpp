@@ -47,14 +47,14 @@ namespace impl
       : accumulator_base
     {
         // for boost::result_of
-        typedef typename numeric::functional::average<Sample, Sample>::result_type result_type;
+        typedef typename numeric::functional::fdiv<Sample, Sample>::result_type result_type;
 
         kurtosis_impl(dont_care) {}
 
         template<typename Args>
         result_type result(Args const &args) const
         {
-            return numeric::average(
+            return numeric::fdiv(
                         accumulators::moment<4>(args)
                         - 4. * accumulators::moment<3>(args) * mean(args)
                         + 6. * accumulators::moment<2>(args) * mean(args) * mean(args)
@@ -63,6 +63,10 @@ namespace impl
                         * ( accumulators::moment<2>(args) - mean(args) * mean(args) )
                     ) - 3.;
         }
+        
+        // serialization is done by accumulators it depends on
+        template<class Archive>
+        void serialize(Archive & ar, const unsigned int file_version) {}
     };
 
 } // namespace impl

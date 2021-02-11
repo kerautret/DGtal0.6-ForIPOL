@@ -17,6 +17,12 @@
 #include <boost/spirit/home/lex/lexer.hpp>
 #include <boost/mpl/assert.hpp>
 
+namespace boost { namespace phoenix
+{
+    template <typename Expr>
+    struct actor;
+}}
+
 namespace boost { namespace spirit { namespace lex
 {
     ///////////////////////////////////////////////////////////////////////////
@@ -160,7 +166,7 @@ namespace boost { namespace spirit { namespace lex
         BOOST_SPIRIT_ASSERT_MATCH(qi::domain, Skipper);
 
         typedef
-            typename result_of::compile<qi::domain, Skipper>::type
+            typename spirit::result_of::compile<qi::domain, Skipper>::type
         skipper_type;
         skipper_type const skipper_ = compile<qi::domain>(skipper);
 
@@ -190,7 +196,7 @@ namespace boost { namespace spirit { namespace lex
         BOOST_SPIRIT_ASSERT_MATCH(qi::domain, Skipper);
 
         typedef
-            typename result_of::compile<qi::domain, Skipper>::type
+            typename spirit::result_of::compile<qi::domain, Skipper>::type
         skipper_type;
         skipper_type const skipper_ = compile<qi::domain>(skipper);
 

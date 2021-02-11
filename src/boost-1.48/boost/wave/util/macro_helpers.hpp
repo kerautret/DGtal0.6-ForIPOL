@@ -3,13 +3,13 @@
 
     http://www.boost.org/
 
-    Copyright (c) 2001-2011 Hartmut Kaiser. Distributed under the Boost
+    Copyright (c) 2001-2012 Hartmut Kaiser. Distributed under the Boost
     Software License, Version 1.0. (See accompanying file
     LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
 
-#if !defined(MACRO_HELPERS_HPP_931BBC99_EBFA_4692_8FBE_B555998C2C39_INCLUDED)
-#define MACRO_HELPERS_HPP_931BBC99_EBFA_4692_8FBE_B555998C2C39_INCLUDED
+#if !defined(BOOST_MACRO_HELPERS_HPP_931BBC99_EBFA_4692_8FBE_B555998C2C39_INCLUDED)
+#define BOOST_MACRO_HELPERS_HPP_931BBC99_EBFA_4692_8FBE_B555998C2C39_INCLUDED
 
 #include <vector>
 
@@ -41,8 +41,8 @@ namespace impl {
         typename StringT::size_type pos1 = value.find_first_of ("\"\\?", 0);
         if (StringT::npos != pos1) {
             do {
-                result += value.substr(pos, pos1-pos) 
-                            + StringT("\\") 
+                result += value.substr(pos, pos1-pos)
+                            + StringT("\\")
                             + StringT(1, value[pos1]);
                 pos1 = value.find_first_of ("\"\\?", pos = pos1+1);
             } while (StringT::npos != pos1);
@@ -71,18 +71,18 @@ namespace impl {
                     result = result + value.substr(pos, pos1-pos);
                     pos1 = value.find_first_of ("\\", (pos = pos1+1)+1);
                     break;
-                    
+
                 case 'n':
                     result = result + value.substr(pos, pos1-pos) + "\n";
                     pos1 = value.find_first_of ("\\", pos = pos1+1);
                     ++pos;
                     break;
-                    
+
                 default:
                     result = result + value.substr(pos, pos1-pos+1);
                     pos1 = value.find_first_of ("\\", pos = pos1+1);
                 }
-                
+
             } while (pos1 != StringT::npos);
             result = result + value.substr(pos);
         }
@@ -92,7 +92,7 @@ namespace impl {
         }
         return result;
     }
-    
+
     // return the string representation of a token sequence
     template <typename ContainerT, typename PositionT>
     inline typename ContainerT::value_type::string_type
@@ -100,20 +100,20 @@ namespace impl {
     {
         using namespace boost::wave;
         typedef typename ContainerT::value_type::string_type string_type;
-        
+
         string_type result("\"");
         bool was_whitespace = false;
         typename ContainerT::const_iterator end = token_sequence.end();
-        for (typename ContainerT::const_iterator it = token_sequence.begin(); 
-             it != end; ++it) 
+        for (typename ContainerT::const_iterator it = token_sequence.begin();
+             it != end; ++it)
         {
             token_id id = token_id(*it);
-            
+
             if (IS_CATEGORY(*it, WhiteSpaceTokenType) || T_NEWLINE == id) {
                 if (!was_whitespace) {
                 // C++ standard 16.3.2.2 [cpp.stringize]
-                // Each occurrence of white space between the argument's 
-                // preprocessing tokens becomes a single space character in the 
+                // Each occurrence of white space between the argument's
+                // preprocessing tokens becomes a single space character in the
                 // character string literal.
                     result += " ";
                     was_whitespace = true;
@@ -124,10 +124,10 @@ namespace impl {
                 result += impl::escape_lit((*it).get_value());
                 was_whitespace = false;
             }
-            else 
+            else
 #if BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS != 0
-            if (T_PLACEMARKER != id) 
-#endif 
+            if (T_PLACEMARKER != id)
+#endif
             {
             // now append this token to the string
                 result += (*it).get_value();
@@ -138,8 +138,8 @@ namespace impl {
 
     // validate the resulting literal to contain no invalid universal character
     // value (throws if invalid chars found)
-        boost::wave::cpplexer::impl::validate_literal(result, pos.get_line(), 
-            pos.get_column(), pos.get_file()); 
+        boost::wave::cpplexer::impl::validate_literal(result, pos.get_line(),
+            pos.get_column(), pos.get_file());
         return result;
     }
 
@@ -147,30 +147,30 @@ namespace impl {
     // return the string representation of a token sequence
     template <typename ContainerT, typename PositionT>
     inline typename ContainerT::value_type::string_type
-    as_stringlit (std::vector<ContainerT> const &arguments, 
+    as_stringlit (std::vector<ContainerT> const &arguments,
         typename std::vector<ContainerT>::size_type i, PositionT const &pos)
     {
         using namespace boost::wave;
         typedef typename ContainerT::value_type::string_type string_type;
-        
+
         BOOST_ASSERT(i < arguments.size());
-        
+
         string_type result("\"");
         bool was_whitespace = false;
-        
+
         for (/**/; i < arguments.size(); ++i) {
         // stringize all remaining arguments
             typename ContainerT::const_iterator end = arguments[i].end();
-            for (typename ContainerT::const_iterator it = arguments[i].begin(); 
-                 it != end; ++it) 
+            for (typename ContainerT::const_iterator it = arguments[i].begin();
+                 it != end; ++it)
             {
                 token_id id = token_id(*it);
-                
+
                 if (IS_CATEGORY(*it, WhiteSpaceTokenType) || T_NEWLINE == id) {
                     if (!was_whitespace) {
                     // C++ standard 16.3.2.2 [cpp.stringize]
-                    // Each occurrence of white space between the argument's 
-                    // preprocessing tokens becomes a single space character in the 
+                    // Each occurrence of white space between the argument's
+                    // preprocessing tokens becomes a single space character in the
                     // character string literal.
                         result += " ";
                         was_whitespace = true;
@@ -187,7 +187,7 @@ namespace impl {
                     was_whitespace = false;
                 }
             }
-            
+
         // append comma, if not last argument
             if (i < arguments.size()-1) {
                 result += ",";
@@ -198,8 +198,8 @@ namespace impl {
 
     // validate the resulting literal to contain no invalid universal character
     // value (throws if invalid chars found)
-        boost::wave::cpplexer::impl::validate_literal(result, pos.get_line(), 
-            pos.get_column(), pos.get_file()); 
+        boost::wave::cpplexer::impl::validate_literal(result, pos.get_line(),
+            pos.get_column(), pos.get_file());
         return result;
     }
 #endif // BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS != 0
@@ -210,54 +210,96 @@ namespace impl {
     as_string(IteratorT it, IteratorT const& end)
     {
         StringT result;
-        for (/**/; it != end; ++it) 
+        for (/**/; it != end; ++it)
         {
             result += (*it).get_value();
         }
         return result;
     }
-    
+
     // return the string representation of a token sequence
     template <typename ContainerT>
     inline typename ContainerT::value_type::string_type
     as_string (ContainerT const &token_sequence)
     {
         typedef typename ContainerT::value_type::string_type string_type;
-        return as_string<string_type>(token_sequence.begin(), 
+        return as_string<string_type>(token_sequence.begin(),
             token_sequence.end());
     }
-    
+
 #if BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS != 0
     ///////////////////////////////////////////////////////////////////////////
     //
-    //  Copies all arguments beginning with the given index to the output 
+    //  Copies all arguments beginning with the given index to the output
     //  sequence. The arguments are separated by commas.
     //
     template <typename ContainerT, typename PositionT>
     void replace_ellipsis (std::vector<ContainerT> const &arguments,
-        typename ContainerT::size_type index, 
+        typename ContainerT::size_type index,
         ContainerT &expanded, PositionT const &pos)
     {
         using namespace cpplexer;
         typedef typename ContainerT::value_type token_type;
-        
+
         token_type comma(T_COMMA, ",", pos);
         for (/**/; index < arguments.size(); ++index) {
         ContainerT const &arg = arguments[index];
-        
-            std::copy(arg.begin(), arg.end(), 
+
+            std::copy(arg.begin(), arg.end(),
                 std::inserter(expanded, expanded.end()));
-                
-            if (index < arguments.size()-1) 
+
+            if (index < arguments.size()-1)
                 expanded.push_back(comma);
         }
     }
+
+#if BOOST_WAVE_SUPPORT_VA_OPT != 0
+    ///////////////////////////////////////////////////////////////////////////
+    //
+    //  Finds the token range inside __VA_OPT__.
+    //  Updates mdit to the position of the final rparen.
+    //  If the parenthesis do not match up, or there are none, returns false
+    //  and leaves mdit unchanged.
+    //
+    template <typename MDefIterT>
+    bool find_va_opt_args (
+        MDefIterT & mdit,                     // VA_OPT
+        MDefIterT   mdend)
+    {
+        if ((std::distance(mdit, mdend) < 3) ||
+            (T_LEFTPAREN != next_token<MDefIterT>::peek(mdit, mdend))) {
+            return false;
+        }
+
+        MDefIterT mdstart_it = mdit;
+        ++mdit;   // skip to lparen
+        std::size_t scope = 0;
+        // search for final rparen, leaving iterator there
+        for (; (mdit != mdend) && !((scope == 1) && (T_RIGHTPAREN == token_id(*mdit)));
+             ++mdit) {
+            // count balanced parens
+            if (T_RIGHTPAREN == token_id(*mdit)) {
+                scope--;
+            } else if (T_LEFTPAREN == token_id(*mdit)) {
+                scope++;
+            }
+        }
+        if ((mdit == mdend) && ((scope != 1) || (T_RIGHTPAREN != token_id(*mdit)))) {
+            // arrived at end without matching rparen
+            mdit = mdstart_it;
+            return false;
+        }
+
+        return true;
+    }
+
+#endif
 #endif
 
     // Skip all whitespace characters and queue the skipped characters into the
     // given container
     template <typename IteratorT>
-    inline boost::wave::token_id 
+    inline boost::wave::token_id
     skip_whitespace(IteratorT &first, IteratorT const &last)
     {
         token_id id = util::impl::next_token<IteratorT>::peek(first, last, false);
@@ -270,22 +312,36 @@ namespace impl {
         ++first;
         return id;
     }
-    
+
     template <typename IteratorT, typename ContainerT>
-    inline boost::wave::token_id 
+    inline boost::wave::token_id
     skip_whitespace(IteratorT &first, IteratorT const &last, ContainerT &queue)
     {
         queue.push_back (*first);       // queue up the current token
-        
+
         token_id id = util::impl::next_token<IteratorT>::peek(first, last, false);
         if (IS_CATEGORY(id, WhiteSpaceTokenType)) {
             do {
-                queue.push_back(*++first);  // queue up the next whitespace 
+                queue.push_back(*++first);  // queue up the next whitespace
                 id = util::impl::next_token<IteratorT>::peek(first, last, false);
             } while (IS_CATEGORY(id, WhiteSpaceTokenType));
         }
         ++first;
         return id;
+    }
+
+    // trim all whitespace from the beginning and the end of the given string
+    template <typename StringT>
+    inline StringT
+    trim_whitespace(StringT const &s)
+    {
+        typedef typename StringT::size_type size_type;
+
+        size_type first = s.find_first_not_of(" \t\v\f");
+        if (StringT::npos == first)
+            return StringT();
+        size_type last = s.find_last_not_of(" \t\v\f");
+        return s.substr(first, last-first+1);
     }
 
 }   // namespace impl
@@ -300,4 +356,4 @@ namespace impl {
 #include BOOST_ABI_SUFFIX
 #endif
 
-#endif // !defined(MACRO_HELPERS_HPP_931BBC99_EBFA_4692_8FBE_B555998C2C39_INCLUDED)
+#endif // !defined(BOOST_MACRO_HELPERS_HPP_931BBC99_EBFA_4692_8FBE_B555998C2C39_INCLUDED)

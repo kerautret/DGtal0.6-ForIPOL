@@ -8,5 +8,5 @@
 =============================================================================*/
 #ifndef BOOST_SPIRIT_INCLUDE_PHOENIX_ALGORITHM
 #define BOOST_SPIRIT_INCLUDE_PHOENIX_ALGORITHM
-#include <boost/spirit/home/phoenix/algorithm.hpp>
+#include <boost/phoenix/stl/algorithm.hpp>
 #endif

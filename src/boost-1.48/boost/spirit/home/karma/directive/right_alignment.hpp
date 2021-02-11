@@ -26,7 +26,6 @@
 #include <boost/spirit/home/support/unused.hpp>
 #include <boost/fusion/include/at.hpp>
 #include <boost/fusion/include/vector.hpp>
-#include <boost/lexical_cast.hpp>
 #include <boost/integer_traits.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/utility/enable_if.hpp>
@@ -51,7 +50,7 @@ namespace boost { namespace spirit
           , terminal_ex<tag::right_align, fusion::vector1<T> > >
       : mpl::true_ {};
 
-    // enables *lazy* delimit(d)[g], where d provides a generator
+    // enables *lazy* right_align(d)[g], where d provides a generator
     template <>
     struct use_lazy_directive<karma::domain, tag::right_align, 1> 
       : mpl::true_ {};
@@ -63,8 +62,8 @@ namespace boost { namespace spirit
           , terminal_ex<tag::right_align, fusion::vector2<Width, Padding> > >
       : spirit::traits::matches<karma::domain, Padding> {};
 
-    // enables *lazy* delimit(w, d)[g], where d provides a generator and w is 
-    // a maximum width
+    // enables *lazy* right_align(w, d)[g], where d provides a generator and w 
+    // is a maximum width
     template <>
     struct use_lazy_directive<karma::domain, tag::right_align, 2> 
       : mpl::true_ {};
@@ -74,7 +73,9 @@ namespace boost { namespace spirit
 ///////////////////////////////////////////////////////////////////////////////
 namespace boost { namespace spirit { namespace karma
 {
+#ifndef BOOST_SPIRIT_NO_PREDEFINED_TERMINALS
     using spirit::right_align;
+#endif
     using spirit::right_align_type;
 
     namespace detail

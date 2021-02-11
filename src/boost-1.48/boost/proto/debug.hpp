@@ -11,18 +11,18 @@
 
 #include <iostream>
 #include <boost/preprocessor/stringize.hpp>
-#include <boost/ref.hpp>
+#include <boost/core/ref.hpp>
+#include <boost/core/typeinfo.hpp>
 #include <boost/mpl/assert.hpp>
 #include <boost/proto/proto_fwd.hpp>
 #include <boost/proto/traits.hpp>
 #include <boost/proto/matches.hpp>
 #include <boost/proto/fusion.hpp>
 #include <boost/fusion/algorithm/iteration/for_each.hpp>
-#include <boost/detail/sp_typeinfo.hpp>
 
 namespace boost { namespace proto
 {
-    namespace tag
+    namespace tagns_ { namespace tag
     {
     #define BOOST_PROTO_DEFINE_TAG_INSERTION(Tag)                               \
         /** \brief INTERNAL ONLY */                                             \
@@ -80,7 +80,7 @@ namespace boost { namespace proto
         BOOST_PROTO_DEFINE_TAG_INSERTION(function)
 
     #undef BOOST_PROTO_DEFINE_TAG_INSERTION
-    }
+    }}
 
     namespace hidden_detail_
     {
@@ -91,13 +91,15 @@ namespace boost { namespace proto
             {}
 
             std::ostream &sout_;
+
+            BOOST_DELETED_FUNCTION(ostream_wrapper &operator =(ostream_wrapper const &))
         };
 
         struct named_any
         {
             template<typename T>
             named_any(T const &)
-              : name_(BOOST_SP_TYPEID(T).name())
+              : name_(BOOST_CORE_TYPEID(T).name())
             {}
 
             char const *name_;
@@ -111,6 +113,23 @@ namespace boost { namespace proto
 
     namespace detail
     {
+        // copyable functor to pass by value to fusion::foreach
+        struct display_expr_impl;
+        struct display_expr_impl_functor
+        {
+            display_expr_impl_functor(display_expr_impl const& impl): impl_(impl)
+            {}
+
+            template<typename Expr>
+            void operator()(Expr const &expr) const
+            {
+                this->impl_(expr);
+            }
+
+        private:
+            display_expr_impl const& impl_;
+        };
+
         struct display_expr_impl
         {
             explicit display_expr_impl(std::ostream &sout, int depth = 0)
@@ -125,9 +144,9 @@ namespace boost { namespace proto
                 this->impl(expr, mpl::long_<arity_of<Expr>::value>());
             }
 
+            BOOST_DELETED_FUNCTION(display_expr_impl(display_expr_impl const &))
+            BOOST_DELETED_FUNCTION(display_expr_impl &operator =(display_expr_impl const &))
         private:
-            display_expr_impl(display_expr_impl const &);
-            display_expr_impl &operator =(display_expr_impl const &);
 
             template<typename Expr>
             void impl(Expr const &expr, mpl::long_<0>) const
@@ -149,7 +168,7 @@ namespace boost { namespace proto
                 this->sout_ << (this->first_? "" : ", ");
                 this->sout_ << tag() << "(\n";
                 display_expr_impl display(this->sout_, this->depth_ + 4);
-                fusion::for_each(expr, display);
+                fusion::for_each(expr, display_expr_impl_functor(display));
                 this->sout_.width(this->depth_);
                 this->sout_ << "" << ")\n";
                 this->first_ = false;

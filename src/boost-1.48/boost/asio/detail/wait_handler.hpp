@@ -2,7 +2,7 @@
 // detail/wait_handler.hpp
 // ~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2011 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2020 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -16,10 +16,12 @@
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
+#include <boost/asio/detail/bind_handler.hpp>
 #include <boost/asio/detail/fenced_block.hpp>
 #include <boost/asio/detail/handler_alloc_helpers.hpp>
-#include <boost/asio/detail/handler_invoke_helpers.hpp>
-#include <boost/asio/detail/timer_op.hpp>
+#include <boost/asio/detail/handler_work.hpp>
+#include <boost/asio/detail/memory.hpp>
+#include <boost/asio/detail/wait_op.hpp>
 
 #include <boost/asio/detail/push_options.hpp>
 
@@ -27,24 +29,33 @@ namespace boost {
 namespace asio {
 namespace detail {
 
-template <typename Handler>
-class wait_handler : public timer_op
+template <typename Handler, typename IoExecutor>
+class wait_handler : public wait_op
 {
 public:
   BOOST_ASIO_DEFINE_HANDLER_PTR(wait_handler);
 
-  wait_handler(Handler h)
-    : timer_op(&wait_handler::do_complete),
-      handler_(h)
+  wait_handler(Handler& h, const IoExecutor& io_ex)
+    : wait_op(&wait_handler::do_complete),
+      handler_(BOOST_ASIO_MOVE_CAST(Handler)(h)),
+      work_(handler_, io_ex)
   {
   }
 
-  static void do_complete(io_service_impl* owner, operation* base,
-      boost::system::error_code /*ec*/, std::size_t /*bytes_transferred*/)
+  static void do_complete(void* owner, operation* base,
+      const boost::system::error_code& /*ec*/,
+      std::size_t /*bytes_transferred*/)
   {
     // Take ownership of the handler object.
     wait_handler* h(static_cast<wait_handler*>(base));
-    ptr p = { boost::addressof(h->handler_), h, h };
+    ptr p = { boost::asio::detail::addressof(h->handler_), h, h };
+
+    BOOST_ASIO_HANDLER_COMPLETION((*h));
+
+    // Take ownership of the operation's outstanding work.
+    handler_work<Handler, IoExecutor> w(
+        BOOST_ASIO_MOVE_CAST2(handler_work<Handler, IoExecutor>)(
+          h->work_));
 
     // Make a copy of the handler so that the memory can be deallocated before
     // the upcall is made. Even if we're not about to make an upcall, a
@@ -54,19 +65,22 @@ public:
     // deallocated the memory here.
     detail::binder1<Handler, boost::system::error_code>
       handler(h->handler_, h->ec_);
-    p.h = boost::addressof(handler.handler_);
+    p.h = boost::asio::detail::addressof(handler.handler_);
     p.reset();
 
     // Make the upcall if required.
     if (owner)
     {
-      boost::asio::detail::fenced_block b;
-      boost_asio_handler_invoke_helpers::invoke(handler, handler.handler_);
+      fenced_block b(fenced_block::half);
+      BOOST_ASIO_HANDLER_INVOCATION_BEGIN((handler.arg1_));
+      w.complete(handler, handler.handler_);
+      BOOST_ASIO_HANDLER_INVOCATION_END;
     }
   }
 
 private:
   Handler handler_;
+  handler_work<Handler, IoExecutor> work_;
 };
 
 } // namespace detail

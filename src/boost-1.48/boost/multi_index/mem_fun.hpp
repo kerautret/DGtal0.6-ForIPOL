@@ -1,4 +1,4 @@
-/* Copyright 2003-2008 Joaquin M Lopez Munoz.
+/* Copyright 2003-2019 Joaquin M Lopez Munoz.
  * Distributed under the Boost Software License, Version 1.0.
  * (See accompanying file LICENSE_1_0.txt or copy at
  * http://www.boost.org/LICENSE_1_0.txt)
@@ -9,7 +9,7 @@
 #ifndef BOOST_MULTI_INDEX_MEM_FUN_HPP
 #define BOOST_MULTI_INDEX_MEM_FUN_HPP
 
-#if defined(_MSC_VER)&&(_MSC_VER>=1200)
+#if defined(_MSC_VER)
 #pragma once
 #endif
 
@@ -30,17 +30,30 @@ namespace multi_index{
 
 /* mem_fun implements a read-only key extractor based on a given non-const
  * member function of a class.
- * const_mem_fun does the same for const member functions.
- * Additionally, mem_fun  and const_mem_fun are overloaded to support
- * referece_wrappers of T and "chained pointers" to T's. By chained pointer
- * to T we  mean a type P such that, given a p of Type P
+ * Also, the following variations are provided:
+ *   const_mem_fun:    const member functions
+ *   volatile_mem_fun: volatile member functions
+ *   cv_mem_fun:       const volatile member functions
+ *   ref_mem_fun:      ref-qualifed member functions (C++11)
+ *   cref_mem_fun:     const ref-qualifed member functions (C++11)
+ *   vref_mem_fun:     volatile ref-qualifed member functions (C++11)
+ *   cvref_mem_fun:    const volatile ref-qualifed member functions (C++11)
+ *
+ * All of these classes are overloaded to support boost::referece_wrappers
+ * of T and "chained pointers" to T's. By chained pointer to T we mean a type
+ * P such that, given a p of Type P
  *   *...n...*x is convertible to T&, for some n>=1.
  * Examples of chained pointers are raw and smart pointers, iterators and
- * arbitrary combinations of these (vg. T** or auto_ptr<T*>.)
+ * arbitrary combinations of these (vg. T** or unique_ptr<T*>.)
  */
 
-template<class Class,typename Type,Type (Class::*PtrToMemberFunction)()const>
-struct const_mem_fun
+namespace detail{
+
+template<
+  class Class,typename Type,
+  typename PtrToMemberFunctionType,PtrToMemberFunctionType PtrToMemberFunction
+>
+struct const_mem_fun_impl
 {
   typedef typename remove_reference<Type>::type result_type;
 
@@ -74,8 +87,11 @@ struct const_mem_fun
   }
 };
 
-template<class Class,typename Type,Type (Class::*PtrToMemberFunction)()>
-struct mem_fun
+template<
+  class Class,typename Type,
+  typename PtrToMemberFunctionType,PtrToMemberFunctionType PtrToMemberFunction
+>
+struct mem_fun_impl
 {
   typedef typename remove_reference<Type>::type result_type;
 
@@ -104,6 +120,62 @@ struct mem_fun
   }
 };
 
+} /* namespace multi_index::detail */
+
+template<class Class,typename Type,Type (Class::*PtrToMemberFunction)()const>
+struct const_mem_fun:detail::const_mem_fun_impl<
+  Class,Type,Type (Class::*)()const,PtrToMemberFunction
+>{};
+
+template<
+  class Class,typename Type,
+  Type (Class::*PtrToMemberFunction)()const volatile
+>
+struct cv_mem_fun:detail::const_mem_fun_impl<
+  Class,Type,Type (Class::*)()const volatile,PtrToMemberFunction
+>{};
+
+template<class Class,typename Type,Type (Class::*PtrToMemberFunction)()>
+struct mem_fun:
+  detail::mem_fun_impl<Class,Type,Type (Class::*)(),PtrToMemberFunction>{};
+
+template<
+  class Class,typename Type,Type (Class::*PtrToMemberFunction)()volatile
+>
+struct volatile_mem_fun:detail::mem_fun_impl<
+  Class,Type,Type (Class::*)()volatile,PtrToMemberFunction
+>{};
+
+#if !defined(BOOST_NO_CXX11_REF_QUALIFIERS)
+
+template<
+  class Class,typename Type,Type (Class::*PtrToMemberFunction)()const&
+>
+struct cref_mem_fun:detail::const_mem_fun_impl<
+  Class,Type,Type (Class::*)()const&,PtrToMemberFunction
+>{};
+
+template<
+  class Class,typename Type,
+  Type (Class::*PtrToMemberFunction)()const volatile&
+>
+struct cvref_mem_fun:detail::const_mem_fun_impl<
+  Class,Type,Type (Class::*)()const volatile&,PtrToMemberFunction
+>{};
+
+template<class Class,typename Type,Type (Class::*PtrToMemberFunction)()&>
+struct ref_mem_fun:
+  detail::mem_fun_impl<Class,Type,Type (Class::*)()&,PtrToMemberFunction>{};
+
+template<
+  class Class,typename Type,Type (Class::*PtrToMemberFunction)()volatile&
+>
+struct vref_mem_fun:detail::mem_fun_impl<
+  Class,Type,Type (Class::*)()volatile&,PtrToMemberFunction
+>{};
+
+#endif
+
 /* MSVC++ 6.0 has problems with const member functions as non-type template
  * parameters, somehow it takes them as non-const. const_mem_fun_explicit
  * workarounds this deficiency by accepting an extra type parameter that
@@ -112,11 +184,15 @@ struct mem_fun
  *   news:microsoft.public.vc.language, 21st nov 2002, 
  *   http://groups.google.com/groups?
  *     hl=en&lr=&ie=UTF-8&selm=ukwvg3O0BHA.1512%40tkmsftngp05
+ *
+ * MSVC++ 6.0 support has been dropped and [const_]mem_fun_explicit is
+ * deprecated.
  */
 
 template<
   class Class,typename Type,
-  typename PtrToMemberFunctionType,PtrToMemberFunctionType PtrToMemberFunction>
+  typename PtrToMemberFunctionType,PtrToMemberFunctionType PtrToMemberFunction
+>
 struct const_mem_fun_explicit
 {
   typedef typename remove_reference<Type>::type result_type;
@@ -153,7 +229,8 @@ struct const_mem_fun_explicit
 
 template<
   class Class,typename Type,
-  typename PtrToMemberFunctionType,PtrToMemberFunctionType PtrToMemberFunction>
+  typename PtrToMemberFunctionType,PtrToMemberFunctionType PtrToMemberFunction
+>
 struct mem_fun_explicit
 {
   typedef typename remove_reference<Type>::type result_type;
@@ -183,27 +260,17 @@ struct mem_fun_explicit
   }
 };
 
-/* BOOST_MULTI_INDEX_CONST_MEM_FUN and BOOST_MULTI_INDEX_MEM_FUN resolve to
- * [const_]mem_fun_explicit for MSVC++ 6.0 and to [const_]mem_fun otherwise.
+/* BOOST_MULTI_INDEX_CONST_MEM_FUN and BOOST_MULTI_INDEX_MEM_FUN used to
+ * resolve to [const_]mem_fun_explicit for MSVC++ 6.0 and to
+ * [const_]mem_fun otherwise. Support for this compiler having been dropped,
+ * they are now just wrappers over [const_]mem_fun kept for backwards-
+ * compatibility reasons.
  */
-
-#if defined(BOOST_MSVC)&&(BOOST_MSVC<1300)
-
-#define BOOST_MULTI_INDEX_CONST_MEM_FUN(Class,Type,MemberFunName) \
-::boost::multi_index::const_mem_fun_explicit<\
-  Class,Type,Type (Class::*)()const,&Class::MemberFunName >
-#define BOOST_MULTI_INDEX_MEM_FUN(Class,Type,MemberFunName) \
-::boost::multi_index::mem_fun_explicit<\
-  Class,Type,Type (Class::*)(),&Class::MemberFunName >
-
-#else
 
 #define BOOST_MULTI_INDEX_CONST_MEM_FUN(Class,Type,MemberFunName) \
 ::boost::multi_index::const_mem_fun< Class,Type,&Class::MemberFunName >
 #define BOOST_MULTI_INDEX_MEM_FUN(Class,Type,MemberFunName) \
 ::boost::multi_index::mem_fun< Class,Type,&Class::MemberFunName >
-
-#endif
 
 } /* namespace multi_index */
 

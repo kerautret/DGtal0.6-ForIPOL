@@ -12,7 +12,6 @@
 #pragma once
 #endif
 
-#include <boost/proto/proto.hpp>
 #include <boost/mpl/eval_if.hpp>
 #include <boost/fusion/include/cons.hpp>
 #include <boost/type_traits/remove_const.hpp>
@@ -41,11 +40,10 @@ namespace boost { namespace spirit { namespace detail
 
     namespace result_of
     {
-        template <typename Car, typename Cdr = fusion::nil>
+        template <typename Car, typename Cdr = fusion::nil_>
         struct make_cons
         {
-            typedef typename as_meta_element<Car>::type car_type;
-            typedef typename fusion::cons<car_type, Cdr> type;
+            typedef typename as_meta_element<Car>::type car_type;            typedef typename fusion::cons<car_type, Cdr> type;
         };
     }
 

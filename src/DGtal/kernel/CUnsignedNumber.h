@@ -83,7 +83,7 @@ Name | Expression |  Type requirements | Return type| Precondition | Semantics |
  ### Invariants###
     
  ### Models###
-     unsigned short, unsigned int, unsigned long long, uint16_t, uint32_t, uint64_t.
+     unsigned short, unsigned int,  unsigned long,  unsigned long long, uint16_t, uint32_t, uint64_t.
     
  ### Notes###
 

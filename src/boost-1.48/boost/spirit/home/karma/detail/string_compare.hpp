@@ -10,10 +10,8 @@
 #pragma once
 #endif
 
-#include <string>
 #include <boost/spirit/home/support/char_class.hpp>
 #include <boost/spirit/home/karma/detail/generate_to.hpp>
-#include <boost/range/iterator_range.hpp>
 
 namespace boost { namespace spirit { namespace karma { namespace detail
 {
@@ -48,7 +46,7 @@ namespace boost { namespace spirit { namespace karma { namespace detail
     }
 
     template <typename Char, typename CharEncoding, typename Tag>
-    bool string_compare(Char const* attr, Char const* lit, CharEncoding ce, Tag tag)
+    bool string_compare(Char const* attr, Char const* lit, CharEncoding, Tag)
     {
         Char ch_attr = *attr;
         Char ch_lit = spirit::char_class::convert<CharEncoding>::to(Tag(), *lit);

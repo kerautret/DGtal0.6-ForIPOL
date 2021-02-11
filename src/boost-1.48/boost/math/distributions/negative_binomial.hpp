@@ -19,7 +19,7 @@
 // In a sequence of Bernoulli trials or events
 // (independent, yes or no, succeed or fail) with success_fraction probability p,
 // negative_binomial is the probability that k or fewer failures
-// preceed the r th trial's success.
+// precede the r th trial's success.
 // random variable k is the number of failures (NOT the probability).
 
 // Negative_binomial distribution is a discrete probability distribution.
@@ -27,7 +27,7 @@
 // (like others including the binomial, Poisson & Bernoulli)
 // is strictly defined as a discrete function: only integral values of k are envisaged.
 // However because of the method of calculation using a continuous gamma function,
-// it is convenient to treat it as if a continous function,
+// it is convenient to treat it as if a continuous function,
 // and permit non-integral values of k.
 
 // However, by default the policy is to use discrete_quantile_policy.
@@ -124,7 +124,7 @@ namespace boost
       template <class RealType, class Policy>
       inline bool check_dist_and_prob(const char* function, const RealType& r, RealType p, RealType prob, RealType* result, const Policy& pol)
       {
-        if(check_dist(function, r, p, result, pol) && detail::check_probability(function, prob, result, pol) == false)
+        if((check_dist(function, r, p, result, pol) && detail::check_probability(function, prob, result, pol)) == false)
         {
           return false;
         }
@@ -165,7 +165,7 @@ namespace boost
         RealType alpha) // alpha 0.05 equivalent to 95% for one-sided test.
       {
         static const char* function = "boost::math::negative_binomial<%1%>::find_lower_bound_on_p";
-        RealType result;  // of error checks.
+        RealType result = 0;  // of error checks.
         RealType failures = trials - successes;
         if(false == detail::check_probability(function, alpha, &result, Policy())
           && negative_binomial_detail::check_dist_and_k(
@@ -190,7 +190,7 @@ namespace boost
         RealType alpha) // alpha 0.05 equivalent to 95% for one-sided test.
       {
         static const char* function = "boost::math::negative_binomial<%1%>::find_upper_bound_on_p";
-        RealType result;  // of error checks.
+        RealType result = 0;  // of error checks.
         RealType failures = trials - successes;
         if(false == negative_binomial_detail::check_dist_and_k(
           function, successes, RealType(0), failures, &result, Policy())
@@ -222,7 +222,7 @@ namespace boost
       {
         static const char* function = "boost::math::negative_binomial<%1%>::find_minimum_number_of_trials";
         // Error checks:
-        RealType result;
+        RealType result = 0;
         if(false == negative_binomial_detail::check_dist_and_k(
           function, RealType(1), p, k, &result, Policy())
           && detail::check_probability(function, alpha, &result, Policy()))
@@ -239,7 +239,7 @@ namespace boost
       {
         static const char* function = "boost::math::negative_binomial<%1%>::find_maximum_number_of_trials";
         // Error checks:
-        RealType result;
+        RealType result = 0;
         if(false == negative_binomial_detail::check_dist_and_k(
           function, RealType(1), p, k, &result, Policy())
           &&  detail::check_probability(function, alpha, &result, Policy()))
@@ -343,7 +343,7 @@ namespace boost
 
       RealType r = dist.successes();
       RealType p = dist.success_fraction();
-      RealType result;
+      RealType result = 0;
       if(false == negative_binomial_detail::check_dist_and_k(
         function,
         r,
@@ -370,7 +370,7 @@ namespace boost
       RealType p = dist.success_fraction();
       RealType r = dist.successes();
       // Error check:
-      RealType result;
+      RealType result = 0;
       if(false == negative_binomial_detail::check_dist_and_k(
         function,
         r,
@@ -399,7 +399,7 @@ namespace boost
       RealType p = dist.success_fraction();
       RealType r = dist.successes();
       // Error check:
-      RealType result;
+      RealType result = 0;
       if(false == negative_binomial_detail::check_dist_and_k(
         function,
         r,
@@ -435,7 +435,7 @@ namespace boost
       RealType p = dist.success_fraction();
       RealType r = dist.successes();
       // Check dist and P.
-      RealType result;
+      RealType result = 0;
       if(false == negative_binomial_detail::check_dist_and_prob
         (function, r, p, P, &result, Policy()))
       {
@@ -459,6 +459,15 @@ namespace boost
       if (P <= pow(dist.success_fraction(), dist.successes()))
       { // p <= pdf(dist, 0) == cdf(dist, 0)
         return 0;
+      }
+      if(p == 0)
+      {  // Would need +infinity failures for total confidence.
+         result = policies::raise_overflow_error<RealType>(
+            function,
+            "Success fraction is 0, which implies infinite failures !", Policy());
+         return result;
+         // usually means return +std::numeric_limits<RealType>::infinity();
+         // unless #define BOOST_MATH_THROW_ON_OVERFLOW_ERROR
       }
       /*
       // Calculate quantile of negative_binomial using the inverse incomplete beta function.
@@ -488,7 +497,7 @@ namespace boost
       return detail::inverse_discrete_quantile(
          dist,
          P,
-         1-P,
+         false,
          guess,
          factor,
          RealType(1),
@@ -509,7 +518,7 @@ namespace boost
        const negative_binomial_distribution<RealType, Policy>& dist = c.dist;
        RealType p = dist.success_fraction();
        RealType r = dist.successes();
-       RealType result;
+       RealType result = 0;
        if(false == negative_binomial_detail::check_dist_and_prob(
           function,
           r,
@@ -527,16 +536,26 @@ namespace boost
           // since the probability of zero failures may be non-zero,
           return 0; // but zero is the best we can do:
        }
-       if (-Q <= boost::math::powm1(dist.success_fraction(), dist.successes(), Policy()))
-       {  // q <= cdf(complement(dist, 0)) == pdf(dist, 0)
-          return 0; //
-       }
        if(Q == 0)
        {  // Probability 1 - Q  == 1 so infinite failures to achieve certainty.
           // Would need +infinity failures for total confidence.
           result = policies::raise_overflow_error<RealType>(
              function,
              "Probability argument complement is 0, which implies infinite failures !", Policy());
+          return result;
+          // usually means return +std::numeric_limits<RealType>::infinity();
+          // unless #define BOOST_MATH_THROW_ON_OVERFLOW_ERROR
+       }
+       if (-Q <= boost::math::powm1(dist.success_fraction(), dist.successes(), Policy()))
+       {  // q <= cdf(complement(dist, 0)) == pdf(dist, 0)
+          return 0; //
+       }
+       if(p == 0)
+       {  // Success fraction is 0 so infinite failures to achieve certainty.
+          // Would need +infinity failures for total confidence.
+          result = policies::raise_overflow_error<RealType>(
+             function,
+             "Success fraction is 0, which implies infinite failures !", Policy());
           return result;
           // usually means return +std::numeric_limits<RealType>::infinity();
           // unless #define BOOST_MATH_THROW_ON_OVERFLOW_ERROR
@@ -564,8 +583,8 @@ namespace boost
        typedef typename Policy::discrete_quantile_type discrete_type;
        return detail::inverse_discrete_quantile(
           dist,
-          1-Q,
           Q,
+          true,
           guess,
           factor,
           RealType(1),

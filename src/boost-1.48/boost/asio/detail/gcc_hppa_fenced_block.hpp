@@ -2,7 +2,7 @@
 // detail/gcc_hppa_fenced_block.hpp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2011 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2020 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -19,6 +19,8 @@
 
 #if defined(__GNUC__) && (defined(__hppa) || defined(__hppa__))
 
+#include <boost/asio/detail/noncopyable.hpp>
+
 #include <boost/asio/detail/push_options.hpp>
 
 namespace boost {
@@ -29,8 +31,16 @@ class gcc_hppa_fenced_block
   : private noncopyable
 {
 public:
-  // Constructor.
-  gcc_hppa_fenced_block()
+  enum half_t { half };
+  enum full_t { full };
+
+  // Constructor for a half fenced block.
+  explicit gcc_hppa_fenced_block(half_t)
+  {
+  }
+
+  // Constructor for a full fenced block.
+  explicit gcc_hppa_fenced_block(full_t)
   {
     barrier();
   }

@@ -2,7 +2,7 @@
 // detail/impl/win_iocp_handle_service.ipp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2011 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2020 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 // Copyright (c) 2008 Rep Invariant Systems, Inc. (info@repinvariant.com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -40,13 +40,14 @@ public:
     OffsetHigh = 0;
 
     // Create a non-signalled manual-reset event, for GetOverlappedResult.
-    hEvent = ::CreateEvent(0, TRUE, FALSE, 0);
+    hEvent = ::CreateEventW(0, TRUE, FALSE, 0);
     if (hEvent)
     {
       // As documented in GetQueuedCompletionStatus, setting the low order
       // bit of this event prevents our synchronous writes from being treated
       // as completion port events.
-      *reinterpret_cast<DWORD_PTR*>(&hEvent) |= 1;
+      DWORD_PTR tmp = reinterpret_cast<DWORD_PTR>(hEvent);
+      hEvent = reinterpret_cast<HANDLE>(tmp | 1);
     }
     else
     {
@@ -65,15 +66,15 @@ public:
   }
 };
 
-win_iocp_handle_service::win_iocp_handle_service(
-    boost::asio::io_service& io_service)
-  : iocp_service_(boost::asio::use_service<win_iocp_io_service>(io_service)),
+win_iocp_handle_service::win_iocp_handle_service(execution_context& context)
+  : execution_context_service_base<win_iocp_handle_service>(context),
+    iocp_service_(boost::asio::use_service<win_iocp_io_context>(context)),
     mutex_(),
     impl_list_(0)
 {
 }
 
-void win_iocp_handle_service::shutdown_service()
+void win_iocp_handle_service::shutdown()
 {
   // Close all implementations, causing all operations to complete.
   boost::asio::detail::mutex::scoped_lock lock(mutex_);
@@ -100,6 +101,64 @@ void win_iocp_handle_service::construct(
   impl_list_ = &impl;
 }
 
+void win_iocp_handle_service::move_construct(
+    win_iocp_handle_service::implementation_type& impl,
+    win_iocp_handle_service::implementation_type& other_impl)
+{
+  impl.handle_ = other_impl.handle_;
+  other_impl.handle_ = INVALID_HANDLE_VALUE;
+
+  impl.safe_cancellation_thread_id_ = other_impl.safe_cancellation_thread_id_;
+  other_impl.safe_cancellation_thread_id_ = 0;
+
+  // Insert implementation into linked list of all implementations.
+  boost::asio::detail::mutex::scoped_lock lock(mutex_);
+  impl.next_ = impl_list_;
+  impl.prev_ = 0;
+  if (impl_list_)
+    impl_list_->prev_ = &impl;
+  impl_list_ = &impl;
+}
+
+void win_iocp_handle_service::move_assign(
+    win_iocp_handle_service::implementation_type& impl,
+    win_iocp_handle_service& other_service,
+    win_iocp_handle_service::implementation_type& other_impl)
+{
+  close_for_destruction(impl);
+
+  if (this != &other_service)
+  {
+    // Remove implementation from linked list of all implementations.
+    boost::asio::detail::mutex::scoped_lock lock(mutex_);
+    if (impl_list_ == &impl)
+      impl_list_ = impl.next_;
+    if (impl.prev_)
+      impl.prev_->next_ = impl.next_;
+    if (impl.next_)
+      impl.next_->prev_= impl.prev_;
+    impl.next_ = 0;
+    impl.prev_ = 0;
+  }
+
+  impl.handle_ = other_impl.handle_;
+  other_impl.handle_ = INVALID_HANDLE_VALUE;
+
+  impl.safe_cancellation_thread_id_ = other_impl.safe_cancellation_thread_id_;
+  other_impl.safe_cancellation_thread_id_ = 0;
+
+  if (this != &other_service)
+  {
+    // Insert implementation into linked list of all implementations.
+    boost::asio::detail::mutex::scoped_lock lock(other_service.mutex_);
+    impl.next_ = other_service.impl_list_;
+    impl.prev_ = 0;
+    if (other_service.impl_list_)
+      other_service.impl_list_->prev_ = &impl;
+    other_service.impl_list_ = &impl;
+  }
+}
+
 void win_iocp_handle_service::destroy(
     win_iocp_handle_service::implementation_type& impl)
 {
@@ -119,7 +178,7 @@ void win_iocp_handle_service::destroy(
 
 boost::system::error_code win_iocp_handle_service::assign(
     win_iocp_handle_service::implementation_type& impl,
-    const native_type& native_handle, boost::system::error_code& ec)
+    const native_handle_type& handle, boost::system::error_code& ec)
 {
   if (is_open(impl))
   {
@@ -127,10 +186,10 @@ boost::system::error_code win_iocp_handle_service::assign(
     return ec;
   }
 
-  if (iocp_service_.register_handle(native_handle, ec))
+  if (iocp_service_.register_handle(handle, ec))
     return ec;
 
-  impl.handle_ = native_handle;
+  impl.handle_ = handle;
   ec = boost::system::error_code();
   return ec;
 }
@@ -141,19 +200,28 @@ boost::system::error_code win_iocp_handle_service::close(
 {
   if (is_open(impl))
   {
+    BOOST_ASIO_HANDLER_OPERATION((iocp_service_.context(), "handle",
+          &impl, reinterpret_cast<uintmax_t>(impl.handle_), "close"));
+
     if (!::CloseHandle(impl.handle_))
     {
       DWORD last_error = ::GetLastError();
       ec = boost::system::error_code(last_error,
           boost::asio::error::get_system_category());
-      return ec;
+    }
+    else
+    {
+      ec = boost::system::error_code();
     }
 
     impl.handle_ = INVALID_HANDLE_VALUE;
     impl.safe_cancellation_thread_id_ = 0;
   }
+  else
+  {
+    ec = boost::system::error_code();
+  }
 
-  ec = boost::system::error_code();
   return ec;
 }
 
@@ -164,13 +232,19 @@ boost::system::error_code win_iocp_handle_service::cancel(
   if (!is_open(impl))
   {
     ec = boost::asio::error::bad_descriptor;
+    return ec;
   }
-  else if (FARPROC cancel_io_ex_ptr = ::GetProcAddress(
+
+  BOOST_ASIO_HANDLER_OPERATION((iocp_service_.context(), "handle",
+        &impl, reinterpret_cast<uintmax_t>(impl.handle_), "cancel"));
+
+  if (FARPROC cancel_io_ex_ptr = ::GetProcAddress(
         ::GetModuleHandleA("KERNEL32"), "CancelIoEx"))
   {
     // The version of Windows supports cancellation from any thread.
     typedef BOOL (WINAPI* cancel_io_ex_t)(HANDLE, LPOVERLAPPED);
-    cancel_io_ex_t cancel_io_ex = (cancel_io_ex_t)cancel_io_ex_ptr;
+    cancel_io_ex_t cancel_io_ex = reinterpret_cast<cancel_io_ex_t>(
+        reinterpret_cast<void*>(cancel_io_ex_ptr));
     if (!cancel_io_ex(impl.handle_, 0))
     {
       DWORD last_error = ::GetLastError();
@@ -223,7 +297,7 @@ boost::system::error_code win_iocp_handle_service::cancel(
 }
 
 size_t win_iocp_handle_service::do_write(
-    win_iocp_handle_service::implementation_type& impl, boost::uint64_t offset,
+    win_iocp_handle_service::implementation_type& impl, uint64_t offset,
     const boost::asio::const_buffer& buffer, boost::system::error_code& ec)
 {
   if (!is_open(impl))
@@ -233,7 +307,7 @@ size_t win_iocp_handle_service::do_write(
   }
 
   // A request to write 0 bytes on a handle is a no-op.
-  if (boost::asio::buffer_size(buffer) == 0)
+  if (buffer.size() == 0)
   {
     ec = boost::system::error_code();
     return 0;
@@ -248,9 +322,8 @@ size_t win_iocp_handle_service::do_write(
   // Write the data. 
   overlapped.Offset = offset & 0xFFFFFFFF;
   overlapped.OffsetHigh = (offset >> 32) & 0xFFFFFFFF;
-  BOOL ok = ::WriteFile(impl.handle_,
-      boost::asio::buffer_cast<LPCVOID>(buffer),
-      static_cast<DWORD>(boost::asio::buffer_size(buffer)), 0, &overlapped);
+  BOOL ok = ::WriteFile(impl.handle_, buffer.data(),
+      static_cast<DWORD>(buffer.size()), 0, &overlapped);
   if (!ok) 
   {
     DWORD last_error = ::GetLastError();
@@ -279,7 +352,7 @@ size_t win_iocp_handle_service::do_write(
 }
 
 void win_iocp_handle_service::start_write_op(
-    win_iocp_handle_service::implementation_type& impl, boost::uint64_t offset,
+    win_iocp_handle_service::implementation_type& impl, uint64_t offset,
     const boost::asio::const_buffer& buffer, operation* op)
 {
   update_cancellation_thread_id(impl);
@@ -289,7 +362,7 @@ void win_iocp_handle_service::start_write_op(
   {
     iocp_service_.on_completion(op, boost::asio::error::bad_descriptor);
   }
-  else if (boost::asio::buffer_size(buffer) == 0)
+  else if (buffer.size() == 0)
   {
     // A request to write 0 bytes on a handle is a no-op.
     iocp_service_.on_completion(op);
@@ -299,9 +372,8 @@ void win_iocp_handle_service::start_write_op(
     DWORD bytes_transferred = 0;
     op->Offset = offset & 0xFFFFFFFF;
     op->OffsetHigh = (offset >> 32) & 0xFFFFFFFF;
-    BOOL ok = ::WriteFile(impl.handle_,
-        boost::asio::buffer_cast<LPCVOID>(buffer),
-        static_cast<DWORD>(boost::asio::buffer_size(buffer)),
+    BOOL ok = ::WriteFile(impl.handle_, buffer.data(),
+        static_cast<DWORD>(buffer.size()),
         &bytes_transferred, op);
     DWORD last_error = ::GetLastError();
     if (!ok && last_error != ERROR_IO_PENDING
@@ -317,7 +389,7 @@ void win_iocp_handle_service::start_write_op(
 }
 
 size_t win_iocp_handle_service::do_read(
-    win_iocp_handle_service::implementation_type& impl, boost::uint64_t offset,
+    win_iocp_handle_service::implementation_type& impl, uint64_t offset,
     const boost::asio::mutable_buffer& buffer, boost::system::error_code& ec)
 {
   if (!is_open(impl))
@@ -327,7 +399,7 @@ size_t win_iocp_handle_service::do_read(
   }
   
   // A request to read 0 bytes on a stream handle is a no-op.
-  if (boost::asio::buffer_size(buffer) == 0)
+  if (buffer.size() == 0)
   {
     ec = boost::system::error_code();
     return 0;
@@ -342,9 +414,8 @@ size_t win_iocp_handle_service::do_read(
   // Read some data.
   overlapped.Offset = offset & 0xFFFFFFFF;
   overlapped.OffsetHigh = (offset >> 32) & 0xFFFFFFFF;
-  BOOL ok = ::ReadFile(impl.handle_,
-      boost::asio::buffer_cast<LPVOID>(buffer),
-      static_cast<DWORD>(boost::asio::buffer_size(buffer)), 0, &overlapped);
+  BOOL ok = ::ReadFile(impl.handle_, buffer.data(),
+      static_cast<DWORD>(buffer.size()), 0, &overlapped);
   if (!ok) 
   {
     DWORD last_error = ::GetLastError();
@@ -379,7 +450,7 @@ size_t win_iocp_handle_service::do_read(
       ec = boost::system::error_code(last_error,
           boost::asio::error::get_system_category());
     }
-    return 0;
+    return (last_error == ERROR_MORE_DATA) ? bytes_transferred : 0;
   }
 
   ec = boost::system::error_code();
@@ -387,7 +458,7 @@ size_t win_iocp_handle_service::do_read(
 }
 
 void win_iocp_handle_service::start_read_op(
-    win_iocp_handle_service::implementation_type& impl, boost::uint64_t offset,
+    win_iocp_handle_service::implementation_type& impl, uint64_t offset,
     const boost::asio::mutable_buffer& buffer, operation* op)
 {
   update_cancellation_thread_id(impl);
@@ -397,7 +468,7 @@ void win_iocp_handle_service::start_read_op(
   {
     iocp_service_.on_completion(op, boost::asio::error::bad_descriptor);
   }
-  else if (boost::asio::buffer_size(buffer) == 0)
+  else if (buffer.size() == 0)
   {
     // A request to read 0 bytes on a handle is a no-op.
     iocp_service_.on_completion(op);
@@ -407,9 +478,8 @@ void win_iocp_handle_service::start_read_op(
     DWORD bytes_transferred = 0;
     op->Offset = offset & 0xFFFFFFFF;
     op->OffsetHigh = (offset >> 32) & 0xFFFFFFFF;
-    BOOL ok = ::ReadFile(impl.handle_,
-        boost::asio::buffer_cast<LPVOID>(buffer),
-        static_cast<DWORD>(boost::asio::buffer_size(buffer)),
+    BOOL ok = ::ReadFile(impl.handle_, buffer.data(),
+        static_cast<DWORD>(buffer.size()),
         &bytes_transferred, op);
     DWORD last_error = ::GetLastError();
     if (!ok && last_error != ERROR_IO_PENDING
@@ -437,6 +507,9 @@ void win_iocp_handle_service::close_for_destruction(implementation_type& impl)
 {
   if (is_open(impl))
   {
+    BOOST_ASIO_HANDLER_OPERATION((iocp_service_.context(), "handle",
+          &impl, reinterpret_cast<uintmax_t>(impl.handle_), "close"));
+
     ::CloseHandle(impl.handle_);
     impl.handle_ = INVALID_HANDLE_VALUE;
     impl.safe_cancellation_thread_id_ = 0;

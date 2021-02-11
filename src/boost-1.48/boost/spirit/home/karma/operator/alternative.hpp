@@ -4,8 +4,8 @@
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-#if !defined(SPIRIT_KARMA_ALTERNATIVE_MAR_01_2007_1117AM)
-#define SPIRIT_KARMA_ALTERNATIVE_MAR_01_2007_1117AM
+#ifndef BOOST_SPIRIT_KARMA_OPERATOR_ALTERNATIVE_HPP
+#define BOOST_SPIRIT_KARMA_OPERATOR_ALTERNATIVE_HPP
 
 #if defined(_MSC_VER)
 #pragma once
@@ -26,6 +26,8 @@
 #include <boost/fusion/include/for_each.hpp>
 #include <boost/mpl/accumulate.hpp>
 #include <boost/mpl/bitor.hpp>
+#include <boost/proto/tags.hpp>
+#include <boost/config.hpp>
 
 namespace boost { namespace spirit
 {
@@ -61,9 +63,11 @@ namespace boost { namespace spirit { namespace traits
             };
 
             // never called, but needed for decltype-based result_of (C++0x)
+#ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
             template <typename Element>
             typename result<element_properties(Element)>::type
-            operator()(Element&) const;
+            operator()(Element&&) const;
+#endif
         };
 
         typedef typename mpl::accumulate<
@@ -191,14 +195,14 @@ namespace boost { namespace spirit { namespace traits
     ///////////////////////////////////////////////////////////////////////////
     template <typename Elements, typename Attribute, typename Context
       , typename Iterator>
-    struct handles_container<karma::alternative<Elements>, Attribute, Context
-      , Iterator>
+    struct handles_container<karma::alternative<Elements>
+          , Attribute, Context, Iterator>
       : nary_handles_container<Elements, Attribute, Context, Iterator> {};
-    
+
     template <typename Elements, typename Attribute, typename Context
       , typename Iterator>
-    struct handles_container<karma::strict_alternative<Elements>, Attribute
-      , Context, Iterator>
+    struct handles_container<karma::strict_alternative<Elements>
+          , Attribute, Context, Iterator>
       : nary_handles_container<Elements, Attribute, Context, Iterator> {};
 }}}
 

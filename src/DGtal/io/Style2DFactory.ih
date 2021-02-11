@@ -730,9 +730,9 @@ DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::Object<TDigitalTopology, T
 
 
 // PointVector
-template<DGtal::Dimension dim, typename TComponent>
+template<typename TComponent>
 inline
-DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::PointVector<dim,TComponent> & /*p*/, std::string mode = "")
+DGtal::DrawableWithBoard2D* defaultStyle(const DGtal::PointVector<2,TComponent > & /*p*/, std::string mode = "")
 {
   if ( ( mode == "" ) || ( mode == "Paving" ) ) 
     return new DGtal::DefaultDrawStylePaving_PointVector;

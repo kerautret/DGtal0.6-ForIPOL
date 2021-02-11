@@ -22,6 +22,7 @@
 #include <boost/accumulators/statistics_fwd.hpp>
 #include <boost/accumulators/statistics/count.hpp>
 #include <boost/accumulators/statistics/parameters/quantile_probability.hpp>
+#include <boost/serialization/boost_array.hpp>
 
 namespace boost { namespace accumulators
 {
@@ -44,7 +45,7 @@ namespace impl
 
         For further details, see
 
-        R. Jain and I. Chlamtac, The P^2 algorithmus fordynamic calculation of quantiles and
+        R. Jain and I. Chlamtac, The P^2 algorithm for dynamic calculation of quantiles and
         histograms without storing observations, Communications of the ACM,
         Volume 28 (October), Number 10, 1985, p. 1076-1085.
 
@@ -54,14 +55,14 @@ namespace impl
     struct p_square_quantile_impl
       : accumulator_base
     {
-        typedef typename numeric::functional::average<Sample, std::size_t>::result_type float_type;
+        typedef typename numeric::functional::fdiv<Sample, std::size_t>::result_type float_type;
         typedef array<float_type, 5> array_type;
         // for boost::result_of
         typedef float_type result_type;
 
         template<typename Args>
         p_square_quantile_impl(Args const &args)
-          : p(is_same<Impl, for_median>::value ? 0.5 : args[quantile_probability | 0.5])
+          : p(is_same<Impl, for_median>::value ? float_type(0.5) : args[quantile_probability | float_type(0.5)])
           , heights()
           , actual_positions()
           , desired_positions()
@@ -69,20 +70,21 @@ namespace impl
         {
             for(std::size_t i = 0; i < 5; ++i)
             {
-                this->actual_positions[i] = i + 1;
+                this->actual_positions[i] = i + float_type(1.);
             }
 
-            this->desired_positions[0] = 1.;
-            this->desired_positions[1] = 1. + 2. * this->p;
-            this->desired_positions[2] = 1. + 4. * this->p;
-            this->desired_positions[3] = 3. + 2. * this->p;
-            this->desired_positions[4] = 5.;
+            this->desired_positions[0] = float_type(1.);
+            this->desired_positions[1] = float_type(1.) + float_type(2.) * this->p;
+            this->desired_positions[2] = float_type(1.) + float_type(4.) * this->p;
+            this->desired_positions[3] = float_type(3.) + float_type(2.) * this->p;
+            this->desired_positions[4] = float_type(5.);
 
-            this->positions_increments[0] = 0.;
-            this->positions_increments[1] = this->p / 2.;
+
+            this->positions_increments[0] = float_type(0.);
+            this->positions_increments[1] = this->p / float_type(2.);
             this->positions_increments[2] = this->p;
-            this->positions_increments[3] = (1. + this->p) / 2.;
-            this->positions_increments[4] = 1.;
+            this->positions_increments[3] = (float_type(1.) + this->p) / float_type(2.);
+            this->positions_increments[4] = float_type(1.);
         }
 
         template<typename Args>
@@ -105,7 +107,7 @@ namespace impl
             {
                 std::size_t sample_cell = 1; // k
 
-                // find cell k such that heights[k-1] <= args[sample] < heights[k] and ajust extreme values
+                // find cell k such that heights[k-1] <= args[sample] < heights[k] and adjust extreme values
                 if (args[sample] < this->heights[0])
                 {
                     this->heights[0] = args[sample];
@@ -156,7 +158,7 @@ namespace impl
                     float_type hp = (this->heights[i + 1] - this->heights[i]) / dp;
                     float_type hm = (this->heights[i - 1] - this->heights[i]) / dm;
 
-                    if((d >= 1. && dp > 1.) || (d <= -1. && dm < -1.))
+                    if((d >= float_type(1.) && dp > float_type(1.)) || (d <= float_type(-1.) && dm < float_type(-1.)))
                     {
                         short sign_d = static_cast<short>(d / std::abs(d));
 
@@ -171,11 +173,11 @@ namespace impl
                         else
                         {
                             // use linear formula
-                            if(d > 0)
+                            if(d > float_type(0))
                             {
                                 this->heights[i] += hp;
                             }
-                            if(d < 0)
+                            if(d < float_type(0))
                             {
                                 this->heights[i] -= hm;
                             }
@@ -189,6 +191,18 @@ namespace impl
         result_type result(dont_care) const
         {
             return this->heights[2];
+        }
+
+        // make this accumulator serializeable
+        // TODO: do we need to split to load/save and verify that P did not change?
+        template<class Archive>
+        void serialize(Archive & ar, const unsigned int file_version)
+        { 
+            ar & p;
+            ar & heights;
+            ar & actual_positions;
+            ar & desired_positions;
+            ar & positions_increments;
         }
 
     private:

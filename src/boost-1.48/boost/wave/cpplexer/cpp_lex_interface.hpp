@@ -2,16 +2,16 @@
     Boost.Wave: A Standard compliant C++ preprocessor library
 
     Definition of the abstract lexer interface
-    
+
     http://www.boost.org/
 
-    Copyright (c) 2001-2011 Hartmut Kaiser. Distributed under the Boost
+    Copyright (c) 2001-2012 Hartmut Kaiser. Distributed under the Boost
     Software License, Version 1.0. (See accompanying file
     LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
 
-#if !defined(CPP_LEX_INTERFACE_HPP_E83F52A4_90AC_4FBE_A9A7_B65F7F94C497_INCLUDED)
-#define CPP_LEX_INTERFACE_HPP_E83F52A4_90AC_4FBE_A9A7_B65F7F94C497_INCLUDED
+#if !defined(BOOST_CPP_LEX_INTERFACE_HPP_E83F52A4_90AC_4FBE_A9A7_B65F7F94C497_INCLUDED)
+#define BOOST_CPP_LEX_INTERFACE_HPP_E83F52A4_90AC_4FBE_A9A7_B65F7F94C497_INCLUDED
 
 #include <boost/wave/wave_config.hpp>
 #include <boost/wave/util/file_position.hpp>
@@ -35,14 +35,14 @@ namespace cpplexer {
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-//  The lex_input_interface decouples the lex_iterator_shim from the actual 
+//  The lex_input_interface decouples the lex_iterator_shim from the actual
 //  lexer. This is done to allow compile time reduction.
 //  Thanks to JCAB for having this idea.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
 template <typename TokenT>
-struct lex_input_interface 
+struct lex_input_interface
 {
     typedef typename TokenT::position_type position_type;
 
@@ -59,7 +59,7 @@ struct lex_input_interface
 ///////////////////////////////////////////////////////////////////////////////
 }   // namespace cpplexer
 }   // namespace wave
-}   // namespace boost 
+}   // namespace boost
 
 #ifdef BOOST_MSVC
 #pragma warning(pop)
@@ -70,4 +70,4 @@ struct lex_input_interface
 #include BOOST_ABI_SUFFIX
 #endif
 
-#endif // !defined(CPP_LEX_INTERFACE_HPP_E83F52A4_90AC_4FBE_A9A7_B65F7F94C497_INCLUDED)
+#endif // !defined(BOOST_CPP_LEX_INTERFACE_HPP_E83F52A4_90AC_4FBE_A9A7_B65F7F94C497_INCLUDED)

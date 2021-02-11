@@ -52,7 +52,7 @@ namespace impl
     struct pot_tail_mean_impl
       : accumulator_base
     {
-        typedef typename numeric::functional::average<Sample, std::size_t>::result_type float_type;
+        typedef typename numeric::functional::fdiv<Sample, std::size_t>::result_type float_type;
         // for boost::result_of
         typedef float_type result_type;
 
@@ -90,6 +90,14 @@ namespace impl
                 is_same<LeftRight, left>::value ? args[quantile_probability] : 1. - args[quantile_probability]
               , -xi_hat);
         }
+    
+        // make this accumulator serializeable
+        template<class Archive>
+        void serialize(Archive & ar, const unsigned int file_version)
+        { 
+            ar & sign_;
+        }
+
     private:
         short sign_; // if the fit parameters from the mirrored left tail extreme values are used, mirror back the result
     };

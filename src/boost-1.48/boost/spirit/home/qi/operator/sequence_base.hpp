@@ -1,11 +1,12 @@
 /*=============================================================================
     Copyright (c) 2001-2011 Joel de Guzman
+    Copyright (c) 2001-2011 Hartmut Kaiser
 
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
-#if !defined(SPIRIT_SEQUENCE_BASE_APRIL_22_2006_0811AM)
-#define SPIRIT_SEQUENCE_BASE_APRIL_22_2006_0811AM
+#ifndef BOOST_SPIRIT_QI_OPERATOR_SEQUENCE_BASE_HPP
+#define BOOST_SPIRIT_QI_OPERATOR_SEQUENCE_BASE_HPP
 
 #if defined(_MSC_VER)
 #pragma once
@@ -59,8 +60,8 @@ namespace boost { namespace spirit { namespace qi
             type;
         };
 
-        sequence_base(Elements const& elements)
-          : elements(elements) {}
+        sequence_base(Elements const& elements_)
+          : elements(elements_) {}
 
         // standard case. Attribute is a fusion tuple
         template <typename Iterator, typename Context
@@ -79,11 +80,11 @@ namespace boost { namespace spirit { namespace qi
               , typename mpl::and_<
                     traits::one_element_sequence<attr_type_>
                   , mpl::not_<traits::one_element_sequence<Attribute> >
-                >::type 
-            >::type attr(attr_);
+                >::type
+            >::type attr_local(attr_);
 
             // return false if *any* of the parsers fail
-            if (spirit::any_if(elements, attr
+            if (spirit::any_if(elements, attr_local
               , Derived::fail_function(iter, last, context, skipper), predicate()))
                 return false;
             first = iter;
@@ -103,7 +104,7 @@ namespace boost { namespace spirit { namespace qi
             Iterator iter = first;
             // return false if *any* of the parsers fail
             if (fusion::any(elements
-              , detail::make_pass_container(
+              , detail::make_sequence_pass_container(
                     Derived::fail_function(iter, last, context, skipper), attr_))
                 )
                 return false;
@@ -117,9 +118,9 @@ namespace boost { namespace spirit { namespace qi
           , typename Skipper, typename Attribute>
         bool parse(Iterator& first, Iterator const& last
           , Context& context, Skipper const& skipper
-          , Attribute& attr) const
+          , Attribute& attr_) const
         {
-            return parse_impl(first, last, context, skipper, attr
+            return parse_impl(first, last, context, skipper, attr_
               , traits::is_container<Attribute>());
         }
 

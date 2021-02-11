@@ -12,10 +12,11 @@
 #endif
 
 #include <boost/assert.hpp>
+#include <boost/static_assert.hpp>
 #include <boost/config.hpp>
 #include <boost/function.hpp>
 #include <boost/mpl/vector.hpp>
-#include <boost/type_traits/add_reference.hpp>
+#include <boost/type_traits/is_convertible.hpp>
 #include <boost/type_traits/is_same.hpp>
 
 #include <boost/fusion/include/vector.hpp>
@@ -38,14 +39,34 @@
 #include <boost/spirit/home/qi/nonterminal/nonterminal_fwd.hpp>
 #include <boost/spirit/home/qi/skip_over.hpp>
 
+#include <boost/proto/extends.hpp>
+#include <boost/proto/traits.hpp>
+#include <boost/type_traits/is_reference.hpp>
+
 #if defined(BOOST_MSVC)
 # pragma warning(push)
 # pragma warning(disable: 4355) // 'this' : used in base member initializer list warning
+# pragma warning(disable: 4127) // conditional expression is constant
 #endif
 
 namespace boost { namespace spirit { namespace qi
 {
     BOOST_PP_REPEAT(SPIRIT_ATTRIBUTES_LIMIT, SPIRIT_USING_ATTRIBUTE, _)
+
+    using spirit::_pass_type;
+    using spirit::_val_type;
+    using spirit::_a_type;
+    using spirit::_b_type;
+    using spirit::_c_type;
+    using spirit::_d_type;
+    using spirit::_e_type;
+    using spirit::_f_type;
+    using spirit::_g_type;
+    using spirit::_h_type;
+    using spirit::_i_type;
+    using spirit::_j_type;
+
+#ifndef BOOST_SPIRIT_NO_PREDEFINED_TERMINALS
 
     using spirit::_pass;
     using spirit::_val;
@@ -59,6 +80,8 @@ namespace boost { namespace spirit { namespace qi
     using spirit::_h;
     using spirit::_i;
     using spirit::_j;
+
+#endif
 
     using spirit::info;
     using spirit::locals;
@@ -93,21 +116,24 @@ namespace boost { namespace spirit { namespace qi
                 qi::domain, template_params>::type
         skipper_type;
 
-        // The rule's signature
-        typedef typename
-            spirit::detail::extract_sig<template_params>::type
-        sig_type;
-
         // The rule's encoding type
         typedef typename
             spirit::detail::extract_encoding<template_params>::type
         encoding_type;
 
+        // The rule's signature
+        typedef typename
+            spirit::detail::extract_sig<template_params, encoding_type, qi::domain>::type
+        sig_type;
+
         // This is the rule's attribute type
         typedef typename
             spirit::detail::attr_from_sig<sig_type>::type
         attr_type;
-        typedef typename add_reference<attr_type>::type attr_reference_type;
+        BOOST_STATIC_ASSERT_MSG(
+            !is_reference<attr_type>::value,
+            "Reference qualifier on Qi rule attribute is meaningless");
+        typedef attr_type& attr_reference_type;
 
         // parameter_types is a sequence of types passed as parameters to the rule
         typedef typename
@@ -137,9 +163,9 @@ namespace boost { namespace spirit { namespace qi
             >::type
         encoding_modifier_type;
 
-        explicit rule(std::string const& name_ = "unnamed-rule")
+        explicit rule(std::string const& name = "unnamed-rule")
           : base_type(terminal::make(reference_(*this)))
-          , name_(name_)
+          , name_(name)
         {
         }
 
@@ -150,18 +176,28 @@ namespace boost { namespace spirit { namespace qi
         {
         }
 
-        template <typename Expr>
-        rule(Expr const& expr, std::string const& name_ = "unnamed-rule")
-          : base_type(terminal::make(reference_(*this)))
-          , name_(name_)
+        template <typename Auto, typename Expr>
+        static void define(rule& /*lhs*/, Expr const& /*expr*/, mpl::false_)
         {
             // Report invalid expression error as early as possible.
             // If you got an error_invalid_expression error message here,
             // then the expression (expr) is not a valid spirit qi expression.
             BOOST_SPIRIT_ASSERT_MATCH(qi::domain, Expr);
+        }
 
-            f = detail::bind_parser<mpl::false_>(
+        template <typename Auto, typename Expr>
+        static void define(rule& lhs, Expr const& expr, mpl::true_)
+        {
+            lhs.f = detail::bind_parser<Auto>(
                 compile<qi::domain>(expr, encoding_modifier_type()));
+        }
+
+        template <typename Expr>
+        rule(Expr const& expr, std::string const& name = "unnamed-rule")
+          : base_type(terminal::make(reference_(*this)))
+          , name_(name)
+        {
+            define<mpl::false_>(*this, expr, traits::matches<qi::domain, Expr>());
         }
 
         rule& operator=(rule const& rhs)
@@ -190,13 +226,7 @@ namespace boost { namespace spirit { namespace qi
         template <typename Expr>
         rule& operator=(Expr const& expr)
         {
-            // Report invalid expression error as early as possible.
-            // If you got an error_invalid_expression error message here,
-            // then the expression (expr) is not a valid spirit qi expression.
-            BOOST_SPIRIT_ASSERT_MATCH(qi::domain, Expr);
-
-            f = detail::bind_parser<mpl::false_>(
-                compile<qi::domain>(expr, encoding_modifier_type()));
+            define<mpl::false_>(*this, expr, traits::matches<qi::domain, Expr>());
             return *this;
         }
 
@@ -206,16 +236,11 @@ namespace boost { namespace spirit { namespace qi
         template <typename Expr>
         friend rule& operator%=(rule& r, Expr const& expr)
         {
-            // Report invalid expression error as early as possible.
-            // If you got an error_invalid_expression error message here,
-            // then the expression (expr) is not a valid spirit qi expression.
-            BOOST_SPIRIT_ASSERT_MATCH(qi::domain, Expr);
-
-            r.f = detail::bind_parser<mpl::true_>(
-                compile<qi::domain>(expr, encoding_modifier_type()));
+            define<mpl::true_>(r, expr, traits::matches<qi::domain, Expr>());
             return r;
         }
 
+#if defined(BOOST_NO_CXX11_RVALUE_REFERENCES)
         // non-const version needed to suppress proto's %= kicking in
         template <typename Expr>
         friend rule& operator%=(rule& r, Expr& expr)
@@ -223,8 +248,18 @@ namespace boost { namespace spirit { namespace qi
             return r %= static_cast<Expr const&>(expr);
         }
 #else
+        // for rvalue references
+        template <typename Expr>
+        friend rule& operator%=(rule& r, Expr&& expr)
+        {
+            define<mpl::true_>(r, expr, traits::matches<qi::domain, Expr>());
+            return r;
+        }
+#endif
+
+#else
         // both friend functions have to be defined out of class as VC7.1
-        // will complain otherwise 
+        // will complain otherwise
         template <typename OutputIterator_, typename T1_, typename T2_
           , typename T3_, typename T4_, typename Expr>
         friend rule<OutputIterator_, T1_, T2_, T3_, T4_>& operator%=(
@@ -246,24 +281,29 @@ namespace boost { namespace spirit { namespace qi
         template <typename Context, typename Skipper, typename Attribute>
         bool parse(Iterator& first, Iterator const& last
           , Context& /*context*/, Skipper const& skipper
-          , Attribute& attr) const
+          , Attribute& attr_param) const
         {
+            BOOST_STATIC_ASSERT_MSG((is_same<skipper_type, unused_type>::value ||
+                !is_same<Skipper, unused_type>::value),
+                "The rule was instantiated with a skipper type but you have not pass any. "
+                "Did you use `parse` instead of `phrase_parse`?");
+            BOOST_STATIC_ASSERT_MSG(
+                (is_convertible<Skipper const&, skipper_type>::value),
+                "The passed skipper is not compatible/convertible to one "
+                "that the rule was instantiated with");
             if (f)
             {
                 // do a preskip if this is an implied lexeme
                 if (is_same<skipper_type, unused_type>::value)
                     qi::skip_over(first, last, skipper);
 
-                typedef traits::make_attribute<attr_type, Attribute> make_attribute;
-
                 // do down-stream transformation, provides attribute for
                 // rhs parser
                 typedef traits::transform_attribute<
-                    typename make_attribute::type, attr_type, domain> 
+                    Attribute, attr_type, domain>
                 transform;
 
-                typename make_attribute::type made_attr = make_attribute::call(attr);
-                typename transform::type attr_ = transform::pre(made_attr);
+                typename transform::type attr_ = transform::pre(attr_param);
 
                 // If you are seeing a compilation error here, you are probably
                 // trying to use a rule or a grammar which has inherited
@@ -271,19 +311,19 @@ namespace boost { namespace spirit { namespace qi
                 context_type context(attr_);
 
                 // If you are seeing a compilation error here stating that the
-                // forth parameter can't be converted to a required target type
+                // fourth parameter can't be converted to a required target type
                 // then you are probably trying to use a rule or a grammar with
                 // an incompatible skipper type.
                 if (f(first, last, context, skipper))
                 {
                     // do up-stream transformation, this integrates the results
                     // back into the original attribute value, if appropriate
-                    traits::post_transform(attr, attr_);
+                    transform::post(attr_param, attr_);
                     return true;
                 }
 
                 // inform attribute transformation of failed rhs
-                traits::fail_transform(attr, attr_);
+                transform::fail(attr_param);
             }
             return false;
         }
@@ -292,24 +332,29 @@ namespace boost { namespace spirit { namespace qi
           , typename Attribute, typename Params>
         bool parse(Iterator& first, Iterator const& last
           , Context& caller_context, Skipper const& skipper
-          , Attribute& attr, Params const& params) const
+          , Attribute& attr_param, Params const& params) const
         {
+            BOOST_STATIC_ASSERT_MSG((is_same<skipper_type, unused_type>::value ||
+                !is_same<Skipper, unused_type>::value),
+                "The rule was instantiated with a skipper type but you have not pass any. "
+                "Did you use `parse` instead of `phrase_parse`?");
+            BOOST_STATIC_ASSERT_MSG(
+                (is_convertible<Skipper const&, skipper_type>::value),
+                "The passed skipper is not compatible/convertible to one "
+                "that the rule was instantiated with");
             if (f)
             {
                 // do a preskip if this is an implied lexeme
                 if (is_same<skipper_type, unused_type>::value)
                     qi::skip_over(first, last, skipper);
 
-                typedef traits::make_attribute<attr_type, Attribute> make_attribute;
-
                 // do down-stream transformation, provides attribute for
                 // rhs parser
                 typedef traits::transform_attribute<
-                    typename make_attribute::type, attr_type, domain> 
+                    Attribute, attr_type, domain>
                 transform;
 
-                typename make_attribute::type made_attr = make_attribute::call(attr);
-                typename transform::type attr_ = transform::pre(made_attr);
+                typename transform::type attr_ = transform::pre(attr_param);
 
                 // If you are seeing a compilation error here, you are probably
                 // trying to use a rule or a grammar which has inherited
@@ -317,19 +362,19 @@ namespace boost { namespace spirit { namespace qi
                 context_type context(attr_, params, caller_context);
 
                 // If you are seeing a compilation error here stating that the
-                // forth parameter can't be converted to a required target type
+                // fourth parameter can't be converted to a required target type
                 // then you are probably trying to use a rule or a grammar with
                 // an incompatible skipper type.
                 if (f(first, last, context, skipper))
                 {
                     // do up-stream transformation, this integrates the results
                     // back into the original attribute value, if appropriate
-                    traits::post_transform(attr, attr_);
+                    transform::post(attr_param, attr_);
                     return true;
                 }
 
                 // inform attribute transformation of failed rhs
-                traits::fail_transform(attr, attr_);
+                transform::fail(attr_param);
             }
             return false;
         }
@@ -371,7 +416,7 @@ namespace boost { namespace spirit { namespace qi
         // then the expression (expr) is not a valid spirit qi expression.
         BOOST_SPIRIT_ASSERT_MATCH(qi::domain, Expr);
 
-        typedef typename 
+        typedef typename
             rule<OutputIterator_, T1_, T2_, T3_, T4_>::encoding_modifier_type
         encoding_modifier_type;
 

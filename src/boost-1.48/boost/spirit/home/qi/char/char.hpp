@@ -96,14 +96,16 @@ namespace boost { namespace spirit
     // enables lit(...)
     template <typename A0>
     struct use_terminal<qi::domain
-          , terminal_ex<tag::lit, fusion::vector1<A0> > 
+          , terminal_ex<tag::lit, fusion::vector1<A0> >
           , typename enable_if<traits::is_char<A0> >::type>
       : mpl::true_ {};
 }}
 
 namespace boost { namespace spirit { namespace qi
 {
+#ifndef BOOST_SPIRIT_NO_PREDEFINED_TERMINALS
     using spirit::lit; // lit('x') is equivalent to 'x'
+#endif
     using spirit::lit_type;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -121,8 +123,8 @@ namespace boost { namespace spirit { namespace qi
         typedef CharEncoding char_encoding;
 
         template <typename Char>
-        literal_char(Char ch)
-          : ch(static_cast<char_type>(ch)) {}
+        literal_char(Char ch_)
+          : ch(static_cast<char_type>(ch_)) {}
 
         template <typename Context, typename Iterator>
         struct attribute
@@ -199,8 +201,8 @@ namespace boost { namespace spirit { namespace qi
         typedef typename CharEncoding::char_type char_type;
         typedef CharEncoding char_encoding;
 
-        char_range(char_type from, char_type to)
-          : from(from), to(to) {}
+        char_range(char_type from_, char_type to_)
+          : from(from_), to(to_) {}
 
         template <typename CharParam, typename Context>
         bool test(CharParam ch_, Context&) const

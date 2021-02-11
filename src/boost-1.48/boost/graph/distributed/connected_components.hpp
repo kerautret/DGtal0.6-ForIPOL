@@ -14,6 +14,7 @@
 #error "Parallel BGL files should not be included unless <boost/graph/use_mpi.hpp> has been included"
 #endif
 
+#include <boost/detail/is_sorted.hpp>
 #include <boost/assert.hpp>
 #include <boost/property_map/property_map.hpp>
 #include <boost/property_map/parallel/caching_property_map.hpp>
@@ -28,6 +29,7 @@
 #include <boost/graph/named_function_params.hpp>
 #include <boost/graph/parallel/process_group.hpp>
 #include <boost/optional.hpp>
+#include <functional>
 #include <algorithm>
 #include <vector>
 #include <list>
@@ -294,14 +296,8 @@ namespace boost { namespace graph { namespace distributed {
 
       typedef typename graph_traits<DistributedGraph>::adjacency_iterator
         adjacency_iterator;
-      typedef typename graph_traits<DistributedGraph>::out_edge_iterator
-        out_edge_iterator;
-      typedef typename graph_traits<DistributedGraph>::edge_iterator
-        edge_iterator;
       typedef typename graph_traits<DistributedGraph>::vertex_descriptor
         vertex_descriptor;
-      typedef typename graph_traits<DistributedGraph>::edge_descriptor
-        edge_descriptor;
 
       typedef typename boost::graph::parallel::process_group_type<DistributedGraph>
         ::type process_group_type;
@@ -390,14 +386,14 @@ namespace boost { namespace graph { namespace distributed {
             *aliter = get(p, *aliter);
 
           my_adj.erase
-            (remove_if(my_adj.begin(), my_adj.end(),
+            (std::remove_if(my_adj.begin(), my_adj.end(),
                        cull_adjacency_list<vertex_descriptor, 
                                            ParentMap>(*liter, p) ),
              my_adj.end());
           // This sort needs to be here to make sure the initial
           // adjacency list is sorted
-          sort(my_adj.begin(), my_adj.end(), std::less<vertex_descriptor>());
-          my_adj.erase(unique(my_adj.begin(), my_adj.end()), my_adj.end());
+          std::sort(my_adj.begin(), my_adj.end(), std::less<vertex_descriptor>());
+          my_adj.erase(std::unique(my_adj.begin(), my_adj.end()), my_adj.end());
         }
 
       // Get p(v) for the new adjacent roots
@@ -555,10 +551,10 @@ namespace boost { namespace graph { namespace distributed {
                                adj[*liter].begin(), adj[*liter].end() );
 #ifdef PBGL_IN_PLACE_MERGE
 #ifdef PBGL_SORT_ASSERT
-                BOOST_ASSERT(__gnu_cxx::is_sorted(my_adj.begin(),
+                BOOST_ASSERT(::boost::detail::is_sorted(my_adj.begin(),
                                                   my_adj.end() - adj[*liter].size(),
                                                   std::less<vertex_descriptor>()));
-                BOOST_ASSERT(__gnu_cxx::is_sorted(my_adj.end() - adj[*liter].size(),
+                BOOST_ASSERT(::boost::detail::is_sorted(my_adj.end() - adj[*liter].size(),
                                                   my_adj.end(),
                                                   std::less<vertex_descriptor>()));
 #endif
@@ -603,10 +599,10 @@ namespace boost { namespace graph { namespace distributed {
 #ifdef PBGL_IN_PLACE_MERGE
             std::size_t num_incoming_edges = incoming_edges.size();
 #ifdef PBGL_SORT_ASSERT
-            BOOST_ASSERT(__gnu_cxx::is_sorted(my_adj.begin(),
+            BOOST_ASSERT(::boost::detail::is_sorted(my_adj.begin(),
                                               my_adj.end() - (num_incoming_edges-1),
                                               std::less<vertex_descriptor>()));
-            BOOST_ASSERT(__gnu_cxx::is_sorted(my_adj.end() - (num_incoming_edges-1),
+            BOOST_ASSERT(::boost::detail::is_sorted(my_adj.end() - (num_incoming_edges-1),
                                               my_adj.end(),
                                               std::less<vertex_descriptor>()));
 #endif
@@ -629,15 +625,15 @@ namespace boost { namespace graph { namespace distributed {
             // the most potential to hook to at each step
             std::vector<vertex_descriptor>& my_adj = adj[*liter];
             my_adj.erase
-              (remove_if(my_adj.begin(), my_adj.end(),
+              (std::remove_if(my_adj.begin(), my_adj.end(),
                          cull_adjacency_list<vertex_descriptor,
                                              ParentMap>(*liter, p) ),
                my_adj.end());
 #ifndef PBGL_IN_PLACE_MERGE
-            sort(my_adj.begin(), my_adj.end(),
+            std::sort(my_adj.begin(), my_adj.end(),
                  std::less<vertex_descriptor>() );
 #endif
-            my_adj.erase(unique(my_adj.begin(), my_adj.end()), my_adj.end());
+            my_adj.erase(std::unique(my_adj.begin(), my_adj.end()), my_adj.end());
           }
 
         // Reduce result of empty root list test
@@ -679,7 +675,7 @@ namespace boost { namespace graph { namespace distributed {
     std::vector<vertex_descriptor> my_roots, all_roots;
 
     BGL_FORALL_VERTICES_T(v, g, Graph) {
-      if( find( my_roots.begin(), my_roots.end(), get(p, v) )
+      if( std::find( my_roots.begin(), my_roots.end(), get(p, v) )
           == my_roots.end() )
         my_roots.push_back( get(p, v) );
     }

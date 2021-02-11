@@ -3,13 +3,13 @@
 
     http://www.boost.org/
 
-    Copyright (c) 2001-2011 Hartmut Kaiser. Distributed under the Boost
+    Copyright (c) 2001-2012 Hartmut Kaiser. Distributed under the Boost
     Software License, Version 1.0. (See accompanying file
     LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
 
-#if !defined(CPP_LITERAL_GRAMMAR_GEN_HPP_67794A6C_468A_4AAB_A757_DEDDB182F5A0_INCLUDED)
-#define CPP_LITERAL_GRAMMAR_GEN_HPP_67794A6C_468A_4AAB_A757_DEDDB182F5A0_INCLUDED
+#if !defined(BOOST_CPP_LITERAL_GRAMMAR_GEN_HPP_67794A6C_468A_4AAB_A757_DEDDB182F5A0_INCLUDED)
+#define BOOST_CPP_LITERAL_GRAMMAR_GEN_HPP_67794A6C_468A_4AAB_A757_DEDDB182F5A0_INCLUDED
 
 #include <boost/wave/wave_config.hpp>
 #include <boost/wave/grammars/cpp_value_error.hpp>
@@ -31,11 +31,11 @@ namespace wave {
 namespace grammars {
 
 ///////////////////////////////////////////////////////////////////////////////
-//  
+//
 //  cpp_intlit_grammar_gen template class
 //
-//      This template helps separating the compilation of the intlit_grammar 
-//      class from the compilation of the expression_grammar. This is done 
+//      This template helps separating the compilation of the intlit_grammar
+//      class from the compilation of the expression_grammar. This is done
 //      to safe compilation time.
 //
 ///////////////////////////////////////////////////////////////////////////////
@@ -46,23 +46,23 @@ struct BOOST_WAVE_DECL intlit_grammar_gen {
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-//  
+//
 //  cpp_chlit_grammar_gen template class
 //
-//      This template helps separating the compilation of the chlit_grammar 
-//      class from the compilation of the expression_grammar. This is done 
+//      This template helps separating the compilation of the chlit_grammar
+//      class from the compilation of the expression_grammar. This is done
 //      to safe compilation time.
 //
 ///////////////////////////////////////////////////////////////////////////////
-template <typename TokenT>
+template <typename IntegralResult, typename TokenT>
 struct BOOST_WAVE_DECL chlit_grammar_gen {
 
-    static unsigned int evaluate(TokenT const &tok, value_error& status);
+    static IntegralResult evaluate(TokenT const &tok, value_error& status);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 }   //  namespace grammars
-}   //  namespace wave 
+}   //  namespace wave
 }   //  namespace boost
 
 #ifdef BOOST_MSVC
@@ -74,4 +74,4 @@ struct BOOST_WAVE_DECL chlit_grammar_gen {
 #include BOOST_ABI_SUFFIX
 #endif
 
-#endif // !defined(CPP_LITERAL_GRAMMAR_GEN_HPP_67794A6C_468A_4AAB_A757_DEDDB182F5A0_INCLUDED)
+#endif // !defined(BOOST_CPP_LITERAL_GRAMMAR_GEN_HPP_67794A6C_468A_4AAB_A757_DEDDB182F5A0_INCLUDED)

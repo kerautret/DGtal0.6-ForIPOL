@@ -3,31 +3,27 @@
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file licence_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-#ifndef BOOST_LEXER_INPUT
-#define BOOST_LEXER_INPUT
+#ifndef BOOST_SPIRIT_SUPPORT_DETAIL_LEXER_INPUT_HPP
+#define BOOST_SPIRIT_SUPPORT_DETAIL_LEXER_INPUT_HPP
 
 #include "char_traits.hpp"
-#include <boost/detail/iterator.hpp>
 #include "size_t.hpp"
 #include "state_machine.hpp"
+#include <iterator> // for std::iterator_traits
 
 namespace boost
 {
 namespace lexer
 {
 template<typename FwdIter, typename Traits =
-    char_traits<typename boost::detail::iterator_traits<FwdIter>::value_type> >
+    char_traits<typename std::iterator_traits<FwdIter>::value_type> >
 class basic_input
 {
 public:
     class iterator
     {
     public:
-#if defined _MSC_VER && _MSC_VER <= 1200
-        friend basic_input;
-#else
         friend class basic_input;
-#endif
 
         struct data
         {
@@ -481,13 +477,9 @@ public:
         }
     };
 
-#if defined _MSC_VER && _MSC_VER <= 1200
-    friend iterator;
-#else
     friend class iterator;
-#endif
 
-    // Make it explict that we are NOT taking a copy of state_machine_!
+    // Make it explicit that we are NOT taking a copy of state_machine_!
     basic_input (const basic_state_machine<typename Traits::char_type>
         *state_machine_, const FwdIter &begin_, const FwdIter &end_) :
         _state_machine (state_machine_),

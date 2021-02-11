@@ -15,7 +15,7 @@
  **/
 
 /**
- * @file test_DigitalSet.cpp
+ * @file
  * @ingroup Tests
  * @author Jacques-Olivier Lachaud (\c jacques-olivier.lachaud@univ-savoie.fr )
  * Laboratory of Mathematics (CNRS, UMR 5807), University of Savoie, France
@@ -40,6 +40,7 @@
 #include <fstream>
 #include <algorithm>
 #include <string>
+#include <unordered_set>
 
 #include "DGtal/base/Common.h"
 #include "DGtal/kernel/SpaceND.h"
@@ -60,6 +61,8 @@
 #include "DGtal/helpers/StdDefs.h"
 
 #include "DGtal/io/boards/Board2D.h"
+
+
 
 
 using namespace DGtal;
@@ -100,7 +103,6 @@ bool testDigitalSetBoardSnippet()
   Domain domain( p1, p2 );
   typedef DigitalSetSelector < Domain, BIG_DS + HIGH_ITER_DS + HIGH_BEL_DS >::Type SpecificSet;
 
-  BOOST_CONCEPT_ASSERT(( CDigitalSet< SpecificSet > ));
 
   SpecificSet mySet( domain );
 
@@ -143,7 +145,6 @@ bool testDigitalSetBoardSnippet()
 template < typename DigitalSetType >
 bool testDigitalSet( const DigitalSetType& aSet1, const DigitalSetType& aSet2 )
 {
-  BOOST_CONCEPT_ASSERT(( CDigitalSet< DigitalSetType > ));
 
   typedef typename DigitalSetType::Domain Domain;
   typedef typename Domain::Point Point;
@@ -159,7 +160,7 @@ bool testDigitalSet( const DigitalSetType& aSet1, const DigitalSetType& aSet2 )
   << "Empty set: " << set1 << std::endl;
 
   //insertion
-  std::set<Point> v; 
+  std::set<Point> v;
   Coordinate t [] = { 4, 3, 3 , 4};
   Coordinate t2[] = { 2, 5, 3 , 5};
   Coordinate t3[] =  { 2, 5, 3 , 4} ;
@@ -179,52 +180,43 @@ bool testDigitalSet( const DigitalSetType& aSet1, const DigitalSetType& aSet2 )
   trace.info() << "(" << nbok << "/" << nb << ") "
   << "Insertion (3 elements): " << set1 << std::endl;
 
-  //iterate
-  bool flag = true; 
-  for (typename DigitalSetType::Iterator it = set1.begin(); 
-       it != set1.end(); ++it) 
-    {
-      if (v.find( *it ) == v.end())
-	flag = false; 
-    } 
-  nbok += (flag) ? 1 : 0;
-  nb++;
-  trace.info() << "Iterate: (" << nbok << "/" << nb << ") "
-  	       << std::endl;
+ 
+
+  // access to underlying container
 
   //erasure
-  set1.erase( b ); 
+  set1.erase( b );
   nbok += ( (set1.size() == 2)
-  	    &&(set1.find( b ) == set1.end()) )? 1 : 0;
+        &&(set1.find( b ) == set1.end()) )? 1 : 0;
   nb++;
   trace.info() << "(" << nbok << "/" << nb << ") "
   << "Erase one element by key (2 remain): " << set1 << std::endl;
 
   typename DigitalSetType::Iterator it = set1.find( c );
-  set1.erase( it ); 
+  set1.erase( it );
   nbok += ( (set1.size() == 1)
-  	    &&(set1.find( c ) == set1.end()) )? 1 : 0;
+        &&(set1.find( c ) == set1.end()) )? 1 : 0;
   nb++;
   trace.info() << "(" << nbok << "/" << nb << ") "
   << "Erase one element by iterator (1 remain): " << set1 << std::endl;
 
   //other sets
   DigitalSetType set2( aSet2 );
-  DigitalSetInserter<DigitalSetType> inserter(set2); 
-  set1.computeComplement(inserter); 
+  DigitalSetInserter<DigitalSetType> inserter(set2);
+  set1.computeComplement(inserter);
   nbok += (set2.size() == (set2.domain().size()-1))? 1 : 0;
   nb++;
   trace.info() << "(" << nbok << "/" << nb << ") "
   << "Complement: " << set2 << std::endl;
 
-  set2 += set1; 
+  set2 += set1;
   nbok += (set2.size() == (set2.domain().size()))? 1 : 0;
   nb++;
   trace.info() << "(" << nbok << "/" << nb << ") "
   << "Union: " << set2 << std::endl;
 
   //clear
-  set1.clear(); 
+  set1.clear();
   nbok += ( (set1.size() == 0)&&(set1.empty()) ) ? 1 : 0;
   nb++;
   trace.info() << "(" << nbok << "/" << nb << ") "
@@ -234,7 +226,7 @@ bool testDigitalSet( const DigitalSetType& aSet1, const DigitalSetType& aSet2 )
   nbok += ( (set1.size() == 0)&&(set1.empty()) ) ? 1 : 0;
   nb++;
   trace.info() << "(" << nbok << "/" << nb << ") "
-	       << std::endl;
+         << std::endl;
 
   return nbok == nb;
 }
@@ -278,7 +270,6 @@ bool testDigitalSetDraw()
   typedef DigitalSetSelector
   < Domain, BIG_DS + HIGH_ITER_DS + HIGH_BEL_DS >::Type SpecificSet;
 
-  BOOST_CONCEPT_ASSERT(( CDigitalSet< SpecificSet > ));
   SpecificSet disk( domain );
   Point c(  0, 0  );
 
@@ -318,14 +309,13 @@ bool testDigitalSetDomain()
   Domain domain( p1, p2 );
   typedef DigitalSetSelector
   < Domain, BIG_DS + HIGH_ITER_DS + HIGH_BEL_DS >::Type SpecificSet;
-  BOOST_CONCEPT_ASSERT(( CDigitalSet< SpecificSet > ));
 
   SpecificSet disk( domain );
   Point c(  0, 0  );
   Point l(  49, 0  );
 
   trace.beginBlock ( "Creating disk( r=50.0 ) ..." );
-  for ( Domain::ConstIterator it = domain.begin(); 
+  for ( Domain::ConstIterator it = domain.begin();
   it != domain.end();
   ++it )
     {
@@ -339,7 +329,6 @@ bool testDigitalSetDomain()
   trace.endBlock();
 
   typedef DigitalSetDomain< SpecificSet > RestrictedDomain;
-  BOOST_CONCEPT_ASSERT(( CDomain< RestrictedDomain > ));
 
   RestrictedDomain disk_domain( disk );
   trace.beginBlock ( "Iterating over disk domain ..." );
@@ -360,19 +349,9 @@ bool testDigitalSetDomain()
 
 bool testDigitalSetConcept()
 {
-  typedef Z2i::Point Value;
-  typedef std::vector<Value>::iterator vector_iterator;
-  typedef std::set<Value>::iterator set_iterator;
-  //BOOST_CONCEPT_ASSERT(( boost::Mutable_BidirectionalIterator< vector_iterator > ));
-  //BOOST_CONCEPT_ASSERT(( boost::Mutable_BidirectionalIterator< set_iterator > ));
-  BOOST_CONCEPT_ASSERT(( CDigitalSet<Z2i::DigitalSet> ));
-  BOOST_CONCEPT_ASSERT(( CDigitalSet<Z3i::DigitalSet> ));
-
-  typedef Z2i::Space Space;
-  BOOST_CONCEPT_ASSERT(( CDomain< CDomainArchetype< Space > > ));
-  typedef CDigitalSetArchetype<Z2i::Domain> DigitalSetArchetype;
-  BOOST_CONCEPT_ASSERT(( CDigitalSet<DigitalSetArchetype> ));
   
+  typedef Z2i::Space Space;
+
   return true;
 }
 
@@ -382,9 +361,9 @@ int main()
   typedef HyperRectDomain<Space4Type> Domain;
   typedef Space4Type::Point Point;
 
-  DGtal::int32_t t[] =  { 1, 2, 3 , 4};
+  Space4Type::Integer t[] =  { 1, 2, 3 , 4};
   Point a ( t );
-  DGtal::int32_t t2[] = { 5, 5, 3 , 5};
+  Space4Type::Integer t2[] = { 5, 5, 3 , 5};
   Point b ( t2);
   trace.beginBlock ( "HyperRectDomain init" );
 
@@ -405,10 +384,10 @@ int main()
   trace.endBlock();
 
   trace.beginBlock( "DigitalSetFromMap" );
-  typedef ImageContainerBySTLMap<Domain,short int> Map; 
+  typedef ImageContainerBySTLMap<Domain,short int> Map;
   Map map(domain); Map map2(domain);        //maps
-  DigitalSetFromMap<Map> setFromMap(map);   //sets from these maps 
-  DigitalSetFromMap<Map> setFromMap2(map2);  
+  DigitalSetFromMap<Map> setFromMap(map);   //sets from these maps
+  DigitalSetFromMap<Map> setFromMap2(map2);
   bool okMap = testDigitalSet< DigitalSetFromMap<Map> >( setFromMap, setFromMap2 );
   trace.endBlock();
 
@@ -430,12 +409,12 @@ int main()
 
   bool okDigitalSetDrawSnippet = testDigitalSetBoardSnippet();
 
-  bool res = okVector && okSet && okMap 
+  bool res = okVector && okSet && okMap
       && okSelectorSmall && okSelectorBig && okSelectorMediumHBel
-      && okDigitalSetDomain && okDigitalSetDraw && okDigitalSetDrawSnippet;
-  trace.endBlock();
+  && okDigitalSetDomain && okDigitalSetDraw ;  trace.endBlock();
   trace.emphase() << ( res ? "Passed." : "Error." ) << endl;
   return res ? 0 : 1;
 }
 
 /** @ingroup Tests **/
+

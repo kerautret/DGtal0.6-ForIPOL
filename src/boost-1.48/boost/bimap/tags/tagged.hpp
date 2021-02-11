@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_TAGS_TAGGED_HPP
 #define BOOST_BIMAP_TAGS_TAGGED_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER)
 #pragma once
 #endif
 
@@ -92,7 +92,7 @@ struct tagged
 \brief Metafunctions to work with tagged types.
 
 This metafunctions aims to make easier the manage of tagged types. They are all mpl
-compatible metafunctions and can be used with lambda expresions.
+compatible metafunctions and can be used with lambda expressions.
 The metafunction value_type_of and tag_of get the data in a tagged type in a secure
 and consistent way.
 default_tagged and overwrite_tagged allows to work with the tag of a tagged type,

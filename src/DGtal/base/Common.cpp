@@ -14,7 +14,7 @@
  *
  **/
 
-/** 
+/**
  * @file Common.cpp
  * @author David Coeurjolly (\c david.coeurjolly@liris.cnrs.fr )
  * Laboratoire d'InfoRmatique en Image et Systèmes d'information - LIRIS (CNRS, UMR 5205), CNRS, France
@@ -22,8 +22,8 @@
  * Laboratory of Mathematics (CNRS, UMR 5807), University of Savoie, France
  *
  * @date 2009/12/10
- * 
- * Implementation of methods defined in Common.h 
+ *
+ * Implementation of methods defined in Common.h
  *
  * This file is part of the DGtal library.
  */
@@ -44,8 +44,22 @@
 **/
 namespace DGtal
 {
+
+#ifndef NDEBUG
+#ifdef __linux__
+#ifdef DGTAL_ENABLE_FLOATING_POINT_EXCEPTIONS
+  void beforeMain (void) __attribute__((constructor));
+  void beforeMain (void)
+  {
+      feenableexcept ( FE_DIVBYZERO | FE_INVALID | FE_OVERFLOW );
+  }
+#endif
+#endif
+#endif
+
   TraceWriterTerm traceWriterTerm(std::cerr);
   Trace trace(traceWriterTerm);
 }
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
+

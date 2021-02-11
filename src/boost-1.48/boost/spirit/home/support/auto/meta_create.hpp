@@ -13,7 +13,8 @@
 #include <boost/spirit/home/support/unused.hpp>
 
 #include <boost/version.hpp>
-#include <boost/proto/proto.hpp>
+#include <boost/proto/make_expr.hpp>
+#include <boost/proto/traits.hpp>
 #include <boost/utility/result_of.hpp>
 #include <boost/type_traits/add_const.hpp>
 #include <boost/type_traits/add_reference.hpp>

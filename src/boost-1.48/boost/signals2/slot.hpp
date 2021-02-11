@@ -12,7 +12,7 @@
 #ifndef BOOST_SIGNALS2_SLOT_HPP
 #define BOOST_SIGNALS2_SLOT_HPP
 
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/config.hpp>
 #include <boost/function.hpp>
 #include <boost/mpl/identity.hpp>
@@ -24,7 +24,7 @@
 #include <boost/visit_each.hpp>
 #include <boost/weak_ptr.hpp>
 
-#ifdef BOOST_NO_VARIADIC_TEMPLATES
+#ifdef BOOST_NO_CXX11_VARIADIC_TEMPLATES
 #include <boost/signals2/preprocessed_slot.hpp>
 #else
 #include <boost/signals2/variadic_slot.hpp>

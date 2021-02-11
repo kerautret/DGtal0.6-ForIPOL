@@ -10,8 +10,8 @@
 //           Andrew Lumsdaine
 //  See http://www.boost.org/libs/multi_array for documentation.
 
-#ifndef BOOST_MULTI_ARRAY_REF_RG071801_HPP
-#define BOOST_MULTI_ARRAY_REF_RG071801_HPP
+#ifndef BOOST_MULTI_ARRAY_MULTI_ARRAY_REF_HPP
+#define BOOST_MULTI_ARRAY_MULTI_ARRAY_REF_HPP
 
 //
 // multi_array_ref.hpp - code for creating "views" of array data.
@@ -26,6 +26,7 @@
 #include "boost/multi_array/view.hpp"
 #include "boost/multi_array/algorithm.hpp"
 #include "boost/type_traits/is_integral.hpp"
+#include "boost/utility/enable_if.hpp"
 #include "boost/array.hpp"
 #include "boost/concept_check.hpp"
 #include "boost/functional.hpp"
@@ -224,11 +225,7 @@ public:
   }
 
   // see generate_array_view in base.hpp
-#if !defined(BOOST_MSVC) || BOOST_MSVC > 1300
   template <int NDims>
-#else
-  template <int NumDims, int NDims> // else ICE
-#endif // BOOST_MSVC
   typename const_array_view<NDims>::type 
   operator[](const detail::multi_array::
              index_gen<NumDims,NDims>& indices)
@@ -528,11 +525,7 @@ public:
 
 
   // See note attached to generate_array_view in base.hpp
-#if !defined(BOOST_MSVC) || BOOST_MSVC > 1300
   template <int NDims>
-#else
-  template <int NumDims, int NDims> // else ICE
-#endif // BOOST_MSVC
   typename array_view<NDims>::type 
   operator[](const detail::multi_array::
              index_gen<NumDims,NDims>& indices) {
@@ -590,11 +583,7 @@ public:
   }
 
   // See note attached to generate_array_view in base.hpp
-#if !defined(BOOST_MSVC) || BOOST_MSVC > 1300
   template <int NDims>
-#else
-  template <int NumDims, int NDims> // else ICE
-#endif // BOOST_MSVC
   typename const_array_view<NDims>::type 
   operator[](const detail::multi_array::
              index_gen<NumDims,NDims>& indices)
@@ -630,4 +619,4 @@ protected:
 
 } // namespace boost
 
-#endif // BOOST_MULTI_ARRAY_REF_RG071801_HPP
+#endif

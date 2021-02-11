@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2007-2009. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2007-2012. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -11,9 +11,17 @@
 #ifndef BOOST_INTERPROCESS_DETAIL_INTERPROCESS_TESTER_HPP
 #define BOOST_INTERPROCESS_DETAIL_INTERPROCESS_TESTER_HPP
 
+#ifndef BOOST_CONFIG_HPP
+#  include <boost/config.hpp>
+#endif
+#
+#if defined(BOOST_HAS_PRAGMA_ONCE)
+#  pragma once
+#endif
+
 namespace boost{
 namespace interprocess{
-namespace detail{
+namespace ipcdetail{
 
 class interprocess_tester
 {
@@ -23,7 +31,7 @@ class interprocess_tester
    {  t.dont_close_on_destruction(); }
 };
 
-}  //namespace detail{
+}  //namespace ipcdetail{
 }  //namespace interprocess{
 }  //namespace boost{
 

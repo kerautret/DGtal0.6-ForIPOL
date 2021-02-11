@@ -11,6 +11,7 @@
 #endif
 
 #include <boost/config.hpp>
+#include <boost/limits.hpp>
 #include <boost/mpl/bool.hpp>
 
 namespace boost { namespace spirit { namespace traits
@@ -92,6 +93,30 @@ namespace boost { namespace spirit { namespace traits
 
     template <>
     struct is_real<long double> : mpl::true_ {};
+
+    ///////////////////////////////////////////////////////////////////////////
+    // customization points for numeric operations
+    ///////////////////////////////////////////////////////////////////////////
+    template <typename T, typename Enable = void>
+    struct absolute_value;
+
+    template <typename T, typename Enable = void>
+    struct is_negative;
+
+    template <typename T, typename Enable = void>
+    struct is_zero;
+
+    template <typename T, typename Enable = void>
+    struct pow10_helper;
+
+    template <typename T, typename Enable = void>
+    struct is_nan;
+
+    template <typename T, typename Enable = void>
+    struct is_infinite;
+
+    template <typename T, typename Enable = void>
+    struct check_overflow : mpl::bool_<std::numeric_limits<T>::is_bounded> {};
 }}}
 
 #endif

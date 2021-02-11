@@ -4,8 +4,8 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
-#if !defined(SPIRIT_RAW_APRIL_9_2007_0912AM)
-#define SPIRIT_RAW_APRIL_9_2007_0912AM
+#ifndef BOOST_SPIRIT_QI_DIRECTIVE_RAW_HPP
+#define BOOST_SPIRIT_QI_DIRECTIVE_RAW_HPP
 
 #if defined(_MSC_VER)
 #pragma once
@@ -21,7 +21,7 @@
 #include <boost/spirit/home/support/unused.hpp>
 #include <boost/spirit/home/support/has_semantic_action.hpp>
 #include <boost/spirit/home/support/handles_container.hpp>
-#include <boost/range/iterator_range.hpp>
+#include <boost/range/iterator_range_core.hpp> // TODO: use forward include
 
 namespace boost { namespace spirit
 {
@@ -35,15 +35,17 @@ namespace boost { namespace spirit
 
 namespace boost { namespace spirit { namespace qi
 {
+#ifndef BOOST_SPIRIT_NO_PREDEFINED_TERMINALS
     using spirit::raw;
+#endif
     using spirit::raw_type;
 
     template <typename Subject>
     struct raw_directive : unary_parser<raw_directive<Subject> >
     {
         typedef Subject subject_type;
-        raw_directive(Subject const& subject)
-          : subject(subject) {}
+        raw_directive(Subject const& subject_)
+          : subject(subject_) {}
 
         template <typename Context, typename Iterator>
         struct attribute
@@ -54,13 +56,13 @@ namespace boost { namespace spirit { namespace qi
         template <typename Iterator, typename Context
           , typename Skipper, typename Attribute>
         bool parse(Iterator& first, Iterator const& last
-          , Context& context, Skipper const& skipper, Attribute& attr) const
+          , Context& context, Skipper const& skipper, Attribute& attr_) const
         {
             qi::skip_over(first, last, skipper);
             Iterator i = first;
             if (subject.parse(i, last, context, skipper, unused))
             {
-                spirit::traits::assign_to(first, i, attr);
+                spirit::traits::assign_to(first, i, attr_);
                 first = i;
                 return true;
             }

@@ -8,6 +8,7 @@ Copyright (c) 2010-2010: Joachim Faulhaber
 #ifndef BOOST_ICL_CLOSED_INTERVAL_HPP_JOFA_100324
 #define BOOST_ICL_CLOSED_INTERVAL_HPP_JOFA_100324
 
+#include <boost/icl/detail/concept_check.hpp>
 #include <boost/icl/concept/interval.hpp>
 #include <boost/icl/type_traits/value_size.hpp>
 #include <boost/icl/type_traits/type_to_string.hpp>
@@ -16,12 +17,13 @@ namespace boost{namespace icl
 {
 
 template <class DomainT, 
-          ICL_COMPARE Compare = ICL_COMPARE_INSTANCE(std::less, DomainT)>
+          ICL_COMPARE Compare = ICL_COMPARE_INSTANCE(ICL_COMPARE_DEFAULT, DomainT)>
 class closed_interval
 {
 public:
     typedef closed_interval<DomainT,Compare> type;
     typedef DomainT domain_type;
+    typedef ICL_COMPARE_DOMAIN(Compare,DomainT) domain_compare;
 
 public:
     //==========================================================================
@@ -82,8 +84,8 @@ struct interval_traits< icl::closed_interval<DomainT, Compare> >
         return interval_type(lo, up);
     }
 
-    static domain_type lower(const interval_type& inter_val){ return inter_val.lower(); };
-    static domain_type upper(const interval_type& inter_val){ return inter_val.upper(); };
+    static domain_type lower(const interval_type& inter_val){ return inter_val.lower(); }
+    static domain_type upper(const interval_type& inter_val){ return inter_val.upper(); }
 };
 
 //==============================================================================
@@ -106,7 +108,7 @@ struct type_to_string<icl::closed_interval<DomainT,Compare> >
 template<class DomainT> 
 struct value_size<icl::closed_interval<DomainT> >
 {
-    static std::size_t apply(const icl::closed_interval<DomainT>& value) 
+    static std::size_t apply(const icl::closed_interval<DomainT>&) 
     { return 2; }
 };
 

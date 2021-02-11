@@ -4,8 +4,8 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
-#if !defined(SPIRIT_NOT_PREDICATE_MARCH_23_2007_0618PM)
-#define SPIRIT_NOT_PREDICATE_MARCH_23_2007_0618PM
+#ifndef BOOST_SPIRIT_QI_OPERATOR_NOT_PREDICATE_HPP
+#define BOOST_SPIRIT_QI_OPERATOR_NOT_PREDICATE_HPP
 
 #if defined(_MSC_VER)
 #pragma once
@@ -18,6 +18,8 @@
 #include <boost/spirit/home/support/has_semantic_action.hpp>
 #include <boost/spirit/home/support/handles_container.hpp>
 #include <boost/spirit/home/support/info.hpp>
+#include <boost/proto/operators.hpp>
+#include <boost/proto/tags.hpp>
 
 namespace boost { namespace spirit
 {
@@ -42,8 +44,8 @@ namespace boost { namespace spirit { namespace qi
             typedef unused_type type;
         };
 
-        not_predicate(Subject const& subject)
-          : subject(subject) {}
+        not_predicate(Subject const& subject_)
+          : subject(subject_) {}
 
         template <typename Iterator, typename Context
           , typename Skipper, typename Attribute>

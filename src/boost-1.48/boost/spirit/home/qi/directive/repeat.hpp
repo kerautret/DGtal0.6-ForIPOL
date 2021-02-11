@@ -1,11 +1,12 @@
 /*=============================================================================
     Copyright (c) 2001-2011 Joel de Guzman
+    Copyright (c) 2001-2011 Hartmut Kaiser
 
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
-#if !defined(SPIRIT_REPEAT_NOVEMBER_14_2008_1148AM)
-#define SPIRIT_REPEAT_NOVEMBER_14_2008_1148AM
+#ifndef BOOST_SPIRIT_QI_DIRECTIVE_REPEAT_HPP
+#define BOOST_SPIRIT_QI_DIRECTIVE_REPEAT_HPP
 
 #if defined(_MSC_VER)
 #pragma once
@@ -18,11 +19,12 @@
 #include <boost/spirit/home/support/container.hpp>
 #include <boost/spirit/home/support/common_terminals.hpp>
 #include <boost/spirit/home/qi/detail/attributes.hpp>
+#include <boost/spirit/home/qi/detail/fail_function.hpp>
+#include <boost/spirit/home/qi/detail/pass_container.hpp>
 #include <boost/spirit/home/support/info.hpp>
 #include <boost/spirit/home/support/has_semantic_action.hpp>
 #include <boost/spirit/home/support/handles_container.hpp>
 #include <boost/fusion/include/at.hpp>
-#include <boost/foreach.hpp>
 #include <vector>
 
 namespace boost { namespace spirit
@@ -69,16 +71,18 @@ namespace boost { namespace spirit
 
 namespace boost { namespace spirit { namespace qi
 {
+#ifndef BOOST_SPIRIT_NO_PREDEFINED_TERMINALS
     using spirit::repeat;
-    using spirit::repeat_type;
     using spirit::inf;
+#endif
+    using spirit::repeat_type;
     using spirit::inf_type;
 
     template <typename T>
     struct exact_iterator // handles repeat(exact)[p]
     {
-        exact_iterator(T const exact)
-          : exact(exact) {}
+        exact_iterator(T const exact_)
+          : exact(exact_) {}
 
         typedef T type;
         T start() const { return 0; }
@@ -87,17 +91,16 @@ namespace boost { namespace spirit { namespace qi
 
         T const exact;
 
-    private:
         // silence MSVC warning C4512: assignment operator could not be generated
-        exact_iterator& operator= (exact_iterator const&);
+        BOOST_DELETED_FUNCTION(exact_iterator& operator= (exact_iterator const&))
     };
 
     template <typename T>
     struct finite_iterator // handles repeat(min, max)[p]
     {
-        finite_iterator(T const min, T const max)
-          : min BOOST_PREVENT_MACRO_SUBSTITUTION (min)
-          , max BOOST_PREVENT_MACRO_SUBSTITUTION (max) {}
+        finite_iterator(T const min_, T const max_)
+          : min BOOST_PREVENT_MACRO_SUBSTITUTION (min_)
+          , max BOOST_PREVENT_MACRO_SUBSTITUTION (max_) {}
 
         typedef T type;
         T start() const { return 0; }
@@ -107,16 +110,15 @@ namespace boost { namespace spirit { namespace qi
         T const min;
         T const max;
 
-    private:
         // silence MSVC warning C4512: assignment operator could not be generated
-        finite_iterator& operator= (finite_iterator const&);
+        BOOST_DELETED_FUNCTION(finite_iterator& operator= (finite_iterator const&))
     };
 
     template <typename T>
     struct infinite_iterator // handles repeat(min, inf)[p]
     {
-        infinite_iterator(T const min)
-          : min BOOST_PREVENT_MACRO_SUBSTITUTION (min) {}
+        infinite_iterator(T const min_)
+          : min BOOST_PREVENT_MACRO_SUBSTITUTION (min_) {}
 
         typedef T type;
         T start() const { return 0; }
@@ -125,9 +127,8 @@ namespace boost { namespace spirit { namespace qi
 
         T const min;
 
-    private:
         // silence MSVC warning C4512: assignment operator could not be generated
-        infinite_iterator& operator= (infinite_iterator const&);
+        BOOST_DELETED_FUNCTION(infinite_iterator& operator= (infinite_iterator const&))
     };
 
     template <typename Subject, typename LoopIter>
@@ -149,60 +150,29 @@ namespace boost { namespace spirit { namespace qi
             type;
         };
 
-        repeat_parser(Subject const& subject, LoopIter const& iter)
-          : subject(subject), iter(iter) {}
+        repeat_parser(Subject const& subject_, LoopIter const& iter_)
+          : subject(subject_), iter(iter_) {}
 
-        template <typename Iterator, typename Context
-          , typename Skipper, typename ValueType, typename Attribute
-          , typename LoopVar>
-        bool parse_minimal(Iterator &first, Iterator const& last
-          , Context& context, Skipper const& skipper
-          , Attribute& attr, ValueType& val, LoopVar& i) const
+        template <typename F>
+        bool parse_container(F f) const
         {
-            // this scope allows save and required_attr to be reclaimed 
-            // immediately after we're done with the required minimum 
-            // iteration.
-            Iterator save = first;
-            std::vector<ValueType> required_attr;
-            for (; !iter.got_min(i); ++i)
+            typename LoopIter::type i = iter.start();
+            for (/**/; !iter.got_min(i); ++i)
             {
-                if (!subject.parse(save, last, context, skipper, val) ||
-                    !traits::push_back(required_attr, val))
-                {
+                if (f (subject))
                     return false;
-                }
-
-                first = save;
-                traits::clear(val);
             }
 
-            // if we got the required number of items, these are copied 
-            // over (appended) to the 'real' attribute
-            BOOST_FOREACH(ValueType const& v, required_attr)
+            // parse some more up to the maximum specified
+            typename F::iterator_type save = f.f.first;
+            for (/**/; !iter.got_max(i); ++i)
             {
-                traits::push_back(attr, v);
+                if (f (subject))
+                    break;
+                save = f.f.first;
             }
-            return true;
-        }
 
-        template <typename Iterator, typename Context
-          , typename Skipper, typename LoopVar>
-        bool parse_minimal(Iterator &first, Iterator const& last
-          , Context& context, Skipper const& skipper
-          , unused_type, unused_type, LoopVar& i) const
-        {
-            // this scope allows save and required_attr to be reclaimed 
-            // immediately after we're done with the required minimum 
-            // iteration.
-            Iterator save = first;
-            for (; !iter.got_min(i); ++i)
-            {
-                if (!subject.parse(save, last, context, skipper, unused))
-                {
-                    return false;
-                }
-                first = save;
-            }
+            f.f.first = save;
             return true;
         }
 
@@ -210,37 +180,20 @@ namespace boost { namespace spirit { namespace qi
           , typename Skipper, typename Attribute>
         bool parse(Iterator& first, Iterator const& last
           , Context& context, Skipper const& skipper
-          , Attribute& attr) const
+          , Attribute& attr_) const
         {
-            // create a local value if Attribute is not unused_type
-            typedef typename traits::container_value<Attribute>::type 
-                value_type;
-            value_type val = value_type();
-            typename LoopIter::type i = iter.start();
+            typedef detail::fail_function<Iterator, Context, Skipper>
+                fail_function;
 
             // ensure the attribute is actually a container type
-            traits::make_container(attr);
+            traits::make_container(attr_);
 
-            // parse the minimum required
-            Iterator save = first;
-            if (!iter.got_min(i) &&
-                !parse_minimal(save, last, context, skipper, attr, val, i))
-            {
+            Iterator iter_local = first;
+            fail_function f(iter_local, last, context, skipper);
+            if (!parse_container(detail::make_pass_container(f, attr_)))
                 return false;
-            }
 
-            // parse some more up to the maximum specified
-            for (/**/; !iter.got_max(i); ++i) {
-                if (!subject.parse(save, last, context, skipper, val) ||
-                    !traits::push_back(attr, val))
-                {
-                    break;
-                }
-                first = save;
-                traits::clear(val);
-            }
-
-            first = save;
+            first = f.first;
             return true;
         }
 
@@ -253,9 +206,8 @@ namespace boost { namespace spirit { namespace qi
         Subject subject;
         LoopIter iter;
 
-    private:
         // silence MSVC warning C4512: assignment operator could not be generated
-        repeat_parser& operator= (repeat_parser const&);
+        BOOST_DELETED_FUNCTION(repeat_parser& operator= (repeat_parser const&))
     };
 
     ///////////////////////////////////////////////////////////////////////////
@@ -334,7 +286,7 @@ namespace boost { namespace spirit { namespace traits
     template <typename Subject, typename LoopIter, typename Attribute
       , typename Context, typename Iterator>
     struct handles_container<qi::repeat_parser<Subject, LoopIter>
-      , Attribute, Context, Iterator>
+          , Attribute, Context, Iterator>
       : mpl::true_ {};
 }}}
 

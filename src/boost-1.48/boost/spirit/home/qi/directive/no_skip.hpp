@@ -5,8 +5,8 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
-#if !defined(SPIRIT_NO_SKIP_JAN_16_2010_0802PM)
-#define SPIRIT_NO_SKIP_JAN_16_2010_0802PM
+#ifndef BOOST_SPIRIT_QI_DIRECTIVE_NO_SKIP_HPP
+#define BOOST_SPIRIT_QI_DIRECTIVE_NO_SKIP_HPP
 
 #if defined(_MSC_VER)
 #pragma once
@@ -22,6 +22,7 @@
 #include <boost/spirit/home/support/info.hpp>
 #include <boost/spirit/home/support/has_semantic_action.hpp>
 #include <boost/spirit/home/support/handles_container.hpp>
+#include <boost/utility/enable_if.hpp>
 
 namespace boost { namespace spirit
 {
@@ -35,7 +36,9 @@ namespace boost { namespace spirit
 
 namespace boost { namespace spirit { namespace qi
 {
+#ifndef BOOST_SPIRIT_NO_PREDEFINED_TERMINALS
     using spirit::no_skip;
+#endif
     using spirit::no_skip_type;
 
     // same as lexeme[], but does not pre-skip
@@ -43,8 +46,8 @@ namespace boost { namespace spirit { namespace qi
     struct no_skip_directive : unary_parser<no_skip_directive<Subject> >
     {
         typedef Subject subject_type;
-        no_skip_directive(Subject const& subject)
-          : subject(subject) {}
+        no_skip_directive(Subject const& subject_)
+          : subject(subject_) {}
 
         template <typename Context, typename Iterator>
         struct attribute
@@ -56,12 +59,23 @@ namespace boost { namespace spirit { namespace qi
 
         template <typename Iterator, typename Context
           , typename Skipper, typename Attribute>
-        bool parse(Iterator& first, Iterator const& last
+        typename disable_if<detail::is_unused_skipper<Skipper>, bool>::type
+        parse(Iterator& first, Iterator const& last
           , Context& context, Skipper const& skipper
-          , Attribute& attr) const
+          , Attribute& attr_) const
         {
             return subject.parse(first, last, context
-              , detail::unused_skipper<Skipper>(skipper), attr);
+              , detail::unused_skipper<Skipper>(skipper), attr_);
+        }
+        template <typename Iterator, typename Context
+          , typename Skipper, typename Attribute>
+        typename enable_if<detail::is_unused_skipper<Skipper>, bool>::type
+        parse(Iterator& first, Iterator const& last
+          , Context& context, Skipper const& skipper
+          , Attribute& attr_) const
+        {
+            return subject.parse(first, last, context
+              , skipper, attr_);
         }
 
         template <typename Context>

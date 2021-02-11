@@ -3,13 +3,13 @@
 
     http://www.boost.org/
 
-    Copyright (c) 2001-2011 Hartmut Kaiser. Distributed under the Boost
+    Copyright (c) 2001-2012 Hartmut Kaiser. Distributed under the Boost
     Software License, Version 1.0. (See accompanying file
     LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
 
-#if !defined(TOKEN_CACHE_HPP_4D2320B7_1D56_4113_A114_397E70FA438C_INCLUDED)
-#define TOKEN_CACHE_HPP_4D2320B7_1D56_4113_A114_397E70FA438C_INCLUDED
+#if !defined(BOOST_TOKEN_CACHE_HPP_4D2320B7_1D56_4113_A114_397E70FA438C_INCLUDED)
+#define BOOST_TOKEN_CACHE_HPP_4D2320B7_1D56_4113_A114_397E70FA438C_INCLUDED
 
 #include <vector>
 
@@ -32,12 +32,12 @@ namespace cpplexer {
 //  keywords, operators and other constant language elements.
 //
 //  This avoids repeated construction of these tokens, which is especially
-//  effective when used in conjunction with a copy on write string 
+//  effective when used in conjunction with a copy on write string
 //  implementation (COW string).
 //
 ///////////////////////////////////////////////////////////////////////////////
 template <typename StringT>
-class token_cache 
+class token_cache
 {
 public:
     token_cache()
@@ -60,7 +60,7 @@ private:
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-}   // namespace cpplexer 
+}   // namespace cpplexer
 }   // namespace wave
 }   // namespace boost
 
@@ -69,4 +69,4 @@ private:
 #include BOOST_ABI_SUFFIX
 #endif
 
-#endif // !defined(TOKEN_CACHE_HPP_4D2320B7_1D56_4113_A114_397E70FA438C_INCLUDED)
+#endif // !defined(BOOST_TOKEN_CACHE_HPP_4D2320B7_1D56_4113_A114_397E70FA438C_INCLUDED)

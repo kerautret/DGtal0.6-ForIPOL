@@ -24,7 +24,7 @@
 // is strictly defined as a discrete function:
 // only integral values of k are envisaged.
 // However because the method of calculation uses a continuous gamma function,
-// it is convenient to treat it as if a continous function,
+// it is convenient to treat it as if a continuous function,
 // and permit non-integral values of k.
 // To enforce the strict mathematical model, users should use floor or ceil functions
 // on k outside this function to ensure that k is integral.
@@ -105,7 +105,7 @@ namespace boost
       template <class RealType, class Policy>
       inline bool check_dist_and_prob(const char* function, RealType p, RealType prob, RealType* result, const Policy& pol)
       {
-        if(check_dist(function, p, result, pol) && detail::check_probability(function, prob, result, pol) == false)
+        if((check_dist(function, p, result, pol) && detail::check_probability(function, prob, result, pol)) == false)
         {
           return false;
         }
@@ -146,7 +146,7 @@ namespace boost
         RealType alpha) // alpha 0.05 equivalent to 95% for one-sided test.
       {
         static const char* function = "boost::math::geometric<%1%>::find_lower_bound_on_p";
-        RealType result;  // of error checks.
+        RealType result = 0;  // of error checks.
         RealType successes = 1;
         RealType failures = trials - successes;
         if(false == detail::check_probability(function, alpha, &result, Policy())
@@ -171,7 +171,7 @@ namespace boost
         RealType alpha) // alpha 0.05 equivalent to 95% for one-sided test.
       {
         static const char* function = "boost::math::geometric<%1%>::find_upper_bound_on_p";
-        RealType result;  // of error checks.
+        RealType result = 0;  // of error checks.
         RealType successes = 1;
         RealType failures = trials - successes;
         if(false == geometric_detail::check_dist_and_k(
@@ -205,7 +205,7 @@ namespace boost
       {
         static const char* function = "boost::math::geometric<%1%>::find_minimum_number_of_trials";
         // Error checks:
-        RealType result;
+        RealType result = 0;
         if(false == geometric_detail::check_dist_and_k(
           function, p, k, &result, Policy())
           && detail::check_probability(function, alpha, &result, Policy()))
@@ -223,7 +223,7 @@ namespace boost
       {
         static const char* function = "boost::math::geometric<%1%>::find_maximum_number_of_trials";
         // Error checks:
-        RealType result;
+        RealType result = 0;
         if(false == geometric_detail::check_dist_and_k(
           function, p, k, &result, Policy())
           &&  detail::check_probability(function, alpha, &result, Policy()))
@@ -317,7 +317,7 @@ namespace boost
       static const char* function = "boost::math::pdf(const geometric_distribution<%1%>&, %1%)";
 
       RealType p = dist.success_fraction();
-      RealType result;
+      RealType result = 0;
       if(false == geometric_detail::check_dist_and_k(
         function,
         p,
@@ -356,7 +356,7 @@ namespace boost
       // If necessary, it has already been promoted from an integral type.
       RealType p = dist.success_fraction();
       // Error check:
-      RealType result;
+      RealType result = 0;
       if(false == geometric_detail::check_dist_and_k(
         function,
         p,
@@ -372,8 +372,8 @@ namespace boost
       //RealType q = 1 - p;  // Bad for small p
       //RealType probability = 1 - std::pow(q, k+1);
 
-      RealType z = boost::math::log1p(-p) * (k+1);
-      RealType probability = -boost::math::expm1(z);
+      RealType z = boost::math::log1p(-p, Policy()) * (k + 1);
+      RealType probability = -boost::math::expm1(z, Policy());
 
       return probability;
     } // cdf Cumulative Distribution Function geometric.
@@ -389,7 +389,7 @@ namespace boost
       geometric_distribution<RealType, Policy> const& dist = c.dist;
       RealType p = dist.success_fraction();
       // Error check:
-      RealType result;
+      RealType result = 0;
       if(false == geometric_detail::check_dist_and_k(
         function,
         p,
@@ -398,7 +398,7 @@ namespace boost
       {
         return result;
       }
-      RealType z = boost::math::log1p(-p) * (k+1);
+      RealType z = boost::math::log1p(-p, Policy()) * (k+1);
       RealType probability = exp(z);
       return probability;
     } // cdf Complemented Cumulative Distribution Function geometric.
@@ -416,7 +416,7 @@ namespace boost
 
       RealType success_fraction = dist.success_fraction();
       // Check dist and x.
-      RealType result;
+      RealType result = 0;
       if(false == geometric_detail::check_dist_and_prob
         (function, success_fraction, x, &result, Policy()))
       {
@@ -448,7 +448,7 @@ namespace boost
       }
    
       // log(1-x) /log(1-success_fraction) -1; but use log1p in case success_fraction is small
-      result = boost::math::log1p(-x) / boost::math::log1p(-success_fraction) -1;
+      result = boost::math::log1p(-x, Policy()) / boost::math::log1p(-success_fraction, Policy()) - 1;
       // Subtract a few epsilons here too?
       // to make sure it doesn't slip over, so ceil would be one too many.
       return result;
@@ -465,7 +465,7 @@ namespace boost
        RealType x = c.param;
        const geometric_distribution<RealType, Policy>& dist = c.dist;
        RealType success_fraction = dist.success_fraction();
-       RealType result;
+       RealType result = 0;
        if(false == geometric_detail::check_dist_and_prob(
           function,
           success_fraction,
@@ -496,7 +496,7 @@ namespace boost
           // unless #define BOOST_MATH_THROW_ON_OVERFLOW_ERROR
        }
        // log(x) /log(1-success_fraction) -1; but use log1p in case success_fraction is small
-       result = log(x) / boost::math::log1p(-success_fraction) -1;
+       result = log(x) / boost::math::log1p(-success_fraction, Policy()) - 1;
       return result;
 
     } // quantile complement

@@ -24,10 +24,12 @@
 
 #include <boost/fusion/include/vector.hpp>
 #include <boost/mpl/if.hpp>
-#include <boost/detail/iterator.hpp>
+#include <boost/proto/extends.hpp>
+#include <boost/proto/traits.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/variant.hpp>
 
+#include <iterator> // for std::iterator_traits
 #include <string>
 #include <cstdlib>
 
@@ -92,7 +94,7 @@ namespace boost { namespace spirit { namespace lex
 
             if (first != last) {
                 typedef typename 
-                    boost::detail::iterator_traits<Iterator>::value_type 
+                    std::iterator_traits<Iterator>::value_type 
                 token_type;
 
                 //  If the following assertion fires you probably forgot to  
@@ -115,9 +117,9 @@ namespace boost { namespace spirit { namespace lex
         info what(Context& /*context*/) const
         {
             if (0 == def_.which()) 
-                return info("token_def", get<string_type>(def_));
+                return info("token_def", boost::get<string_type>(def_));
 
-            return info("token_def", get<char_type>(def_));
+            return info("token_def", boost::get<char_type>(def_));
         }
 
         ///////////////////////////////////////////////////////////////////////
@@ -148,11 +150,11 @@ namespace boost { namespace spirit { namespace lex
 
             if (0 == def_.which()) {
                 unique_id_ = lexdef.add_token(state.c_str()
-                  , get<string_type>(def_), token_id_, target);
+                  , boost::get<string_type>(def_), token_id_, target);
             }
             else {
                 unique_id_ = lexdef.add_token(state.c_str()
-                  , get<char_type>(def_), token_id_, target);
+                  , boost::get<char_type>(def_), token_id_, target);
             }
         }
 
@@ -212,7 +214,8 @@ namespace boost { namespace spirit { namespace lex
         string_type definition() const 
         { 
             return (0 == def_.which()) ? 
-                get<string_type>(def_) : string_type(1, get<char_type>(def_));
+                boost::get<string_type>(def_) : 
+                string_type(1, boost::get<char_type>(def_));
         }
         std::size_t state() const { return token_state_; }
 

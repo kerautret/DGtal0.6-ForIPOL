@@ -93,17 +93,16 @@ namespace DGtal
      */
     ~Board2D();
     
-    /** 
+    /**
      * Constructs a new board and sets the background color, if any.
-     * 
-     * @param backgroundColor A color for the drawing's background.
+     *
+     * @param aBackgroundColor A color for the drawing's background.
      */
-    Board2D( const Color & backgroundColor 
-    = Color::None );
+    Board2D( const Color & aBackgroundColor = Color::None );
 
-    /** 
+    /**
      * Copy constructor.
-     * 
+     *
      * @param other The object to be copied.
      */
     Board2D( const Board2D & other );
@@ -192,7 +191,7 @@ namespace DGtal
   /**
    * Base class specifying the methods for classes which intend to
    * modify a Board2D stream.
-   * @todo merge DrawableWithBoard2D and DrawWithBoardModifier 
+   * @todo merge DrawableWithBoard2D and DrawWithBoardModifier
    */
   struct DrawWithBoardModifier {
     std::string className() const
@@ -205,7 +204,7 @@ namespace DGtal
       return 0;
     }*/
 
-    /*virtual void setStyle( Board2D &  ) const 
+    /*virtual void setStyle( Board2D &  ) const
     {}*/
   };
 
@@ -391,7 +390,7 @@ namespace DGtal
      * @param lineStyle specifies the drawing line style (SolidStyle,
      *      DashStyle, DotStyle, DashDotStyle, DashDotDotStyle,
      *      DashDotDotDotStyle )
-     *  
+     *
      * @param lineCap specifies the drawing line cap (ButtCap,
      * RoundCap, SquareCap )
      *
@@ -405,7 +404,7 @@ namespace DGtal
          Board2D::Shape::LineCap lineCap = Board2D::Shape::ButtCap,
          Board2D::Shape::LineJoin lineJoin = Board2D::Shape::MiterJoin )
       : myPenColor( penColor ), myFillColor( fillColor ),
-  myLineWidth( lineWidth ), 
+  myLineWidth( lineWidth ),
   myLineStyle( lineStyle ), myLineCap ( lineCap ), myLineJoin( lineJoin )
     {}
     
@@ -437,3 +436,4 @@ namespace DGtal
 
 #undef Board2D_RECURSES
 #endif // else defined(Board2D_RECURSES)
+

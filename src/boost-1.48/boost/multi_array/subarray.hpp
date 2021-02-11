@@ -10,8 +10,8 @@
 //           Andrew Lumsdaine
 //  See http://www.boost.org/libs/multi_array for documentation.
 
-#ifndef SUBARRAY_RG071801_HPP
-#define SUBARRAY_RG071801_HPP
+#ifndef BOOST_MULTI_ARRAY_SUBARRAY_HPP
+#define BOOST_MULTI_ARRAY_SUBARRAY_HPP
 
 //
 // subarray.hpp - used to implement standard operator[] on
@@ -87,11 +87,7 @@ public:
   }
 
   // see generate_array_view in base.hpp
-#if !defined(BOOST_MSVC) || BOOST_MSVC > 1300
   template <int NDims>
-#else
-  template <int NumDims, int NDims> // else ICE
-#endif // BOOST_MSVC
   typename const_array_view<NDims>::type 
   operator[](const boost::detail::multi_array::
              index_gen<NumDims,NDims>& indices)
@@ -267,11 +263,7 @@ public:
   }
 
   // see generate_array_view in base.hpp
-#if !defined(BOOST_MSVC) || BOOST_MSVC > 1300
   template <int NDims>
-#else
-  template <int NumDims, int NDims> // else ICE
-#endif // BOOST_MSVC
   typename array_view<NDims>::type 
   operator[](const boost::detail::multi_array::
              index_gen<NumDims,NDims>& indices) {
@@ -332,11 +324,7 @@ public:
   }
 
   // see generate_array_view in base.hpp
-#if !defined(BOOST_MSVC) || BOOST_MSVC > 1300
   template <int NDims>
-#else
-  template <int NumDims, int NDims> // else ICE
-#endif // BOOST_MSVC
   typename const_array_view<NDims>::type 
   operator[](const boost::detail::multi_array::
              index_gen<NumDims,NDims>& indices)
@@ -396,4 +384,4 @@ public:
 };
 } // namespace boost
   
-#endif // SUBARRAY_RG071801_HPP
+#endif

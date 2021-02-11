@@ -18,11 +18,17 @@
 #include <boost/spirit/home/support/unused.hpp>
 #include <boost/spirit/home/support/info.hpp>
 #include <boost/spirit/home/support/lazy.hpp>
-#include <boost/spirit/home/phoenix/core/actor.hpp>
 #include <boost/fusion/include/at.hpp>
 #include <boost/utility/result_of.hpp>
+#include <boost/proto/make_expr.hpp>
 #include <boost/type_traits/remove_reference.hpp>
 #include <boost/mpl/not.hpp>
+
+namespace boost { namespace phoenix
+{
+    template <typename Expr>
+    struct actor;
+}}
 
 namespace boost { namespace spirit
 {
@@ -43,6 +49,40 @@ namespace boost { namespace spirit { namespace karma
 {
     using spirit::lazy;
     typedef modify<karma::domain> karma_modify;
+
+    namespace detail
+    {
+        template <typename Generator, typename OutputIterator, typename Context
+          , typename Delimiter, typename Attribute>
+        bool lazy_generate_impl(Generator const& g, OutputIterator& sink
+          , Context& context, Delimiter const& delim
+          , Attribute const& attr, mpl::false_)
+        {
+            return g.generate(sink, context, delim, attr);
+        }
+
+        template <typename Generator, typename OutputIterator, typename Context
+          , typename Delimiter, typename Attribute>
+        bool lazy_generate_impl(Generator const& g, OutputIterator& sink
+          , Context& context, Delimiter const& delim
+          , Attribute const& /* attr */, mpl::true_)
+        {
+            // If DeducedAuto is false (semantic actions is present), the
+            // component's attribute is unused.
+            return g.generate(sink, context, delim, unused);
+        }
+
+        template <typename Generator, typename OutputIterator, typename Context
+          , typename Delimiter, typename Attribute>
+        bool lazy_generate_impl_main(Generator const& g, OutputIterator& sink
+          , Context& context, Delimiter const& delim, Attribute const& attr)
+        {
+            // If DeducedAuto is true (no semantic action), we pass the parser's
+            // attribute on to the component.
+            typedef typename traits::has_semantic_action<Generator>::type auto_rule;
+            return lazy_generate_impl(g, sink, context, delim, attr, auto_rule());
+        }
+    }
 
     template <typename Function, typename Modifiers>
     struct lazy_generator : generator<lazy_generator<Function, Modifiers> >
@@ -86,9 +126,10 @@ namespace boost { namespace spirit { namespace karma
         bool generate(OutputIterator& sink, Context& context, 
             Delimiter const& d, Attribute const& attr) const
         {
-            return compile<karma::domain>(func(unused, context)
+            return detail::lazy_generate_impl_main(
+                compile<karma::domain>(func(unused, context)
               , karma_modify()(tag::lazy_eval(), modifiers))
-                .generate(sink, context, d, attr);
+              , sink, context, d, attr);
         }
 
         template <typename Context>
@@ -104,9 +145,8 @@ namespace boost { namespace spirit { namespace karma
         Function func;
         Modifiers modifiers;
 
-    private:
         // silence MSVC warning C4512: assignment operator could not be generated
-        lazy_generator& operator= (lazy_generator const&);
+        BOOST_DELETED_FUNCTION(lazy_generator& operator= (lazy_generator const&))
     };
 
     ///////////////////////////////////////////////////////////////////////////
@@ -162,11 +202,11 @@ namespace boost { namespace spirit { namespace karma
         bool generate(OutputIterator& sink, Context& ctx, Delimiter const& d
           , Attribute const& attr) const
         {
-            return compile<karma::domain>(
+            return detail::lazy_generate_impl_main(compile<karma::domain>(
                 proto::make_expr<proto::tag::subscript>(
                     function(unused, ctx), subject)
                   , karma_modify()(tag::lazy_eval(), modifiers))
-                .generate(sink, ctx, d, attr);
+                  , sink, ctx, d, attr);
         }
 
         template <typename Context>

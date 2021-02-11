@@ -4,8 +4,8 @@
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-#if !defined(SPIRIT_KARMA_ALTERNATIVE_MAR_01_2007_1124AM)
-#define SPIRIT_KARMA_ALTERNATIVE_MAR_01_2007_1124AM
+#ifndef BOOST_SPIRIT_KARMA_DETAIL_ALTERNATIVE_FUNCTION_HPP
+#define BOOST_SPIRIT_KARMA_DETAIL_ALTERNATIVE_FUNCTION_HPP
 
 #if defined(_MSC_VER)
 #pragma once
@@ -14,6 +14,7 @@
 #include <boost/spirit/home/karma/domain.hpp>
 #include <boost/spirit/home/karma/directive/buffer.hpp>
 #include <boost/spirit/home/support/unused.hpp>
+#include <boost/spirit/home/support/utree/utree_traits_fwd.hpp>
 #include <boost/spirit/home/karma/detail/attributes.hpp>
 #include <boost/spirit/home/support/detail/hold_any.hpp>
 #include <boost/spirit/home/karma/detail/output_iterator.hpp>
@@ -89,7 +90,7 @@ namespace boost { namespace spirit { namespace karma { namespace detail
             component; // suppresses warning: C4100: 'component' : unreferenced formal parameter
 #endif
             return call(component, sink, ctx, d, attr
-              , spirit::traits::not_is_variant<Attribute, karma::domain>());
+              , spirit::traits::not_is_variant_or_variant_in_optional<Attribute, karma::domain>());
         }
 
         template <typename OutputIterator, typename Context, typename Delimiter>
@@ -128,7 +129,8 @@ namespace boost { namespace spirit { namespace karma { namespace detail
 
             // returns true if any of the generators succeed
             typedef typename component_type::compatible_type compatible_type;
-            return component.generate(sink, ctx, d, get<compatible_type>(attr_));
+            return component.generate(sink, ctx, d
+              , boost::get<compatible_type>(attr_));
         }
     };
 
@@ -189,9 +191,8 @@ namespace boost { namespace spirit { namespace karma { namespace detail
         Delimiter const& delim;
         Attribute const& attr;
 
-    private:
         // silence MSVC warning C4512: assignment operator could not be generated
-        alternative_generate_function& operator= (alternative_generate_function const&);
+        BOOST_DELETED_FUNCTION(alternative_generate_function& operator= (alternative_generate_function const&))
     };
 
     // specialization for strict alternatives
@@ -239,9 +240,8 @@ namespace boost { namespace spirit { namespace karma { namespace detail
         Attribute const& attr;
         bool failed;
 
-    private:
         // silence MSVC warning C4512: assignment operator could not be generated
-        alternative_generate_function& operator= (alternative_generate_function const&);
+        BOOST_DELETED_FUNCTION(alternative_generate_function& operator= (alternative_generate_function const&))
     };
 }}}}
 

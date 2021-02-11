@@ -63,7 +63,7 @@ public:
     std_file_iterator()
     {}
 
-    explicit std_file_iterator(std::string fileName)
+    explicit std_file_iterator(std::string const& fileName)
     {
         using namespace std;
         FILE* f = fopen(fileName.c_str(), "rb");
@@ -130,7 +130,7 @@ public:
 
     void advance(std::ptrdiff_t n)
     {
-        m_pos += n * sizeof(CharT);
+        m_pos += static_cast<long>(n) * sizeof(CharT);
         update_char();
     }
 
@@ -141,14 +141,14 @@ public:
 
 private:
     boost::shared_ptr<std::FILE> m_file;
-    std::size_t m_pos;
+    long m_pos;
     CharT m_curChar;
     bool m_eof;
 
     void update_char(void)
     {
         using namespace std;
-        if ((std::size_t)ftell(m_file.get()) != m_pos)
+        if (ftell(m_file.get()) != m_pos)
             fseek(m_file.get(), m_pos, SEEK_SET);
 
         m_eof = (fread(&m_curChar, sizeof(CharT), 1, m_file.get()) < 1);
@@ -177,9 +177,11 @@ public:
     typedef CharT value_type;
 
     mmap_file_iterator()
+      : m_filesize(0), m_curChar(0)
     {}
 
-    explicit mmap_file_iterator(std::string fileName)
+    explicit mmap_file_iterator(std::string const& fileName)
+      : m_filesize(0), m_curChar(0)
     {
         HANDLE hFile = ::CreateFileA(
             fileName.c_str(),
@@ -283,11 +285,7 @@ public:
     }
 
 private:
-#ifndef BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
     typedef boost::remove_pointer<HANDLE>::type handle_t;
-#else
-    typedef void handle_t;
-#endif
 
     boost::shared_ptr<CharT> m_mem;
     std::size_t m_filesize;
@@ -334,9 +332,11 @@ public:
     typedef CharT value_type;
 
     mmap_file_iterator()
+      : m_curChar(0)
     {}
 
-    explicit mmap_file_iterator(std::string file_name)
+    explicit mmap_file_iterator(std::string const& file_name)
+      : m_curChar(0)
     {
         // open the file
        int fd = open(file_name.c_str(),

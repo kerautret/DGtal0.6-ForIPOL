@@ -3,8 +3,8 @@
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file licence_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-#ifndef BOOST_LEXER_FILE_INPUT
-#define BOOST_LEXER_FILE_INPUT
+#ifndef BOOST_SPIRIT_SUPPORT_DETAIL_LEXER_FILE_INPUT_HPP
+#define BOOST_SPIRIT_SUPPORT_DETAIL_LEXER_FILE_INPUT_HPP
 
 #include "char_traits.hpp"
 // memcpy
@@ -24,11 +24,7 @@ public:
     class iterator
     {
     public:
-#if defined _MSC_VER && _MSC_VER <= 1200
-        friend basic_file_input;
-#else
         friend class basic_file_input;
-#endif
 
         struct data
         {
@@ -132,13 +128,9 @@ public:
         data _data;
     };
 
-#if defined _MSC_VER && _MSC_VER <= 1200
-    friend iterator;
-#else
     friend class iterator;
-#endif
 
-    // Make it explict that we are NOT taking a copy of state_machine_!
+    // Make it explicit that we are NOT taking a copy of state_machine_!
     basic_file_input (const basic_state_machine<CharT> *state_machine_,
         std::basic_ifstream<CharT> *is_,
         const std::streamsize buffer_size_ = 4096,

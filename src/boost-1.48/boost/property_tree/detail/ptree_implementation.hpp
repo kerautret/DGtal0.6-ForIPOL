@@ -13,11 +13,14 @@
 
 #include <boost/iterator/iterator_adaptor.hpp>
 #include <boost/iterator/reverse_iterator.hpp>
+#include <boost/assert.hpp>
+#include <boost/utility/swap.hpp>
 #include <memory>
-#include <cassert>
 
-#if defined(BOOST_MSVC) && \
-    (_MSC_FULL_VER >= 160000000 && _MSC_FULL_VER < 170000000)
+#if (defined(BOOST_MSVC) && \
+     (_MSC_FULL_VER >= 160000000 && _MSC_FULL_VER < 170000000)) || \
+    (defined(BOOST_INTEL_WIN) && \
+     defined(BOOST_DINKUMWARE_STDLIB))
 #define BOOST_PROPERTY_TREE_PAIR_BUG
 #endif
 
@@ -33,28 +36,23 @@ namespace boost { namespace property_tree
         // class. Unfortunately this does break the interface.
         BOOST_STATIC_CONSTANT(unsigned,
             first_offset = offsetof(value_type, first));
+#endif
         typedef multi_index_container<value_type,
             multi_index::indexed_by<
                 multi_index::sequenced<>,
                 multi_index::ordered_non_unique<multi_index::tag<by_name>,
+#if defined(BOOST_PROPERTY_TREE_PAIR_BUG)
                     multi_index::member_offset<value_type, const key_type,
                                         first_offset>,
-                    key_compare
-                >
-            >
-        > base_container;
 #else
-        typedef multi_index_container<value_type,
-            multi_index::indexed_by<
-                multi_index::sequenced<>,
-                multi_index::ordered_non_unique<multi_index::tag<by_name>,
                     multi_index::member<value_type, const key_type,
                                         &value_type::first>,
+#endif
                     key_compare
                 >
             >
         > base_container;
-#endif
+
         // The by-name lookup index.
         typedef typename base_container::template index<by_name>::type
             by_name_index;
@@ -213,7 +211,7 @@ namespace boost { namespace property_tree
     template<class K, class D, class C> inline
     void basic_ptree<K, D, C>::swap(basic_ptree<K, D, C> &rhs)
     {
-        m_data.swap(rhs.m_data);
+        boost::swap(m_data, rhs.m_data);
         // Void pointers, no ADL necessary
         std::swap(m_children, rhs.m_children);
     }
@@ -384,10 +382,40 @@ namespace boost { namespace property_tree
         subs::ch(this).reverse();
     }
 
+    namespace impl
+    {
+        struct by_first
+        {
+            template <typename P>
+            bool operator ()(const P& lhs, const P& rhs) const {
+              return lhs.first < rhs.first;
+            }
+        };
+
+        template <typename C>
+        struct equal_pred
+        {
+            template <typename P>
+            bool operator ()(const P& lhs, const P& rhs) const {
+                C c;
+                return !c(lhs.first, rhs.first) &&
+                       !c(rhs.first, lhs.first) &&
+                       lhs.second == rhs.second;
+            }
+        };
+
+        template <typename C, typename MI>
+        bool equal_children(const MI& ch1, const MI& ch2) {
+            // Assumes ch1.size() == ch2.size()
+            return std::equal(ch1.begin(), ch1.end(),
+                ch2.begin(), equal_pred<C>());
+        }
+    }
+
     template<class K, class D, class C> inline
     void basic_ptree<K, D, C>::sort()
     {
-        subs::ch(this).sort();
+        sort(impl::by_first());
     }
 
     template<class K, class D, class C>
@@ -405,7 +433,7 @@ namespace boost { namespace property_tree
     {
         // The size test is cheap, so add it as an optimization
         return size() == rhs.size() && data() == rhs.data() &&
-            subs::ch(this) == subs::ch(&rhs);
+            impl::equal_children<C>(subs::ch(this), subs::ch(&rhs));
     }
 
     template<class K, class D, class C> inline
@@ -874,7 +902,7 @@ namespace boost { namespace property_tree
     template<class K, class D, class C>
     basic_ptree<K, D, C> & basic_ptree<K, D, C>::force_path(path_type &p)
     {
-        assert(!p.empty() && "Empty path not allowed for put_child.");
+        BOOST_ASSERT(!p.empty() && "Empty path not allowed for put_child.");
         if(p.single()) {
             // I'm the parent we're looking for.
             return *this;

@@ -3,8 +3,8 @@
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file licence_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-#ifndef LEXERTL_GENERATE_RE2C_HPP
-#define LEXERTL_GENERATE_RE2C_HPP
+#ifndef BOOST_SPIRIT_SUPPORT_DETAIL_LEXER_GENERATE_RE2C_HPP
+#define BOOST_SPIRIT_SUPPORT_DETAIL_LEXER_GENERATE_RE2C_HPP
 
 #include "char_traits.hpp"
 #include "consts.hpp"
@@ -331,11 +331,7 @@ void generate_re2c (const basic_state_machine<CharT> &state_machine_,
 
                             string_token::escape_char (start_char_, temp_);
                             os_ << "(ch_ >= '" << temp_;
-#if defined _MSC_VER && _MSC_VER <= 1200
-                            temp_.erase ();
-#else
                             temp_.clear ();
-#endif
                             string_token::escape_char (curr_char_, temp_);
                             os_ << "' && ch_ <= '" << temp_ << "')";
                             range_ = false;

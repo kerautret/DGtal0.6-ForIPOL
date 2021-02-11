@@ -10,7 +10,7 @@
 #define BOOST_XPRESSIVE_XPRESSIVE_FWD_HPP_EAN_10_04_2005
 
 // MS compatible compilers support #pragma once
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+#if defined(_MSC_VER)
 # pragma once
 #endif
 
@@ -23,15 +23,12 @@
 # define BOOST_PROTO_FUSION_V2
 #endif
 
-#ifdef BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
-# error Sorry, xpressive requires a compiler that supports partial template specialization.
-#endif
 
 #if defined(BOOST_NO_STD_LOCALE) & !defined(BOOST_XPRESSIVE_USE_C_TRAITS)
 # define BOOST_XPRESSIVE_USE_C_TRAITS
 #endif
 
-#if defined(BOOST_NO_CWCHAR) | defined(BOOST_NO_CWCTYPE) | defined(BOOST_NO_STD_WSTRING)
+#if defined(BOOST_NO_CWCHAR) || defined(BOOST_NO_CWCTYPE) || defined(BOOST_NO_STD_WSTRING)
 # ifndef BOOST_XPRESSIVE_NO_WREGEX
 #  define BOOST_XPRESSIVE_NO_WREGEX
 # endif
@@ -41,8 +38,8 @@
 // Config logic taken from boost/regex/config.hpp
 #ifndef BOOST_XPRESSIVE_HAS_MS_STACK_GUARD
 # if (defined(_WIN32) || defined(_WIN64) || defined(_WINCE))                    \
-     && !defined(__GNUC__)                                                      \
-     && !(defined(__BORLANDC__) && (__BORLANDC__ >= 0x600))                     \
+     && !(defined(__GNUC__) || defined(__BORLANDC__) && defined(__clang__))     \
+     && !(defined(BOOST_BORLANDC) && (BOOST_BORLANDC >= 0x600))                 \
      && !(defined(__MWERKS__) && (__MWERKS__ <= 0x3003))
 #  define BOOST_XPRESSIVE_HAS_MS_STACK_GUARD 1
 # else
@@ -144,6 +141,40 @@ namespace boost { namespace xpressive
 
     template<typename T, int I = 0, typename Dummy = proto::is_proto_expr>
     struct placeholder;
+
+    namespace op
+    {
+        struct at;
+        struct push;
+        struct push_back;
+        struct push_front;
+        struct pop;
+        struct pop_back;
+        struct pop_front;
+        struct front;
+        struct back;
+        struct top;
+        struct first;
+        struct second;
+        struct matched;
+        struct length;
+        struct str;
+        struct insert;
+        struct make_pair;
+        template<typename T>
+        struct as;
+        template<typename T>
+        struct static_cast_;
+        template<typename T>
+        struct dynamic_cast_;
+        template<typename T>
+        struct const_cast_;
+        template<typename T>
+        struct construct;
+        template<typename Except>
+        struct throw_;
+        struct unwrap_reference;
+    }
 
     ///////////////////////////////////////////////////////////////////////////////
     // Common typedefs

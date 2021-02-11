@@ -19,6 +19,7 @@
 #include <boost/spirit/home/qi/parser.hpp>
 #include <boost/spirit/home/support/common_terminals.hpp>
 #include <boost/spirit/home/support/info.hpp>
+#include <boost/spirit/home/support/detail/is_spirit_tag.hpp>
 #include <boost/mpl/assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 
@@ -27,19 +28,22 @@ namespace boost { namespace spirit
     namespace tag
     {
         template <typename T, unsigned Radix, unsigned MinDigits
-                , int MaxDigits> 
-        struct int_parser {};
+                , int MaxDigits>
+        struct int_parser 
+        {
+            BOOST_SPIRIT_IS_TAG()
+        };
     }
 
     namespace qi
     {
         ///////////////////////////////////////////////////////////////////////
-        // This one is the class that the user can instantiate directly in 
+        // This one is the class that the user can instantiate directly in
         // order to create a customized int parser
         template <typename T = int, unsigned Radix = 10, unsigned MinDigits = 1
                 , int MaxDigits = -1>
         struct int_parser
-          : spirit::terminal<tag::int_parser<T, Radix, MinDigits, MaxDigits> > 
+          : spirit::terminal<tag::int_parser<T, Radix, MinDigits, MaxDigits> >
         {};
     }
 
@@ -53,10 +57,10 @@ namespace boost { namespace spirit
 
     template <typename A0> // enables lit(n)
     struct use_terminal<qi::domain
-        , terminal_ex<tag::lit, fusion::vector1<A0> > 
+        , terminal_ex<tag::lit, fusion::vector1<A0> >
         , typename enable_if<is_same<A0, signed short> >::type>
       : mpl::true_ {};
-  
+
     template <typename A0> // enables short_(n)
     struct use_terminal<qi::domain
         , terminal_ex<tag::short_, fusion::vector1<A0> > >
@@ -69,11 +73,11 @@ namespace boost { namespace spirit
     //[primitive_parsers_enable_int
     template <> // enables int_
     struct use_terminal<qi::domain, tag::int_> : mpl::true_ {};
-    //]   
+    //]
 
     template <typename A0> // enables lit(n)
     struct use_terminal<qi::domain
-        , terminal_ex<tag::lit, fusion::vector1<A0> > 
+        , terminal_ex<tag::lit, fusion::vector1<A0> >
         , typename enable_if<is_same<A0, signed> >::type>
       : mpl::true_ {};
 
@@ -84,16 +88,16 @@ namespace boost { namespace spirit
 
     template <> // enables *lazy* int_(n)
     struct use_lazy_terminal<qi::domain, tag::int_, 1> : mpl::true_ {};
- 
+
     ///////////////////////////////////////////////////////////////////////////
     //[primitive_parsers_enable_long
     template <> // enables long_
     struct use_terminal<qi::domain, tag::long_> : mpl::true_ {};
-    //]   
-   
+    //]
+
     template <typename A0> // enables lit(n)
     struct use_terminal<qi::domain
-        , terminal_ex<tag::lit, fusion::vector1<A0> > 
+        , terminal_ex<tag::lit, fusion::vector1<A0> >
         , typename enable_if<is_same<A0, signed long> >::type>
       : mpl::true_ {};
 
@@ -104,7 +108,7 @@ namespace boost { namespace spirit
 
     template <> // enables *lazy* long_(n)
     struct use_lazy_terminal<qi::domain, tag::long_, 1> : mpl::true_ {};
- 
+
     ///////////////////////////////////////////////////////////////////////////
 #ifdef BOOST_HAS_LONG_LONG
     //[primitive_parsers_enable_long_long
@@ -114,7 +118,7 @@ namespace boost { namespace spirit
 
     template <typename A0> // enables lit(n)
     struct use_terminal<qi::domain
-        , terminal_ex<tag::lit, fusion::vector1<A0> > 
+        , terminal_ex<tag::lit, fusion::vector1<A0> >
         , typename enable_if<is_same<A0, boost::long_long_type> >::type>
       : mpl::true_ {};
 
@@ -130,14 +134,14 @@ namespace boost { namespace spirit
     ///////////////////////////////////////////////////////////////////////////
     // enables any custom int_parser
     template <typename T, unsigned Radix, unsigned MinDigits
-            , int MaxDigits> 
+            , int MaxDigits>
     struct use_terminal<qi::domain
         , tag::int_parser<T, Radix, MinDigits, MaxDigits> >
       : mpl::true_ {};
 
     // enables any custom int_parser(n)
     template <typename T, unsigned Radix, unsigned MinDigits
-            , int MaxDigits, typename A0> 
+            , int MaxDigits, typename A0>
     struct use_terminal<qi::domain
         , terminal_ex<tag::int_parser<T, Radix, MinDigits, MaxDigits>
                   , fusion::vector1<A0> >
@@ -145,7 +149,7 @@ namespace boost { namespace spirit
 
     // enables *lazy* custom int_parser(n)
     template <typename T, unsigned Radix, unsigned MinDigits
-            , int MaxDigits> 
+            , int MaxDigits>
     struct use_lazy_terminal<qi::domain
       , tag::int_parser<T, Radix, MinDigits, MaxDigits>, 1
     > : mpl::true_ {};
@@ -153,18 +157,22 @@ namespace boost { namespace spirit
 
 namespace boost { namespace spirit { namespace qi
 {
+#ifndef BOOST_SPIRIT_NO_PREDEFINED_TERMINALS
     using spirit::short_;
-    using spirit::short__type;
     using spirit::int_;
-    using spirit::int__type;
     using spirit::long_;
-    using spirit::long__type;
 #ifdef BOOST_HAS_LONG_LONG
     using spirit::long_long;
+#endif
+    using spirit::lit;    // lit(1) is equivalent to 1
+#endif
+    using spirit::short_type;
+    using spirit::int_type;
+    using spirit::long_type;
+    using spirit::lit_type;
+#ifdef BOOST_HAS_LONG_LONG
     using spirit::long_long_type;
 #endif
-
-    using spirit::lit;    // lit(1) is equivalent to 1
     using spirit::lit_type;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -194,11 +202,11 @@ namespace boost { namespace spirit { namespace qi
           , typename Skipper, typename Attribute>
         bool parse(Iterator& first, Iterator const& last
           , Context& /*context*/, Skipper const& skipper
-          , Attribute& attr) const
+          , Attribute& attr_) const
         {
             typedef extract_int<T, Radix, MinDigits, MaxDigits> extract;
             qi::skip_over(first, last, skipper);
-            return extract::call(first, last, attr);
+            return extract::call(first, last, attr_);
         }
 
         template <typename Context>
@@ -232,19 +240,21 @@ namespace boost { namespace spirit { namespace qi
           , typename Skipper, typename Attribute>
         bool parse(Iterator& first, Iterator const& last
           , Context& /*context*/, Skipper const& skipper
-          , Attribute& attr) const
+          , Attribute& attr_param) const
         {
             typedef extract_int<T, Radix, MinDigits, MaxDigits> extract;
             qi::skip_over(first, last, skipper);
-            
+
+            Iterator save = first;
             T attr_;
 
             if (extract::call(first, last, attr_) && (attr_ == n_))
             {
-                traits::assign_to(attr_, attr);
+                traits::assign_to(attr_, attr_param);
                 return true;
             }
 
+            first = save;
             return false;
         }
 
@@ -275,7 +285,7 @@ namespace boost { namespace spirit { namespace qi
         }
     };
     //]
-    
+
     template <typename T, unsigned Radix = 10, unsigned MinDigits = 1
             , int MaxDigits = -1>
     struct make_direct_int
@@ -288,7 +298,7 @@ namespace boost { namespace spirit { namespace qi
             return result_type(fusion::at_c<0>(term.args));
         }
     };
-    
+
     template <typename T, unsigned Radix = 10, unsigned MinDigits = 1
             , int MaxDigits = -1>
     struct make_literal_int
@@ -300,7 +310,7 @@ namespace boost { namespace spirit { namespace qi
             return result_type(fusion::at_c<0>(term.args));
         }
     };
-    
+
     ///////////////////////////////////////////////////////////////////////////
     template <typename Modifiers, typename A0>
     struct make_primitive<
@@ -384,7 +394,7 @@ namespace boost { namespace spirit { namespace qi
 
     ///////////////////////////////////////////////////////////////////////////
 #ifdef BOOST_HAS_LONG_LONG
-    //[primitive_parsers_long_long_primitive 
+    //[primitive_parsers_long_long_primitive
     template <typename Modifiers>
     struct make_primitive<tag::long_long, Modifiers>
       : make_int<boost::long_long_type> {};

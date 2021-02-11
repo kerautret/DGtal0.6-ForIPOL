@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_TAGS_SUPPORT_VALUE_TYPE_OF_HPP
 #define BOOST_BIMAP_TAGS_SUPPORT_VALUE_TYPE_OF_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER)
 #pragma once
 #endif
 
@@ -32,7 +32,7 @@ struct value_type_of
 \endcode
 
 If the type is tagged this metafunction returns Type::value_type, and if it is not
-tagged it return the same type. This allows to work consistenly with tagged and
+tagged it return the same type. This allows to work consistently with tagged and
 untagged types.
 
 See also tagged, tag_of.

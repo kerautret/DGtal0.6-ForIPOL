@@ -8,6 +8,7 @@ Copyright (c) 2010-2010: Joachim Faulhaber
 #ifndef BOOST_ICL_CONCEPT_INTERVAL_ASSOCIATOR_HPP_JOFA_100920
 #define BOOST_ICL_CONCEPT_INTERVAL_ASSOCIATOR_HPP_JOFA_100920
 
+#include <boost/range/iterator_range.hpp>
 #include <boost/icl/type_traits/domain_type_of.hpp>
 #include <boost/icl/type_traits/interval_type_of.hpp>
 #include <boost/icl/type_traits/is_combinable.hpp>
@@ -121,7 +122,7 @@ typename enable_if
 cardinality(const Type& object)
 {
     typedef typename Type::size_type size_type;
-    typedef typename Type::interval_type interval_type;
+    //CL typedef typename Type::interval_type interval_type;
 
     size_type size = identity_element<size_type>::value();
     ICL_const_FORALL(typename Type, it, object)
@@ -139,14 +140,14 @@ typename enable_if
 cardinality(const Type& object)
 {
     typedef typename Type::size_type size_type;
-    typedef typename Type::interval_type interval_type;
+    //CL typedef typename Type::interval_type interval_type;
 
     size_type size = identity_element<size_type>::value();
     size_type interval_size;
     ICL_const_FORALL(typename Type, it, object)
     {
         interval_size = icl::cardinality(key_value<Type>(it));
-        if(interval_size == infinity<size_type>::value())
+        if(interval_size == icl::infinity<size_type>::value())
             return interval_size;
         else
             size += interval_size;
@@ -325,6 +326,7 @@ operator += (Type& object, const OperandT& operand)
 }
 
 
+#ifdef BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
 //------------------------------------------------------------------------------
 //- T op + (T, c P&) T:{S}|{M} P:{e i S}|{b p M}
 //------------------------------------------------------------------------------
@@ -339,6 +341,26 @@ operator + (Type object, const OperandT& operand)
     return object += operand; 
 }
 
+#else //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
+
+template<class Type, class OperandT>
+typename enable_if<is_binary_intra_combinable<Type, OperandT>, Type>::type
+operator + (const Type& object, const OperandT& operand)
+{
+    Type temp = object;
+    return boost::move(temp += operand); 
+}
+
+template<class Type, class OperandT>
+typename enable_if<is_binary_intra_combinable<Type, OperandT>, Type>::type
+operator + (Type&& object, const OperandT& operand)
+{
+    return boost::move(object += operand); 
+}
+
+#endif //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
+
+#ifdef BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
 //------------------------------------------------------------------------------
 //- T op + (c P&, T) T:{S}|{M} P:{e i S'}|{b p M'}
 //------------------------------------------------------------------------------
@@ -353,6 +375,26 @@ operator + (const OperandT& operand, Type object)
     return object += operand; 
 }
 
+#else //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
+
+template<class Type, class OperandT>
+typename enable_if<is_binary_intra_combinable<Type, OperandT>, Type>::type
+operator + (const OperandT& operand, const Type& object)
+{
+    Type temp = object;
+    return boost::move(temp += operand);
+}
+
+template<class Type, class OperandT>
+typename enable_if<is_binary_intra_combinable<Type, OperandT>, Type>::type
+operator + (const OperandT& operand, Type&& object)
+{
+    return boost::move(object += operand); 
+}
+
+#endif //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
+
+#ifdef BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
 //------------------------------------------------------------------------------
 //- T op + (T, c P&) T:{S}|{M} P:{S}|{M}
 //------------------------------------------------------------------------------
@@ -367,6 +409,38 @@ operator + (Type object, const Type& operand)
     return object += operand; 
 }
 
+#else //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
+
+template<class Type>
+typename enable_if<is_interval_container<Type>, Type>::type
+operator + (const Type& object, const Type& operand)
+{
+    Type temp = object;
+    return boost::move(temp += operand); 
+}
+
+template<class Type>
+typename enable_if<is_interval_container<Type>, Type>::type
+operator + (Type&& object, const Type& operand)
+{
+    return boost::move(object += operand); 
+}
+
+template<class Type>
+typename enable_if<is_interval_container<Type>, Type>::type
+operator + (const Type& operand, Type&& object)
+{
+    return boost::move(object += operand); 
+}
+
+template<class Type>
+typename enable_if<is_interval_container<Type>, Type>::type
+operator + (Type&& object, Type&& operand)
+{
+    return boost::move(object += operand); 
+}
+
+#endif //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
 
 //------------------------------------------------------------------------------
 //- Addition |=, | 
@@ -404,6 +478,7 @@ operator |= (Type& object, const OperandT& operand)
     return object += operand; 
 }
 
+#ifdef BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
 //------------------------------------------------------------------------------
 //- T op | (T, c P&) T:{S}|{M} P:{e i S}|{b p M}
 //------------------------------------------------------------------------------
@@ -418,6 +493,26 @@ operator | (Type object, const OperandT& operand)
     return object += operand; 
 }
 
+#else //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
+
+template<class Type, class OperandT>
+typename enable_if<is_binary_intra_combinable<Type, OperandT>, Type>::type
+operator | (const Type& object, const OperandT& operand)
+{
+    Type temp = object;
+    return boost::move(temp += operand); 
+}
+
+template<class Type, class OperandT>
+typename enable_if<is_binary_intra_combinable<Type, OperandT>, Type>::type
+operator | (Type&& object, const OperandT& operand)
+{
+    return boost::move(object += operand); 
+}
+
+#endif //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
+
+#ifdef BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
 //------------------------------------------------------------------------------
 //- T op | (T, c P&) T:{S}|{M} P:{S}|{M}
 //------------------------------------------------------------------------------
@@ -432,6 +527,26 @@ operator | (const OperandT& operand, Type object)
     return object += operand; 
 }
 
+#else //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
+
+template<class Type, class OperandT>
+typename enable_if<is_binary_intra_combinable<Type, OperandT>, Type>::type
+operator | (const OperandT& operand, const Type& object)
+{
+    Type temp = object;
+    return boost::move(temp += operand);
+}
+
+template<class Type, class OperandT>
+typename enable_if<is_binary_intra_combinable<Type, OperandT>, Type>::type
+operator | (const OperandT& operand, Type&& object)
+{
+    return boost::move(object += operand); 
+}
+
+#endif //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
+
+#ifdef BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
 //------------------------------------------------------------------------------
 //- T op | (T, c P&) T:{S}|{M} P:{S}|{M}
 //------------------------------------------------------------------------------
@@ -445,6 +560,39 @@ operator | (Type object, const Type& operand)
 {
     return object += operand; 
 }
+#else //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
+
+template<class Type>
+typename enable_if<is_interval_container<Type>, Type>::type
+operator | (const Type& object, const Type& operand)
+{
+    Type temp = object;
+    return boost::move(temp += operand); 
+}
+
+template<class Type>
+typename enable_if<is_interval_container<Type>, Type>::type
+operator | (Type&& object, const Type& operand)
+{
+    return boost::move(object += operand); 
+}
+
+template<class Type>
+typename enable_if<is_interval_container<Type>, Type>::type
+operator | (const Type& operand, Type&& object)
+{
+    return boost::move(object += operand); 
+}
+
+template<class Type>
+typename enable_if<is_interval_container<Type>, Type>::type
+operator | (Type&& object, Type&& operand)
+{
+    return boost::move(object += operand); 
+}
+
+#endif //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
+
 
 //==============================================================================
 //= Insertion<IntervalSet|IntervalSet>
@@ -458,7 +606,7 @@ insert(Type& object, const OperandT& operand)
 {
     typename Type::iterator prior_ = object.end();
     ICL_const_FORALL(typename OperandT, elem_, operand) 
-        insert(object, *elem_); 
+        insert(object, prior_, *elem_); 
 
     return object; 
 }
@@ -560,7 +708,7 @@ operator -= (Type& object, const IntervalSetT& operand)
     return erase(object, operand);
 }
 
-
+#ifdef BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
 //------------------------------------------------------------------------------
 //- T op - (T, c P&) T:{S}|{M} P:{e i S'}|{e i b p S' M'} 
 //------------------------------------------------------------------------------
@@ -571,6 +719,24 @@ operator - (Type object, const OperandT& operand)
     return object -= operand; 
 }
 
+#else //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
+
+template<class Type, class OperandT>
+typename enable_if<is_right_inter_combinable<Type, OperandT>, Type>::type
+operator - (const Type& object, const OperandT& operand)
+{
+    Type temp = object;
+    return boost::move(temp -= operand); 
+}
+
+template<class Type, class OperandT>
+typename enable_if<is_right_inter_combinable<Type, OperandT>, Type>::type
+operator - (Type&& object, const OperandT& operand)
+{
+    return boost::move(object -= operand); 
+}
+
+#endif //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
 
 //==============================================================================
 //= Intersection<IntervalSet|IntervalSet>
@@ -611,6 +777,7 @@ operator &= (Type& object, const OperandT& operand)
     return object;
 }
 
+#ifdef BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
 //------------------------------------------------------------------------------
 //- T op & (T, c P&) T:{S}|{M} P:{e i S'}|{e i b p S' M'} S<S' M<M' <:coarser
 //------------------------------------------------------------------------------
@@ -621,6 +788,26 @@ operator & (Type object, const OperandT& operand)
     return object &= operand; 
 }
 
+#else //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
+
+template<class Type, class OperandT>
+typename enable_if<is_binary_inter_combinable<Type, OperandT>, Type>::type
+operator & (const Type& object, const OperandT& operand)
+{
+    Type temp = object;
+    return boost::move(temp &= operand); 
+}
+
+template<class Type, class OperandT>
+typename enable_if<is_binary_inter_combinable<Type, OperandT>, Type>::type
+operator & (Type&& object, const OperandT& operand)
+{
+    return boost::move(object &= operand); 
+}
+
+#endif //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
+
+#ifdef BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
 //------------------------------------------------------------------------------
 //- T op & (c P&, T) T:{S}|{M} P:{e i S'}|{e i b p S' M'} S<S' M<M' <:coarser
 //------------------------------------------------------------------------------
@@ -631,6 +818,26 @@ operator & (const OperandT& operand, Type object)
     return object &= operand; 
 }
 
+#else //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
+
+template<class Type, class OperandT>
+typename enable_if<is_binary_inter_combinable<Type, OperandT>, Type>::type
+operator & (const OperandT& operand, const Type& object)
+{
+    Type temp = object;
+    return boost::move(temp &= operand);
+}
+
+template<class Type, class OperandT>
+typename enable_if<is_binary_inter_combinable<Type, OperandT>, Type>::type
+operator & (const OperandT& operand, Type&& object)
+{
+    return boost::move(object &= operand); 
+}
+
+#endif //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
+
+#ifdef BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
 //------------------------------------------------------------------------------
 //- T op & (T, c T&) T:{S M}
 //------------------------------------------------------------------------------
@@ -640,6 +847,39 @@ operator & (Type object, const Type& operand)
 {
     return object &= operand; 
 }
+
+#else //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
+
+template<class Type>
+typename enable_if<is_interval_container<Type>, Type>::type
+operator & (const Type& object, const Type& operand)
+{
+    Type temp = object;
+    return boost::move(temp &= operand); 
+}
+
+template<class Type>
+typename enable_if<is_interval_container<Type>, Type>::type
+operator & (Type&& object, const Type& operand)
+{
+    return boost::move(object &= operand); 
+}
+
+template<class Type>
+typename enable_if<is_interval_container<Type>, Type>::type
+operator & (const Type& operand, Type&& object)
+{
+    return boost::move(object &= operand); 
+}
+
+template<class Type>
+typename enable_if<is_interval_container<Type>, Type>::type
+operator & (Type&& object, Type&& operand)
+{
+    return boost::move(object &= operand); 
+}
+
+#endif //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
 
 //------------------------------------------------------------------------------
 //- intersects<IntervalSet|IntervalMap>
@@ -662,7 +902,7 @@ typename enable_if<mpl::and_< is_interval_container<Type>
                    bool>::type
 intersects(const Type& left, const CoType& right)
 {
-    return left.find(right) != left.end();
+    return icl::find(left, right) != left.end();
 }
 
 
@@ -670,7 +910,7 @@ template<class LeftT, class RightT>
 typename enable_if< mpl::and_< is_intra_combinable<LeftT, RightT> 
                              , mpl::or_<is_total<LeftT>, is_total<RightT> > >
                   , bool>::type
-intersects(const LeftT& left, const RightT& right)
+intersects(const LeftT&, const RightT&)
 {
     return true;
 }
@@ -772,6 +1012,7 @@ operator ^= (Type& object, const OperandT& operand)
     return icl::flip(object, operand); 
 }
 
+#ifdef BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
 //------------------------------------------------------------------------------
 //- T op ^ (T, c P&) T:{S}|{M} P:{e i S'}|{b p M'} S<S' M<M' <:coarser
 //------------------------------------------------------------------------------
@@ -782,6 +1023,26 @@ operator ^ (Type object, const OperandT& operand)
     return object ^= operand; 
 }
 
+#else //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
+
+template<class Type, class OperandT>
+typename enable_if<is_binary_intra_combinable<Type, OperandT>, Type>::type
+operator ^ (const Type& object, const OperandT& operand)
+{
+    Type temp = object;
+    return boost::move(temp ^= operand); 
+}
+
+template<class Type, class OperandT>
+typename enable_if<is_binary_intra_combinable<Type, OperandT>, Type>::type
+operator ^ (Type&& object, const OperandT& operand)
+{
+    return boost::move(object ^= operand); 
+}
+
+#endif //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
+
+#ifdef BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
 //------------------------------------------------------------------------------
 //- T op ^ (c P&, T) T:{S}|{M} P:{e i S'}|{b p M'} S<S' M<M' <:coarser
 //------------------------------------------------------------------------------
@@ -792,6 +1053,26 @@ operator ^ (const OperandT& operand, Type object)
     return object ^= operand; 
 }
 
+#else //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
+
+template<class Type, class OperandT>
+typename enable_if<is_binary_intra_combinable<Type, OperandT>, Type>::type
+operator ^ (const OperandT& operand, const Type& object)
+{
+    Type temp = object;
+    return boost::move(temp ^= operand);
+}
+
+template<class Type, class OperandT>
+typename enable_if<is_binary_intra_combinable<Type, OperandT>, Type>::type
+operator ^ (const OperandT& operand, Type&& object)
+{
+    return boost::move(object ^= operand); 
+}
+
+#endif //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
+
+#ifdef BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
 //------------------------------------------------------------------------------
 //- T op ^ (T, c T&) T:{S M}
 //------------------------------------------------------------------------------
@@ -801,6 +1082,39 @@ operator ^ (typename Type::overloadable_type object, const Type& operand)
 {
     return object ^= operand; 
 }
+
+#else //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
+
+template<class Type>
+typename enable_if<is_interval_container<Type>, Type>::type
+operator ^ (const Type& object, const Type& operand)
+{
+    Type temp = object;
+    return boost::move(temp ^= operand); 
+}
+
+template<class Type>
+typename enable_if<is_interval_container<Type>, Type>::type
+operator ^ (Type&& object, const Type& operand)
+{
+    return boost::move(object ^= operand); 
+}
+
+template<class Type>
+typename enable_if<is_interval_container<Type>, Type>::type
+operator ^ (const Type& operand, Type&& object)
+{
+    return boost::move(object ^= operand); 
+}
+
+template<class Type>
+typename enable_if<is_interval_container<Type>, Type>::type
+operator ^ (Type&& object, Type&& operand)
+{
+    return boost::move(object ^= operand); 
+}
+
+#endif //BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
 
 //==========================================================================
 //= Element Iteration <IntervalSet|IntervalMap>
@@ -846,6 +1160,30 @@ typename Type::element_const_iterator>::type
 elements_end(const Type& object)
 { 
     return typename Type::element_const_iterator(object.end());
+}
+
+template<class Type>
+typename enable_if
+<mpl::and_< is_interval_container<Type>
+          , mpl::not_<is_continuous_interval<typename Type::interval_type> > >,
+iterator_range<typename Type::element_iterator> >::type
+elements(Type& object)
+{
+    return
+    make_iterator_range( typename Type::element_iterator(object.begin())
+                       , typename Type::element_iterator(object.end())  );
+}
+
+template<class Type>
+typename enable_if
+<mpl::and_< is_interval_container<Type>
+          , mpl::not_<is_continuous_interval<typename Type::interval_type> > >,
+iterator_range<typename Type::element_const_iterator> >::type
+elements(Type const& object)
+{
+    return
+    make_iterator_range( typename Type::element_const_iterator(object.begin())
+                       , typename Type::element_const_iterator(object.end())  );
 }
 
 //--------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 // detail/reactive_serial_port_service.hpp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2011 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2020 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 // Copyright (c) 2008 Rep Invariant Systems, Inc. (info@repinvariant.com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -19,11 +19,11 @@
 #include <boost/asio/detail/config.hpp>
 
 #if defined(BOOST_ASIO_HAS_SERIAL_PORT)
-#if !defined(BOOST_WINDOWS) && !defined(__CYGWIN__)
+#if !defined(BOOST_ASIO_WINDOWS) && !defined(__CYGWIN__)
 
 #include <string>
 #include <boost/asio/error.hpp>
-#include <boost/asio/io_service.hpp>
+#include <boost/asio/execution_context.hpp>
 #include <boost/asio/serial_port_base.hpp>
 #include <boost/asio/detail/descriptor_ops.hpp>
 #include <boost/asio/detail/reactive_descriptor_service.hpp>
@@ -35,25 +35,41 @@ namespace asio {
 namespace detail {
 
 // Extend reactive_descriptor_service to provide serial port support.
-class reactive_serial_port_service
+class reactive_serial_port_service :
+  public execution_context_service_base<reactive_serial_port_service>
 {
 public:
   // The native type of a serial port.
-  typedef reactive_descriptor_service::native_type native_type;
+  typedef reactive_descriptor_service::native_handle_type native_handle_type;
 
   // The implementation type of the serial port.
   typedef reactive_descriptor_service::implementation_type implementation_type;
 
-  BOOST_ASIO_DECL reactive_serial_port_service(
-      boost::asio::io_service& io_service);
+  BOOST_ASIO_DECL reactive_serial_port_service(execution_context& context);
 
   // Destroy all user-defined handler objects owned by the service.
-  BOOST_ASIO_DECL void shutdown_service();
+  BOOST_ASIO_DECL void shutdown();
 
   // Construct a new serial port implementation.
   void construct(implementation_type& impl)
   {
     descriptor_service_.construct(impl);
+  }
+
+  // Move-construct a new serial port implementation.
+  void move_construct(implementation_type& impl,
+      implementation_type& other_impl)
+  {
+    descriptor_service_.move_construct(impl, other_impl);
+  }
+
+  // Move-assign from another serial port implementation.
+  void move_assign(implementation_type& impl,
+      reactive_serial_port_service& other_service,
+      implementation_type& other_impl)
+  {
+    descriptor_service_.move_assign(impl,
+        other_service.descriptor_service_, other_impl);
   }
 
   // Destroy a serial port implementation.
@@ -68,7 +84,8 @@ public:
 
   // Assign a native descriptor to a serial port implementation.
   boost::system::error_code assign(implementation_type& impl,
-      const native_type& native_descriptor, boost::system::error_code& ec)
+      const native_handle_type& native_descriptor,
+      boost::system::error_code& ec)
   {
     return descriptor_service_.assign(impl, native_descriptor, ec);
   }
@@ -87,9 +104,9 @@ public:
   }
 
   // Get the native serial port representation.
-  native_type native(implementation_type& impl)
+  native_handle_type native_handle(implementation_type& impl)
   {
-    return descriptor_service_.native(impl);
+    return descriptor_service_.native_handle(impl);
   }
 
   // Cancel all operations associated with the serial port.
@@ -123,9 +140,8 @@ public:
   boost::system::error_code send_break(implementation_type& impl,
       boost::system::error_code& ec)
   {
-    errno = 0;
-    descriptor_ops::error_wrapper(::tcsendbreak(
-          descriptor_service_.native(impl), 0), ec);
+    int result = ::tcsendbreak(descriptor_service_.native_handle(impl), 0);
+    descriptor_ops::get_last_error(ec, result < 0);
     return ec;
   }
 
@@ -139,11 +155,12 @@ public:
 
   // Start an asynchronous write. The data being written must be valid for the
   // lifetime of the asynchronous operation.
-  template <typename ConstBufferSequence, typename Handler>
+  template <typename ConstBufferSequence, typename Handler, typename IoExecutor>
   void async_write_some(implementation_type& impl,
-      const ConstBufferSequence& buffers, Handler handler)
+      const ConstBufferSequence& buffers,
+      Handler& handler, const IoExecutor& io_ex)
   {
-    descriptor_service_.async_write_some(impl, buffers, handler);
+    descriptor_service_.async_write_some(impl, buffers, handler, io_ex);
   }
 
   // Read some data. Returns the number of bytes received.
@@ -156,11 +173,13 @@ public:
 
   // Start an asynchronous read. The buffer for the data being received must be
   // valid for the lifetime of the asynchronous operation.
-  template <typename MutableBufferSequence, typename Handler>
+  template <typename MutableBufferSequence,
+      typename Handler, typename IoExecutor>
   void async_read_some(implementation_type& impl,
-      const MutableBufferSequence& buffers, Handler handler)
+      const MutableBufferSequence& buffers,
+      Handler& handler, const IoExecutor& io_ex)
   {
-    descriptor_service_.async_read_some(impl, buffers, handler);
+    descriptor_service_.async_read_some(impl, buffers, handler, io_ex);
   }
 
 private:
@@ -173,8 +192,8 @@ private:
   static boost::system::error_code store_option(const void* option,
       termios& storage, boost::system::error_code& ec)
   {
-    return static_cast<const SettableSerialPortOption*>(option)->store(
-        storage, ec);
+    static_cast<const SettableSerialPortOption*>(option)->store(storage, ec);
+    return ec;
   }
 
   // Helper function to set a serial port option.
@@ -191,7 +210,8 @@ private:
   static boost::system::error_code load_option(void* option,
       const termios& storage, boost::system::error_code& ec)
   {
-    return static_cast<GettableSerialPortOption*>(option)->load(storage, ec);
+    static_cast<GettableSerialPortOption*>(option)->load(storage, ec);
+    return ec;
   }
 
   // Helper function to get a serial port option.
@@ -213,7 +233,7 @@ private:
 # include <boost/asio/detail/impl/reactive_serial_port_service.ipp>
 #endif // defined(BOOST_ASIO_HEADER_ONLY)
 
-#endif // !defined(BOOST_WINDOWS) && !defined(__CYGWIN__)
+#endif // !defined(BOOST_ASIO_WINDOWS) && !defined(__CYGWIN__)
 #endif // defined(BOOST_ASIO_HAS_SERIAL_PORT)
 
 #endif // BOOST_ASIO_DETAIL_REACTIVE_SERIAL_PORT_SERVICE_HPP

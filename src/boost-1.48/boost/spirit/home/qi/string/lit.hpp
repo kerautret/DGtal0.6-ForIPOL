@@ -65,14 +65,16 @@ namespace boost { namespace spirit
     // enables lit(...)
     template <typename A0>
     struct use_terminal<qi::domain
-          , terminal_ex<tag::lit, fusion::vector1<A0> > 
+          , terminal_ex<tag::lit, fusion::vector1<A0> >
           , typename enable_if<traits::is_string<A0> >::type>
       : mpl::true_ {};
 }}
 
 namespace boost { namespace spirit { namespace qi
 {
+#ifndef BOOST_SPIRIT_NO_PREDEFINED_TERMINALS
     using spirit::lit;
+#endif
     using spirit::lit_type;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -87,8 +89,8 @@ namespace boost { namespace spirit { namespace qi
         char_type;
         typedef std::basic_string<char_type> string_type;
 
-        literal_string(typename add_reference<String>::type str)
-          : str(str)
+        literal_string(typename add_reference<String>::type str_)
+          : str(str_)
         {}
 
         template <typename Context, typename Iterator>
@@ -102,10 +104,10 @@ namespace boost { namespace spirit { namespace qi
         template <typename Iterator, typename Context
           , typename Skipper, typename Attribute>
         bool parse(Iterator& first, Iterator const& last
-          , Context& /*context*/, Skipper const& skipper, Attribute& attr) const
+          , Context& /*context*/, Skipper const& skipper, Attribute& attr_) const
         {
             qi::skip_over(first, last, skipper);
-            return detail::string_parse(str, first, last, attr);
+            return detail::string_parse(str, first, last, attr_);
         }
 
         template <typename Context>
@@ -116,9 +118,8 @@ namespace boost { namespace spirit { namespace qi
 
         String str;
 
-    private:
         // silence MSVC warning C4512: assignment operator could not be generated
-        literal_string& operator= (literal_string const&);
+        BOOST_DELETED_FUNCTION(literal_string& operator= (literal_string const&))
     };
 
     template <typename String, bool no_attribute>
@@ -161,10 +162,10 @@ namespace boost { namespace spirit { namespace qi
         template <typename Iterator, typename Context
           , typename Skipper, typename Attribute>
         bool parse(Iterator& first, Iterator const& last
-          , Context& /*context*/, Skipper const& skipper, Attribute& attr) const
+          , Context& /*context*/, Skipper const& skipper, Attribute& attr_) const
         {
             qi::skip_over(first, last, skipper);
-            return detail::string_parse(str_lo, str_hi, first, last, attr);
+            return detail::string_parse(str_lo, str_hi, first, last, attr_);
         }
 
         template <typename Context>

@@ -2,7 +2,7 @@
 // detail/win_iocp_operation.hpp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2011 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2020 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -19,8 +19,9 @@
 
 #if defined(BOOST_ASIO_HAS_IOCP)
 
+#include <boost/asio/detail/handler_tracking.hpp>
 #include <boost/asio/detail/op_queue.hpp>
-#include <boost/asio/detail/win_iocp_io_service_fwd.hpp>
+#include <boost/asio/detail/socket_types.hpp>
 #include <boost/system/error_code.hpp>
 
 #include <boost/asio/detail/push_options.hpp>
@@ -29,17 +30,21 @@ namespace boost {
 namespace asio {
 namespace detail {
 
+class win_iocp_io_context;
+
 // Base class for all operations. A function pointer is used instead of virtual
 // functions to avoid the associated overhead.
 class win_iocp_operation
   : public OVERLAPPED
+    BOOST_ASIO_ALSO_INHERIT_TRACKED_HANDLER
 {
 public:
-  void complete(win_iocp_io_service& owner,
-      const boost::system::error_code& ec = boost::system::error_code(),
-      std::size_t bytes_transferred = 0)
+  typedef win_iocp_operation operation_type;
+
+  void complete(void* owner, const boost::system::error_code& ec,
+      std::size_t bytes_transferred)
   {
-    func_(&owner, this, ec, bytes_transferred);
+    func_(owner, this, ec, bytes_transferred);
   }
 
   void destroy()
@@ -48,8 +53,9 @@ public:
   }
 
 protected:
-  typedef void (*func_type)(win_iocp_io_service*,
-      win_iocp_operation*, boost::system::error_code, std::size_t);
+  typedef void (*func_type)(
+      void*, win_iocp_operation*,
+      const boost::system::error_code&, std::size_t);
 
   win_iocp_operation(func_type func)
     : next_(0),
@@ -75,7 +81,7 @@ protected:
 
 private:
   friend class op_queue_access;
-  friend class win_iocp_io_service;
+  friend class win_iocp_io_context;
   win_iocp_operation* next_;
   func_type func_;
   long ready_;

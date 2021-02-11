@@ -4,8 +4,8 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
-#if !defined(SPIRIT_ACTION_JANUARY_07_2007_1128AM)
-#define SPIRIT_ACTION_JANUARY_07_2007_1128AM
+#ifndef BOOST_SPIRIT_QI_ACTION_ACTION_HPP
+#define BOOST_SPIRIT_QI_ACTION_ACTION_HPP
 
 #if defined(_MSC_VER)
 #pragma once
@@ -41,9 +41,10 @@ namespace boost { namespace spirit { namespace qi
           : traits::attribute_of<Subject, Context, Iterator>
         {};
 
-        action(Subject const& subject, Action f)
-          : subject(subject), f(f) {}
+        action(Subject const& subject_, Action f_)
+          : subject(subject_), f(f_) {}
 
+#ifndef BOOST_SPIRIT_ACTIONS_ALLOW_ATTR_COMPAT
         template <typename Iterator, typename Context
           , typename Skipper, typename Attribute>
         bool parse(Iterator& first, Iterator const& last
@@ -51,14 +52,64 @@ namespace boost { namespace spirit { namespace qi
           , Attribute& attr_) const
         {
             typedef typename attribute<Context, Iterator>::type attr_type;
-            typedef traits::make_attribute<attr_type, Attribute> make_attribute;
 
             // create an attribute if one is not supplied
             typedef traits::transform_attribute<
-                typename make_attribute::type, attr_type, domain> transform;
+                Attribute, attr_type, domain> transform;
 
-            typename make_attribute::type made_attr = make_attribute::call(attr_);
-            typename transform::type attr = transform::pre(made_attr);
+            typename transform::type attr = transform::pre(attr_);
+
+            Iterator save = first;
+            if (subject.parse(first, last, context, skipper, attr))
+            {
+                // call the function, passing the attribute, the context.
+                // The client can return false to fail parsing.
+                if (traits::action_dispatch<Subject>()(f, attr, context)) 
+                {
+                    // Do up-stream transformation, this integrates the results
+                    // back into the original attribute value, if appropriate.
+                    transform::post(attr_, attr);
+                    return true;
+                }
+
+                // reset iterators if semantic action failed the match
+                // retrospectively
+                first = save;
+            }
+            return false;
+        }
+#else
+        template <typename Iterator, typename Context
+          , typename Skipper, typename Attribute>
+        bool parse(Iterator& first, Iterator const& last
+          , Context& context, Skipper const& skipper
+          , Attribute& attr) const
+        {
+            Iterator save = first;
+            if (subject.parse(first, last, context, skipper, attr)) // Use the attribute as-is
+            {
+                // call the function, passing the attribute, the context.
+                // The client can return false to fail parsing.
+                if (traits::action_dispatch<Subject>()(f, attr, context))
+                    return true;
+
+                // reset iterators if semantic action failed the match
+                // retrospectively
+                first = save;
+            }
+            return false;
+        }
+
+        template <typename Iterator, typename Context
+          , typename Skipper>
+        bool parse(Iterator& first, Iterator const& last
+          , Context& context, Skipper const& skipper
+          , unused_type) const
+        {
+            typedef typename attribute<Context, Iterator>::type attr_type;
+
+            // synthesize the attribute since one is not supplied
+            attr_type attr = attr_type();
 
             Iterator save = first;
             if (subject.parse(first, last, context, skipper, attr))
@@ -68,12 +119,13 @@ namespace boost { namespace spirit { namespace qi
                 if (traits::action_dispatch<Subject>()(f, attr, context))
                     return true;
 
-                // reset iterators if semantic action failed the match 
+                // reset iterators if semantic action failed the match
                 // retrospectively
                 first = save;
             }
             return false;
         }
+#endif
 
         template <typename Context>
         info what(Context& context) const
@@ -85,9 +137,8 @@ namespace boost { namespace spirit { namespace qi
         Subject subject;
         Action f;
 
-    private:
         // silence MSVC warning C4512: assignment operator could not be generated
-        action& operator= (action const&);
+        BOOST_DELETED_FUNCTION(action& operator= (action const&))
     };
 }}}
 

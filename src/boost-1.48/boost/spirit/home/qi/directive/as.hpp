@@ -6,8 +6,8 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
-#if !defined(SPIRIT_AS_DECEMBER_6_2010_1013AM)
-#define SPIRIT_AS_DECEMBER_6_2010_1013AM
+#ifndef BOOST_SPIRIT_QI_DIRECTIVE_AS_HPP
+#define BOOST_SPIRIT_QI_DIRECTIVE_AS_HPP
 
 #if defined(_MSC_VER)
 #pragma once
@@ -25,8 +25,6 @@
 #include <boost/spirit/home/support/handles_container.hpp>
 #include <boost/spirit/home/support/assert_msg.hpp>
 #include <boost/spirit/home/support/container.hpp>
-#include <boost/range/iterator_range.hpp>
-#include <string>
 
 namespace boost { namespace spirit { namespace qi
 {
@@ -34,10 +32,10 @@ namespace boost { namespace spirit { namespace qi
     struct as
       : stateful_tag_type<T, tag::as>
     {
-        BOOST_SPIRIT_ASSERT_MSG(
-            (traits::is_container<T>::type::value),
-            error_type_must_be_a_container,
-            (T));
+        //~ BOOST_SPIRIT_ASSERT_MSG(
+            //~ (traits::is_container<T>::type::value),
+            //~ error_type_must_be_a_container,
+            //~ (T));
     };
 }}}
 
@@ -48,34 +46,36 @@ namespace boost { namespace spirit
     ///////////////////////////////////////////////////////////////////////////
     // enables as_string[...]
     template <>
-    struct use_directive<qi::domain, tag::as_string> 
+    struct use_directive<qi::domain, tag::as_string>
       : mpl::true_ {};
 
     // enables as_wstring[...]
     template <>
-    struct use_directive<qi::domain, tag::as_wstring> 
+    struct use_directive<qi::domain, tag::as_wstring>
       : mpl::true_ {};
 
     // enables as<T>[...]
     template <typename T>
-    struct use_directive<qi::domain, tag::stateful_tag<T, tag::as> > 
-      : mpl::true_ 
+    struct use_directive<qi::domain, tag::stateful_tag<T, tag::as> >
+      : mpl::true_
     {};
 }}
 
 namespace boost { namespace spirit { namespace qi
 {
+#ifndef BOOST_SPIRIT_NO_PREDEFINED_TERMINALS
     using spirit::as_string;
-    using spirit::as_string_type;
     using spirit::as_wstring;
+#endif
+    using spirit::as_string_type;
     using spirit::as_wstring_type;
 
     template <typename Subject, typename T>
     struct as_directive : unary_parser<as_directive<Subject, T> >
     {
         typedef Subject subject_type;
-        as_directive(Subject const& subject)
-          : subject(subject) {}
+        as_directive(Subject const& subject_)
+          : subject(subject_) {}
 
         template <typename Context, typename Iterator>
         struct attribute
@@ -86,13 +86,26 @@ namespace boost { namespace spirit { namespace qi
         template <typename Iterator, typename Context
           , typename Skipper, typename Attribute>
         bool parse(Iterator& first, Iterator const& last
-          , Context& context, Skipper const& skipper, Attribute& attr) const
+          , Context& context, Skipper const& skipper, Attribute& attr_) const
         {
             Iterator i = first;
             T as_attr;
             if (subject.parse(i, last, context, skipper, as_attr))
             {
-                spirit::traits::assign_to(as_attr, attr);
+                spirit::traits::assign_to(as_attr, attr_);
+                first = i;
+                return true;
+            }
+            return false;
+        }
+
+        template <typename Iterator, typename Context, typename Skipper>
+        bool parse(Iterator& first, Iterator const& last
+          , Context& context, Skipper const& skipper, T& attr_) const
+        {
+            Iterator i = first;
+            if (subject.parse(i, last, context, skipper, attr_))
+            {
                 first = i;
                 return true;
             }
@@ -125,14 +138,14 @@ namespace boost { namespace spirit { namespace qi
     template <typename Subject, typename Modifiers>
     struct make_directive<tag::as_wstring, Subject, Modifiers>
     {
-        typedef as_directive<Subject, std::wstring> result_type;
+        typedef as_directive<Subject, std::basic_string<wchar_t> > result_type;
         result_type operator()(unused_type, Subject const& subject
           , unused_type) const
         {
             return result_type(subject);
         }
     };
-    
+
     template <typename T, typename Subject, typename Modifiers>
     struct make_directive<tag::stateful_tag<T, tag::as>, Subject, Modifiers>
     {
@@ -157,7 +170,7 @@ namespace boost { namespace spirit { namespace traits
         , typename Context, typename Iterator>
     struct handles_container<qi::as_directive<Subject, T>, Attribute
         , Context, Iterator>
-      : mpl::false_ {}; 
+      : mpl::false_ {};
 }}}
 
 #endif

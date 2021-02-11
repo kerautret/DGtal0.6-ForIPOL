@@ -25,6 +25,7 @@
 #include <boost/spirit/home/support/info.hpp>
 #include <boost/fusion/include/at.hpp>
 #include <boost/fusion/include/vector.hpp>
+#include <boost/integer_traits.hpp>
 
 namespace boost { namespace spirit
 {
@@ -62,7 +63,9 @@ namespace boost { namespace spirit
 
 namespace boost { namespace spirit { namespace karma
 {
+#ifndef BOOST_SPIRIT_NO_PREDEFINED_TERMINALS
     using spirit::columns;
+#endif
     using spirit::columns_type;
 
     namespace detail
@@ -106,9 +109,8 @@ namespace boost { namespace spirit { namespace karma
             unsigned int const numcolumns;
             mutable unsigned int count;
 
-        private:
             // silence MSVC warning C4512: assignment operator could not be generated
-            columns_delimiter& operator= (columns_delimiter const&);
+            BOOST_DELETED_FUNCTION(columns_delimiter& operator= (columns_delimiter const&))
         };
     }
 
@@ -184,6 +186,9 @@ namespace boost { namespace spirit { namespace karma
         result_type operator()(unused_type, Subject const& subject
           , unused_type) const
         {
+#if defined(BOOST_SPIRIT_NO_PREDEFINED_TERMINALS)
+            eol_type const eol = eol_type();
+#endif
             return result_type(subject, detail::default_columns()
               , compile<karma::domain>(eol));
         }
@@ -207,6 +212,9 @@ namespace boost { namespace spirit { namespace karma
         result_type operator()(Terminal const& term, Subject const& subject
           , unused_type) const
         {
+#if defined(BOOST_SPIRIT_NO_PREDEFINED_TERMINALS)
+            eol_type const eol = eol_type();
+#endif
             return result_type(subject, fusion::at_c<0>(term.args)
               , compile<karma::domain>(eol));
         }

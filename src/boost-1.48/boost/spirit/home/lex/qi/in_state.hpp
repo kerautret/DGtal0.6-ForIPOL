@@ -10,7 +10,7 @@
 #pragma once
 #endif
 
-#include <boost/proto/core.hpp>
+#include <boost/proto/traits.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
 namespace boost { namespace spirit { namespace qi
@@ -27,7 +27,6 @@ namespace boost { namespace spirit { namespace qi
             >::type
           , Skipper
         >::type {};
-
 }}}
 
 #endif

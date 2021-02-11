@@ -65,10 +65,9 @@ inline
 DGtal::Board2D &
 DGtal::Board2D::operator<<( const TDrawableWithBoard2D & object )
 {
-
   BOOST_CONCEPT_ASSERT((CDrawableWithBoard2D<TDrawableWithBoard2D>));
-
   CountedPtr<DrawableWithBoard2D> style( defaultStyle(object) );
+
 #ifdef DEBUG_VERBOSE
   trace.info() << "[operator<<] " << object.className();
 #endif

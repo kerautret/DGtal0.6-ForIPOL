@@ -3,8 +3,8 @@
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-#if !defined(SPIRIT_QI_ATTR_CAST_SEP_26_2009_0735PM)
-#define SPIRIT_QI_ATTR_CAST_SEP_26_2009_0735PM
+#ifndef BOOST_SPIRIT_QI_AUXILIARY_ATTR_CAST_HPP
+#define BOOST_SPIRIT_QI_AUXILIARY_ATTR_CAST_HPP
 
 #if defined(_MSC_VER)
 #pragma once
@@ -50,11 +50,11 @@ namespace boost { namespace spirit { namespace qi
         typedef typename mpl::eval_if<
             traits::not_is_unused<Transformed>
           , mpl::identity<Transformed>
-          , traits::attribute_of<subject_type> >::type 
+          , traits::attribute_of<subject_type> >::type
         transformed_attribute_type;
 
-        attr_cast_parser(Subject const& subject)
-          : subject(subject) 
+        attr_cast_parser(Subject const& subject_)
+          : subject(subject_)
         {
             // If you got an error_invalid_expression error message here,
             // then the expression (Subject) is not a valid spirit qi
@@ -75,7 +75,7 @@ namespace boost { namespace spirit { namespace qi
           , typename Attribute>
         bool parse(Iterator& first, Iterator const& last
           , Context& context, Skipper const& skipper
-          , Attribute& attr) const
+          , Attribute& attr_param) const
         {
             // Find the real exposed attribute. If exposed is given, we use it
             // otherwise we assume the exposed attribute type to be the actual
@@ -87,21 +87,21 @@ namespace boost { namespace spirit { namespace qi
             // do down-stream transformation, provides attribute for embedded
             // parser
             typedef traits::transform_attribute<
-                exposed_attribute_type, transformed_attribute_type, domain> 
+                exposed_attribute_type, transformed_attribute_type, domain>
             transform;
 
-            typename transform::type attr_ = transform::pre(attr);
+            typename transform::type attr_ = transform::pre(attr_param);
 
             if (!compile<qi::domain>(subject).
                     parse(first, last, context, skipper, attr_))
             {
-                transform::fail(attr);
+                transform::fail(attr_param);
                 return false;
             }
 
             // do up-stream transformation, this mainly integrates the results
             // back into the original attribute value, if appropriate
-            traits::post_transform(attr, attr_);
+            transform::post(attr_param, attr_);
             return true;
         }
 
@@ -114,9 +114,8 @@ namespace boost { namespace spirit { namespace qi
 
         Subject subject;
 
-    private:
         // silence MSVC warning C4512: assignment operator could not be generated
-        attr_cast_parser& operator= (attr_cast_parser const&);
+        BOOST_DELETED_FUNCTION(attr_cast_parser& operator= (attr_cast_parser const&))
     };
 
     ///////////////////////////////////////////////////////////////////////////

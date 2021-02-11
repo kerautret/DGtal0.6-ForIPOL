@@ -4,8 +4,8 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 ==============================================================================*/
-#if !defined(SPIRIT_QI_BOOL_POLICIES_SEP_29_2009_0710AM)
-#define SPIRIT_QI_BOOL_POLICIES_SEP_29_2009_0710AM
+#ifndef BOOST_SPIRIT_QI_NUMERIC_BOOL_POLICIES_HPP
+#define BOOST_SPIRIT_QI_NUMERIC_BOOL_POLICIES_HPP
 
 #if defined(_MSC_VER)
 #pragma once
@@ -24,11 +24,11 @@ namespace boost { namespace spirit { namespace qi
     {
         template <typename Iterator, typename Attribute>
         static bool
-        parse_true(Iterator& first, Iterator const& last, Attribute& attr)
+        parse_true(Iterator& first, Iterator const& last, Attribute& attr_)
         {
             if (detail::string_parse("true", first, last, unused))
             {
-                spirit::traits::assign_to(T(true), attr);    // result is true
+                spirit::traits::assign_to(T(true), attr_);    // result is true
                 return true;
             }
             return false;
@@ -36,11 +36,11 @@ namespace boost { namespace spirit { namespace qi
 
         template <typename Iterator, typename Attribute>
         static bool
-        parse_false(Iterator& first, Iterator const& last, Attribute& attr)
+        parse_false(Iterator& first, Iterator const& last, Attribute& attr_)
         {
             if (detail::string_parse("false", first, last, unused))
             {
-                spirit::traits::assign_to(T(false), attr);   // result is false
+                spirit::traits::assign_to(T(false), attr_);   // result is false
                 return true;
             }
             return false;
@@ -53,11 +53,11 @@ namespace boost { namespace spirit { namespace qi
     {
         template <typename Iterator, typename Attribute>
         static bool
-        parse_true(Iterator& first, Iterator const& last, Attribute& attr)
+        parse_true(Iterator& first, Iterator const& last, Attribute& attr_)
         {
             if (detail::string_parse("true", "TRUE", first, last, unused))
             {
-                spirit::traits::assign_to(T(true), attr);    // result is true
+                spirit::traits::assign_to(T(true), attr_);    // result is true
                 return true;
             }
             return false;
@@ -65,11 +65,11 @@ namespace boost { namespace spirit { namespace qi
 
         template <typename Iterator, typename Attribute>
         static bool
-        parse_false(Iterator& first, Iterator const& last, Attribute& attr)
+        parse_false(Iterator& first, Iterator const& last, Attribute& attr_)
         {
             if (detail::string_parse("false", "FALSE", first, last, unused))
             {
-                spirit::traits::assign_to(T(false), attr);   // result is false
+                spirit::traits::assign_to(T(false), attr_);   // result is false
                 return true;
             }
             return false;

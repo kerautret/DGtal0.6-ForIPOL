@@ -15,6 +15,7 @@
 #include <boost/range.hpp>
 #include <boost/parameter/keyword.hpp>
 #include <boost/mpl/placeholders.hpp>
+#include <boost/accumulators/accumulators_fwd.hpp>
 #include <boost/accumulators/framework/accumulator_base.hpp>
 #include <boost/accumulators/framework/extractor.hpp>
 #include <boost/accumulators/numeric/functional.hpp>
@@ -24,6 +25,8 @@
 #include <boost/accumulators/statistics/count.hpp>
 #include <boost/accumulators/statistics/max.hpp>
 #include <boost/accumulators/statistics/min.hpp>
+#include <boost/serialization/vector.hpp>
+#include <boost/serialization/utility.hpp>
 
 namespace boost { namespace accumulators
 {
@@ -33,6 +36,9 @@ namespace boost { namespace accumulators
 //
 BOOST_PARAMETER_NESTED_KEYWORD(tag, density_cache_size, cache_size)
 BOOST_PARAMETER_NESTED_KEYWORD(tag, density_num_bins, num_bins)
+
+BOOST_ACCUMULATORS_IGNORE_GLOBAL(density_cache_size)
+BOOST_ACCUMULATORS_IGNORE_GLOBAL(density_num_bins)
 
 namespace impl
 {
@@ -57,7 +63,7 @@ namespace impl
     struct density_impl
       : accumulator_base
     {
-        typedef typename numeric::functional::average<Sample, std::size_t>::result_type float_type;
+        typedef typename numeric::functional::fdiv<Sample, std::size_t>::result_type float_type;
         typedef std::vector<std::pair<float_type, float_type> > histogram_type;
         typedef std::vector<float_type> array_type;
         // for boost::result_of
@@ -73,8 +79,8 @@ namespace impl
             , histogram(
                 num_bins + 2
               , std::make_pair(
-                    numeric::average(args[sample | Sample()],(std::size_t)1)
-                  , numeric::average(args[sample | Sample()],(std::size_t)1)
+                    numeric::fdiv(args[sample | Sample()],(std::size_t)1)
+                  , numeric::fdiv(args[sample | Sample()],(std::size_t)1)
                 )
               )
             , is_dirty(true)
@@ -95,13 +101,13 @@ namespace impl
             }
 
             // Once cache_size samples have been accumulated, create num_bins bins of same size between
-            // the minimum and maximum of the cached samples as well as an under- and and an overflow bin.
+            // the minimum and maximum of the cached samples as well as under and overflow bins.
             // Store their lower bounds (bin_positions) and fill the bins with the cached samples (samples_in_bin).
             if (cnt == this->cache_size)
             {
-                float_type minimum = numeric::average((min)(args), (std::size_t)1);
-                float_type maximum = numeric::average((max)(args), (std::size_t)1);
-                float_type bin_size = numeric::average(maximum - minimum, this->num_bins );
+                float_type minimum = numeric::fdiv((min)(args), (std::size_t)1);
+                float_type maximum = numeric::fdiv((max)(args), (std::size_t)1);
+                float_type bin_size = numeric::fdiv(maximum - minimum, this->num_bins );
 
                 // determine bin positions (their lower bounds)
                 for (std::size_t i = 0; i < this->num_bins + 2; ++i)
@@ -173,11 +179,25 @@ namespace impl
 
                 for (std::size_t i = 0; i < this->num_bins + 2; ++i)
                 {
-                    this->histogram[i] = std::make_pair(this->bin_positions[i], numeric::average(this->samples_in_bin[i], count(args)));
+                    this->histogram[i] = std::make_pair(this->bin_positions[i], numeric::fdiv(this->samples_in_bin[i], count(args)));
                 }
             }
             // returns a range of pairs
             return make_iterator_range(this->histogram);
+        }
+
+        // make this accumulator serializeable
+        // TODO split to save/load and check on parameters provided in ctor
+        template<class Archive>
+        void serialize(Archive & ar, const unsigned int file_version)
+        {
+            ar & cache_size;
+            ar & cache;
+            ar & num_bins;
+            ar & samples_in_bin;
+            ar & bin_positions;
+            ar & histogram;
+            ar & is_dirty; 
         }
 
     private:

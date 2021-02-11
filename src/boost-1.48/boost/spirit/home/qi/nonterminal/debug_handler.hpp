@@ -14,7 +14,7 @@
 #include <boost/spirit/home/support/unused.hpp>
 #include <boost/spirit/home/qi/nonterminal/rule.hpp>
 #include <boost/spirit/home/qi/nonterminal/debug_handler_state.hpp>
-#include <boost/spirit/home/qi/operator/expect.hpp>
+#include <boost/spirit/home/qi/detail/expectation_failure.hpp>
 #include <boost/function.hpp>
 #include <boost/fusion/include/at.hpp>
 #include <boost/fusion/include/vector.hpp>
@@ -36,12 +36,12 @@ namespace boost { namespace spirit { namespace qi
         function_type;
 
         debug_handler(
-            function_type subject
-          , F f
-          , std::string const& rule_name)
-          : subject(subject)
-          , f(f)
-          , rule_name(rule_name)
+            function_type subject_
+          , F f_
+          , std::string const& rule_name_)
+          : subject(subject_)
+          , f(f_)
+          , rule_name(rule_name_)
         {
         }
 
@@ -90,7 +90,7 @@ namespace boost { namespace spirit { namespace qi
 
     struct simple_trace;
 
-    namespace detail 
+    namespace detail
     {
         // This class provides an extra level of indirection through a
         // template to produce the simple_trace type. This way, the use
@@ -98,7 +98,7 @@ namespace boost { namespace spirit { namespace qi
         // that compilers eagerly type-checking template definitions
         // won't complain that simple_trace is incomplete.
         template<typename T>
-        struct get_simple_trace 
+        struct get_simple_trace
         {
             typedef simple_trace type;
         };
@@ -130,8 +130,16 @@ namespace boost { namespace spirit { namespace qi
   #if defined(BOOST_SPIRIT_DEBUG) || defined(BOOST_SPIRIT_QI_DEBUG)
     #define BOOST_SPIRIT_DEBUG_NODE(r)  r.name(#r); debug(r)
   #else
-    #define BOOST_SPIRIT_DEBUG_NODE(r)  r.name(#r);
+    #define BOOST_SPIRIT_DEBUG_NODE(r)  r.name(#r)
   #endif
 #endif
+
+#define BOOST_SPIRIT_DEBUG_NODE_A(r, _, name)                                   \
+    BOOST_SPIRIT_DEBUG_NODE(name);                                              \
+    /***/
+
+#define BOOST_SPIRIT_DEBUG_NODES(seq)                                           \
+    BOOST_PP_SEQ_FOR_EACH(BOOST_SPIRIT_DEBUG_NODE_A, _, seq)                    \
+    /***/
 
 #endif

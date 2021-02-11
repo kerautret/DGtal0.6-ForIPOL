@@ -39,7 +39,12 @@ BOOST_MSM_EUML_FUNCTION(Fill_ , std::fill , fill_ , void , void )
 BOOST_MSM_EUML_FUNCTION(Generate_ , std::generate , generate_ , void , void )
 BOOST_MSM_EUML_FUNCTION(Unique_ , std::unique , unique_ , RESULT_TYPE_PARAM1 , RESULT_TYPE2_PARAM1 )
 BOOST_MSM_EUML_FUNCTION(UniqueCopy_ , std::unique_copy , unique_copy_ , RESULT_TYPE_PARAM3 , RESULT_TYPE2_PARAM3 )
+#if __cplusplus < 201703L
 BOOST_MSM_EUML_FUNCTION(RandomShuffle_ , std::random_shuffle , random_shuffle_ , void , void )
+#endif
+#if __cplusplus >= 201103L
+BOOST_MSM_EUML_FUNCTION(Shuffle_ , std::shuffle , shuffle_ , void , void )
+#endif
 BOOST_MSM_EUML_FUNCTION(RotateCopy_ , std::rotate_copy , rotate_copy_ , RESULT_TYPE_PARAM4 , RESULT_TYPE2_PARAM4 )
 BOOST_MSM_EUML_FUNCTION(Partition_ , std::partition , partition_ , RESULT_TYPE_PARAM1 , RESULT_TYPE2_PARAM1 )
 BOOST_MSM_EUML_FUNCTION(StablePartition_ , std::stable_partition , stable_partition_ , RESULT_TYPE_PARAM1 , RESULT_TYPE2_PARAM1 )
@@ -107,7 +112,7 @@ struct BackInserter_ : euml_action<BackInserter_<T> >
 };
 
 struct back_inserter_tag {};
-struct BackInserter_Helper: proto::extends< proto::terminal<back_inserter_tag>::type, BackInserter_Helper, sm_domain>
+struct BackInserter_Helper: proto::extends< proto::terminal<back_inserter_tag>::type, BackInserter_Helper, boost::msm::sm_domain>
 {
     BackInserter_Helper(){}
     template <class Arg1,class Arg2,class Arg3,class Arg4,class Arg5 
@@ -162,7 +167,7 @@ struct FrontInserter_ : euml_action<FrontInserter_<T> >
 };
 
 struct front_inserter_tag {};
-struct FrontInserter_Helper: proto::extends< proto::terminal<front_inserter_tag>::type, FrontInserter_Helper, sm_domain>
+struct FrontInserter_Helper: proto::extends< proto::terminal<front_inserter_tag>::type, FrontInserter_Helper, boost::msm::sm_domain>
 {
     FrontInserter_Helper(){}
     template <class Arg1,class Arg2,class Arg3,class Arg4,class Arg5 
@@ -217,7 +222,7 @@ struct Inserter_ : euml_action<Inserter_<T,Pos> >
 };
 
 struct inserter_tag {};
-struct Inserter_Helper: proto::extends< proto::terminal<inserter_tag>::type, Inserter_Helper, sm_domain>
+struct Inserter_Helper: proto::extends< proto::terminal<inserter_tag>::type, Inserter_Helper, boost::msm::sm_domain>
 {
     Inserter_Helper(){}
     template <class Arg1,class Arg2,class Arg3,class Arg4,class Arg5 
@@ -315,7 +320,7 @@ struct Transform_<Param1,Param2,Param3,Param4,Param5,
     }
 };
 struct transform_tag {};
-struct Transform_Helper: proto::extends< proto::terminal<transform_tag>::type, Transform_Helper, sm_domain>
+struct Transform_Helper: proto::extends< proto::terminal<transform_tag>::type, Transform_Helper, boost::msm::sm_domain>
 {
     Transform_Helper(){}
     template <class Arg1,class Arg2,class Arg3,class Arg4,class Arg5 

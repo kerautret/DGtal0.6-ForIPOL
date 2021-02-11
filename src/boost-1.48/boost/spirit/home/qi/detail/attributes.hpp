@@ -4,12 +4,13 @@
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-#if !defined(SPIRIT_QI_DETAIL_ATTRIBUTES_APR_18_2010_0458PM)
-#define SPIRIT_QI_DETAIL_ATTRIBUTES_APR_18_2010_0458PM
+#ifndef BOOST_SPIRIT_QI_DETAIL_ATTRIBUTES_HPP
+#define BOOST_SPIRIT_QI_DETAIL_ATTRIBUTES_HPP
 
 #include <boost/spirit/home/qi/domain.hpp>
 #include <boost/spirit/home/support/attributes_fwd.hpp>
 #include <boost/spirit/home/support/attributes.hpp>
+#include <boost/spirit/home/support/utree/utree_traits_fwd.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
 namespace boost { namespace spirit { namespace qi
@@ -19,7 +20,7 @@ namespace boost { namespace spirit { namespace qi
     {
         typedef Transformed type;
 
-        static Transformed pre(Exposed& val) { return Transformed(); }
+        static Transformed pre(Exposed&) { return Transformed(); }
 
         static void post(Exposed& val, Transformed const& attr)
         {
@@ -46,7 +47,7 @@ namespace boost { namespace spirit { namespace qi
         typedef Transformed type;
 
         static Transformed pre(Exposed& val) { return Transformed(val); }
-        static void post(Exposed& val, Transformed const& attr) { /* no-op */ }
+        static void post(Exposed&, Transformed const&) { /* no-op */ }
 
         // fail() will be called by Qi rule's if the rhs failed parsing
         static void fail(Exposed&) {}
@@ -76,31 +77,21 @@ namespace boost { namespace spirit { namespace qi
     {};
 
     template <typename Exposed, typename Transformed>
-    struct transform_attribute<optional<Exposed>, Transformed
-      , typename disable_if<is_same<optional<Exposed>, Transformed> >::type>
+    struct transform_attribute<boost::optional<Exposed>, Transformed
+      , typename disable_if<is_same<boost::optional<Exposed>, Transformed> >::type>
     {
         typedef Transformed& type;
-        static Transformed& pre(optional<Exposed>& val)
+        static Transformed& pre(boost::optional<Exposed>& val)
         {
             if (!val)
                 val = Transformed();
             return boost::get<Transformed>(val);
         }
-        static void post(optional<Exposed>&, Transformed const&) {}
-        static void fail(optional<Exposed>& val)
+        static void post(boost::optional<Exposed>&, Transformed const&) {}
+        static void fail(boost::optional<Exposed>& val)
         {
-             val = none_t();    // leave optional uninitialized if rhs failed
+             val = none;    // leave optional uninitialized if rhs failed
         }
-    };
-
-    // reference types need special handling
-    template <typename Attribute>
-    struct transform_attribute<Attribute&, Attribute>
-    {
-        typedef Attribute& type;
-        static Attribute& pre(Attribute& val) { return val; }
-        static void post(Attribute&, Attribute const&) {}
-        static void fail(Attribute&) {}
     };
 
     // unused_type needs some special handling as well
@@ -119,16 +110,6 @@ namespace boost { namespace spirit { namespace qi
     {};
 
     template <typename Attribute>
-    struct transform_attribute<unused_type, Attribute>
-      : transform_attribute<unused_type, unused_type>
-    {};
-
-    template <typename Attribute>
-    struct transform_attribute<unused_type const, Attribute>
-      : transform_attribute<unused_type, unused_type>
-    {};
-
-    template <typename Attribute>
     struct transform_attribute<Attribute, unused_type>
       : transform_attribute<unused_type, unused_type>
     {};
@@ -142,33 +123,11 @@ namespace boost { namespace spirit { namespace qi
 ///////////////////////////////////////////////////////////////////////////////
 namespace boost { namespace spirit { namespace traits
 {
-    template <typename Exposed, typename Transformed>
-    struct transform_attribute<Exposed, Transformed, qi::domain>
-      : qi::transform_attribute<Exposed, Transformed>
-    {};
-
-    template <typename Exposed, typename Transformed>
-    struct transform_attribute<Exposed&, Transformed, qi::domain>
-      : transform_attribute<Exposed, Transformed, qi::domain>
-    {};
-
-    template <typename Attribute>
-    struct transform_attribute<Attribute&, Attribute, qi::domain>
-      : qi::transform_attribute<Attribute&, Attribute>
-    {};
-
-    ///////////////////////////////////////////////////////////////////////////
-    template <typename Exposed, typename Transformed>
-    void post_transform(Exposed& dest, Transformed const& attr)
-    {
-        return transform_attribute<Exposed, Transformed, qi::domain>::post(dest, attr);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    template <typename Exposed, typename Transformed>
-    void fail_transform(Exposed& dest, Transformed const&)
-    {
-        return transform_attribute<Exposed, Transformed, qi::domain>::fail(dest);
+    namespace detail {
+        template <typename Exposed, typename Transformed>
+        struct transform_attribute_base<Exposed, Transformed, qi::domain>
+          : qi::transform_attribute<Exposed, Transformed>
+        {};
     }
 }}}
 

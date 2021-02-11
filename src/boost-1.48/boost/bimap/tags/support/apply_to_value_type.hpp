@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_TAGS_SUPPORT_APPLY_TO_VALUE_TYPE_HPP
 #define BOOST_BIMAP_TAGS_SUPPORT_APPLY_TO_VALUE_TYPE_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER)
 #pragma once
 #endif
 
@@ -38,7 +38,7 @@ struct apply_to_value_type
 \endcode
 
 This higher order metafunctions is very useful, and it can be used with lambda
-expresions.
+expressions.
 
 See also tagged.
                                                                                 **/

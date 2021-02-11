@@ -4,8 +4,8 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
-#if !defined(SPIRIT_DIFFERENCE_FEBRUARY_11_2007_1250PM)
-#define SPIRIT_DIFFERENCE_FEBRUARY_11_2007_1250PM
+#ifndef BOOST_SPIRIT_QI_OPERATOR_DIFFERENCE_HPP
+#define BOOST_SPIRIT_QI_OPERATOR_DIFFERENCE_HPP
 
 #if defined(_MSC_VER)
 #pragma once
@@ -19,6 +19,8 @@
 #include <boost/spirit/home/support/has_semantic_action.hpp>
 #include <boost/spirit/home/support/handles_container.hpp>
 #include <boost/fusion/include/at.hpp>
+#include <boost/proto/operators.hpp>
+#include <boost/proto/tags.hpp>
 
 namespace boost { namespace spirit
 {
@@ -46,14 +48,14 @@ namespace boost { namespace spirit { namespace qi
             type;
         };
 
-        difference(Left const& left, Right const& right)
-          : left(left), right(right) {}
+        difference(Left const& left_, Right const& right_)
+          : left(left_), right(right_) {}
 
         template <typename Iterator, typename Context
           , typename Skipper, typename Attribute>
         bool parse(Iterator& first, Iterator const& last
           , Context& context, Skipper const& skipper
-          , Attribute& attr) const
+          , Attribute& attr_) const
         {
             // Unlike classic Spirit, with this version of difference, the rule
             // lit("policeman") - "police" will always fail to match.
@@ -71,7 +73,7 @@ namespace boost { namespace spirit { namespace qi
                 return false;
             }
             // RHS fails, now try LHS
-            return left.parse(first, last, context, skipper, attr);
+            return left.parse(first, last, context, skipper, attr_);
         }
 
         template <typename Context>

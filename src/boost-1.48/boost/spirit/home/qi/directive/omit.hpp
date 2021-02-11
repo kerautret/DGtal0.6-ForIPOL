@@ -4,8 +4,8 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
-#if !defined(SPIRIT_OMIT_MARCH_24_2007_0802AM)
-#define SPIRIT_OMIT_MARCH_24_2007_0802AM
+#ifndef BOOST_SPIRIT_QI_DIRECTIVE_OMIT_HPP
+#define BOOST_SPIRIT_QI_DIRECTIVE_OMIT_HPP
 
 #if defined(_MSC_VER)
 #pragma once
@@ -32,7 +32,9 @@ namespace boost { namespace spirit
 
 namespace boost { namespace spirit { namespace qi
 {
+#ifndef BOOST_SPIRIT_NO_PREDEFINED_TERMINALS
     using spirit::omit;
+#endif
     using spirit::omit_type;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -43,8 +45,8 @@ namespace boost { namespace spirit { namespace qi
     struct omit_directive : unary_parser<omit_directive<Subject> >
     {
         typedef Subject subject_type;
-        omit_directive(Subject const& subject)
-          : subject(subject) {}
+        omit_directive(Subject const& subject_)
+          : subject(subject_) {}
 
         template <typename Context, typename Iterator>
         struct attribute
@@ -55,9 +57,9 @@ namespace boost { namespace spirit { namespace qi
         template <typename Iterator, typename Context
           , typename Skipper, typename Attribute>
         bool parse(Iterator& first, Iterator const& last
-          , Context& context, Skipper const& skipper, Attribute& attr) const
+          , Context& context, Skipper const& skipper, Attribute& attr_) const
         {
-            return subject.parse(first, last, context, skipper, attr);
+            return subject.parse(first, last, context, skipper, attr_);
         }
 
         template <typename Context>
@@ -68,9 +70,8 @@ namespace boost { namespace spirit { namespace qi
 
         Subject subject;
 
-    private:
         // silence MSVC warning C4512: assignment operator could not be generated
-        omit_directive& operator= (omit_directive const&);
+        BOOST_DELETED_FUNCTION(omit_directive& operator= (omit_directive const&))
     };
 
     ///////////////////////////////////////////////////////////////////////////

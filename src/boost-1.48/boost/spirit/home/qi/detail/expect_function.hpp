@@ -4,8 +4,8 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
-#if !defined(SPIRIT_EXPECT_FUNCTION_APR_29_2007_0558PM)
-#define SPIRIT_EXPECT_FUNCTION_APR_29_2007_0558PM
+#ifndef BOOST_SPIRIT_QI_DETAIL_EXPECT_FUNCTION_HPP
+#define BOOST_SPIRIT_QI_DETAIL_EXPECT_FUNCTION_HPP
 
 #if defined(_MSC_VER)
 #pragma once
@@ -26,12 +26,12 @@ namespace boost { namespace spirit { namespace qi { namespace detail
         typedef Context context_type;
 
         expect_function(
-            Iterator& first, Iterator const& last
-          , Context& context, Skipper const& skipper)
-          : first(first)
-          , last(last)
-          , context(context)
-          , skipper(skipper)
+            Iterator& first_, Iterator const& last_
+          , Context& context_, Skipper const& skipper_)
+          : first(first_)
+          , last(last_)
+          , context(context_)
+          , skipper(skipper_)
           , is_first(true)
         {
         }
@@ -96,9 +96,8 @@ namespace boost { namespace spirit { namespace qi { namespace detail
         Skipper const& skipper;
         mutable bool is_first;
 
-    private:
         // silence MSVC warning C4512: assignment operator could not be generated
-        expect_function& operator= (expect_function const&);
+        BOOST_DELETED_FUNCTION(expect_function& operator= (expect_function const&))
     };
 }}}}
 

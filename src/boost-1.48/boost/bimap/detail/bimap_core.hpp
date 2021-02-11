@@ -12,7 +12,7 @@
 #ifndef BOOST_BIMAP_DETAIL_BIMAP_CORE_HPP
 #define BOOST_BIMAP_DETAIL_BIMAP_CORE_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER>=1200)
+#if defined(_MSC_VER)
 #pragma once
 #endif
 
@@ -47,6 +47,7 @@
 
 #include <boost/bimap/set_of.hpp>
 #include <boost/bimap/unconstrained_set_of.hpp>
+#include <boost/core/allocator_access.hpp>
 
 namespace boost {
 namespace bimaps {
@@ -263,7 +264,7 @@ class bimap_core
 
     // If it is based either on the left or on the right, then only the side
     // indices are needed. But the set type of the relation can be completely
-    // diferent from the one used for the sides in wich case we have to add yet
+    // different from the one used for the sides in which case we have to add yet
     // another index to the core.
 
     // TODO
@@ -306,7 +307,7 @@ class bimap_core
                         relation_set_type_of;
 
     // Logic tags
-    // This is a necesary extra level of indirection to allow unconstrained
+    // This is a necessary extra level of indirection to allow unconstrained
     // sets to be plug in the design. The bimap constructors use this logic
     // tags.
 
@@ -404,8 +405,8 @@ class bimap_core
     <
         relation,
         core_indices,
-        BOOST_DEDUCED_TYPENAME parameters::allocator::
-            BOOST_NESTED_TEMPLATE rebind<relation>::other
+        BOOST_DEDUCED_TYPENAME boost::allocator_rebind<BOOST_DEDUCED_TYPENAME
+            parameters::allocator, relation>::type
 
     > core_type;
 
@@ -424,50 +425,6 @@ class bimap_core
 
     typedef BOOST_DEDUCED_TYPENAME right_index::iterator       right_core_iterator;
     typedef BOOST_DEDUCED_TYPENAME right_index::const_iterator right_core_const_iterator;
-
-    // Map by {side} iterator metadata
-    // --------------------------------------------------------------------
-    public:
-
-    //@{
-
-        typedef ::boost::bimaps::detail::map_view_iterator
-        <
-            left_tag,
-            relation,
-            left_core_iterator
-
-        > left_iterator;
-
-        typedef ::boost::bimaps::detail::map_view_iterator
-        <
-            right_tag,
-            relation,
-            right_core_iterator
-
-        > right_iterator;
-
-    //@}
-
-    //@{
-
-        typedef ::boost::bimaps::detail::const_map_view_iterator
-        <
-            left_tag,
-            relation,
-            left_core_const_iterator
-
-        > left_const_iterator;
-
-        typedef ::boost::bimaps::detail::const_map_view_iterator
-        <
-            right_tag,
-            relation,
-            right_core_const_iterator
-
-        > right_const_iterator;
-
-    //@}
 
     // Relation set view
 
@@ -489,7 +446,7 @@ class bimap_core
     typedef bimap_core bimap_core_;
 };
 
-// Two auxiliar metafunctions to compute the map view types
+// Two auxiliary metafunctions to compute the map view types
 // The map view type can not be computed inside the bimap core because a 
 // they need the bimap core to be parsed first.
 
@@ -512,6 +469,7 @@ struct right_map_view_type
             BOOST_DEDUCED_TYPENAME BimapBaseType::right_tag, BimapBaseType
         >::type type;
 };
+
 
 } // namespace detail
 } // namespace bimaps

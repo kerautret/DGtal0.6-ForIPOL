@@ -3,8 +3,8 @@
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file licence_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-#ifndef BOOST_LEXER_DEBUG_HPP
-#define BOOST_LEXER_DEBUG_HPP
+#ifndef BOOST_SPIRIT_SUPPORT_DETAIL_LEXER_DEBUG_HPP
+#define BOOST_SPIRIT_SUPPORT_DETAIL_LEXER_DEBUG_HPP
 
 #include <map>
 #include <ostream>
@@ -31,11 +31,7 @@ public:
         const CharT *ptr_ = in_.c_str ();
         std::size_t size_ = in_.size ();
 
-#if defined _MSC_VER && _MSC_VER <= 1200
-        out_.erase ();
-#else
         out_.clear ();
-#endif
 
         while (size_)
         {

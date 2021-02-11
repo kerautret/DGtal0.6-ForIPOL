@@ -167,6 +167,14 @@ namespace boost { namespace spirit { namespace char_encoding
         /*  }  125  7d */   BOOST_CC_PUNCT,
         /*  ~  126  7e */   BOOST_CC_PUNCT,
         /* DEL 127  7f */   BOOST_CC_CTRL,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     };
 
     ///////////////////////////////////////////////////////////////////////////
@@ -175,6 +183,7 @@ namespace boost { namespace spirit { namespace char_encoding
     struct ascii
     {
         typedef char char_type;
+        typedef unsigned char classify_type;
 
         static bool
         isascii_(int ch)
@@ -188,86 +197,101 @@ namespace boost { namespace spirit { namespace char_encoding
             return isascii_(ch);
         }
 
-        static int
+        // *** Note on assertions: The precondition is that the calls to
+        // these functions do not violate the required range of ch (type int)
+        // which is that strict_ischar(ch) should be true. It is the
+        // responsibility of the caller to make sure this precondition is not
+        // violated.
+
+        static bool
+        strict_ischar(int ch)
+        {
+            return ch >= 0 && ch <= 127;
+        }
+
+        static bool
         isalnum(int ch)
         {
-            BOOST_ASSERT(isascii_(ch));
+            BOOST_ASSERT(strict_ischar(ch));
             return (ascii_char_types[ch] & BOOST_CC_ALPHA)
                 || (ascii_char_types[ch] & BOOST_CC_DIGIT);
         }
 
-        static int
+        static bool
         isalpha(int ch)
         {
-            BOOST_ASSERT(isascii_(ch));
-            return (ascii_char_types[ch] & BOOST_CC_ALPHA);
+            BOOST_ASSERT(strict_ischar(ch));
+            return (ascii_char_types[ch] & BOOST_CC_ALPHA) ? true : false;
         }
 
-        static int
+        static bool
         isdigit(int ch)
         {
-            BOOST_ASSERT(isascii_(ch));
-            return (ascii_char_types[ch] & BOOST_CC_DIGIT);
+            BOOST_ASSERT(strict_ischar(ch));
+            return (ascii_char_types[ch] & BOOST_CC_DIGIT) ? true : false;
         }
 
-        static int
+        static bool
         isxdigit(int ch)
         {
-            BOOST_ASSERT(isascii_(ch));
-            return (ascii_char_types[ch] & BOOST_CC_XDIGIT);
+            BOOST_ASSERT(strict_ischar(ch));
+            return (ascii_char_types[ch] & BOOST_CC_XDIGIT) ? true : false;
         }
 
-        static int
+        static bool
         iscntrl(int ch)
         {
-            BOOST_ASSERT(isascii_(ch));
-            return (ascii_char_types[ch] & BOOST_CC_CTRL);
+            BOOST_ASSERT(strict_ischar(ch));
+            return (ascii_char_types[ch] & BOOST_CC_CTRL) ? true : false;
         }
 
-        static int
+        static bool
         isgraph(int ch)
         {
+            BOOST_ASSERT(strict_ischar(ch));
             return ('\x21' <= ch && ch <= '\x7e');
         }
 
-        static int
+        static bool
         islower(int ch)
         {
-            BOOST_ASSERT(isascii_(ch));
-            return (ascii_char_types[ch] & BOOST_CC_LOWER);
+            BOOST_ASSERT(strict_ischar(ch));
+            return (ascii_char_types[ch] & BOOST_CC_LOWER) ? true : false;
         }
 
-        static int
+        static bool
         isprint(int ch)
         {
+            BOOST_ASSERT(strict_ischar(ch));
             return ('\x20' <= ch && ch <= '\x7e');
         }
 
-        static int
+        static bool
         ispunct(int ch)
         {
-            BOOST_ASSERT(isascii_(ch));
-            return (ascii_char_types[ch] & BOOST_CC_PUNCT);
+            BOOST_ASSERT(strict_ischar(ch));
+            return (ascii_char_types[ch] & BOOST_CC_PUNCT) ? true : false;
         }
 
-        static int
+        static bool
         isspace(int ch)
         {
-            BOOST_ASSERT(isascii_(ch));
-            return (ascii_char_types[ch] & BOOST_CC_SPACE);
+            BOOST_ASSERT(strict_ischar(ch));
+            return (ascii_char_types[ch] & BOOST_CC_SPACE) ? true : false;
         }
 
-        static int
+        static bool
         isblank BOOST_PREVENT_MACRO_SUBSTITUTION (int ch)
         {
+            BOOST_ASSERT(strict_ischar(ch));
             return ('\x09' == ch || '\x20' == ch);
         }
 
-        static int
+        static bool
         isupper(int ch)
         {
-            BOOST_ASSERT(isascii_(ch));
-            return (ascii_char_types[ch] & BOOST_CC_UPPER);
+            BOOST_ASSERT(strict_ischar(ch));
+            return (ascii_char_types[ch] & BOOST_CC_UPPER) ? true : false;
         }
 
         ///////////////////////////////////////////////////////////////////////
@@ -277,20 +301,21 @@ namespace boost { namespace spirit { namespace char_encoding
         static int
         tolower(int ch)
         {
-            BOOST_ASSERT(isascii_(ch));
+            BOOST_ASSERT(strict_ischar(ch));
             return isupper(ch) ? (ch - 'A' + 'a') : ch;
         }
 
         static int
         toupper(int ch)
         {
-            BOOST_ASSERT(isascii_(ch));
+            BOOST_ASSERT(strict_ischar(ch));
             return islower(ch) ? (ch - 'a' + 'A') : ch;
         }
 
         static ::boost::uint32_t
         toucs4(int ch)
         {
+            BOOST_ASSERT(strict_ischar(ch));
             return ch;
         }
     };
@@ -310,4 +335,3 @@ namespace boost { namespace spirit { namespace char_encoding
 #undef BOOST_CC_SPACE
 
 #endif
-

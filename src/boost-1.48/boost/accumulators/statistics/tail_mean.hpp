@@ -62,7 +62,7 @@ namespace impl
     struct coherent_tail_mean_impl
       : accumulator_base
     {
-        typedef typename numeric::functional::average<Sample, std::size_t>::result_type float_type;
+        typedef typename numeric::functional::fdiv<Sample, std::size_t>::result_type float_type;
         // for boost::result_of
         typedef float_type result_type;
 
@@ -82,12 +82,16 @@ namespace impl
             extractor<tag::non_coherent_tail_mean<LeftRight> > const some_non_coherent_tail_mean = {};
 
             return some_non_coherent_tail_mean(args)
-                 + numeric::average(quantile(args), n)
+                 + numeric::fdiv(quantile(args), n)
                  * (
                      ( is_same<LeftRight, left>::value ) ? args[quantile_probability] : 1. - args[quantile_probability]
-                     - numeric::average(n, count(args))
+                     - numeric::fdiv(n, count(args))
                    );
         }
+        
+        // serialization is done by accumulators it depends on
+        template<class Archive>
+        void serialize(Archive & ar, const unsigned int file_version) {}
     };
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -117,7 +121,7 @@ namespace impl
     struct non_coherent_tail_mean_impl
       : accumulator_base
     {
-        typedef typename numeric::functional::average<Sample, std::size_t>::result_type float_type;
+        typedef typename numeric::functional::fdiv<Sample, std::size_t>::result_type float_type;
         // for boost::result_of
         typedef float_type result_type;
 
@@ -136,7 +140,7 @@ namespace impl
 
             // If n is in a valid range, return result, otherwise return NaN or throw exception
             if (n <= static_cast<std::size_t>(tail(args).size()))
-                return numeric::average(
+                return numeric::fdiv(
                     std::accumulate(
                         tail(args).begin()
                       , tail(args).begin() + n
@@ -159,6 +163,10 @@ namespace impl
                 }
             }
         }
+        
+        // serialization is done by accumulators it depends on
+        template<class Archive>
+        void serialize(Archive & ar, const unsigned int file_version) {}
     };
 
 } // namespace impl

@@ -4,8 +4,8 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
-#if !defined(SPIRIT_PERMUTATION_OR_MARCH_13_2007_1145PM)
-#define SPIRIT_PERMUTATION_OR_MARCH_13_2007_1145PM
+#ifndef BOOST_SPIRIT_QI_OPERATOR_PERMUTATION_HPP
+#define BOOST_SPIRIT_QI_OPERATOR_PERMUTATION_HPP
 
 #if defined(_MSC_VER)
 #pragma once
@@ -21,8 +21,9 @@
 #include <boost/spirit/home/support/info.hpp>
 #include <boost/fusion/include/size.hpp>
 #include <boost/optional.hpp>
-#include <boost/foreach.hpp>
 #include <boost/array.hpp>
+#include <boost/proto/operators.hpp>
+#include <boost/proto/tags.hpp>
 
 namespace boost { namespace spirit
 {
@@ -62,8 +63,8 @@ namespace boost { namespace spirit { namespace qi
             type;
         };
 
-        permutation(Elements const& elements)
-          : elements(elements) {}
+        permutation(Elements const& elements_)
+          : elements(elements_) {}
 
         template <typename Iterator, typename Context
           , typename Skipper, typename Attribute>
@@ -76,13 +77,10 @@ namespace boost { namespace spirit { namespace qi
                 f(first, last, context, skipper);
 
             boost::array<bool, fusion::result_of::size<Elements>::value> flags;
-            BOOST_FOREACH(bool& taken, flags)
-            {
-                taken = false;
-            }
+            flags.fill(false);
 
             // wrap the attribute in a tuple if it is not a tuple
-            typename traits::wrap_if_not_tuple<Attribute>::type attr(attr_);
+            typename traits::wrap_if_not_tuple<Attribute>::type attr_local(attr_);
 
             // We have a bool array 'flags' with one flag for each parser.
             // permute_function sets the slot to true when the corresponding
@@ -91,7 +89,7 @@ namespace boost { namespace spirit { namespace qi
 
             bool result = false;
             f.taken = flags.begin();
-            while (spirit::any_if_ns(elements, attr, f, predicate()))
+            while (spirit::any_if_ns(elements, attr_local, f, predicate()))
             {
                 f.taken = flags.begin();
                 result = true;

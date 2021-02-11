@@ -4,8 +4,8 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
-#if !defined(SPIRIT_PERMUTE_FUNCTION_MARCH_13_2007_1129AM)
-#define SPIRIT_PERMUTE_FUNCTION_MARCH_13_2007_1129AM
+#ifndef BOOST_SPIRIT_QI_DETAIL_PERMUTE_FUNCTION_HPP
+#define BOOST_SPIRIT_QI_DETAIL_PERMUTE_FUNCTION_HPP
 
 #if defined(_MSC_VER)
 #pragma once
@@ -20,12 +20,12 @@ namespace boost { namespace spirit { namespace qi { namespace detail
     struct permute_function
     {
         permute_function(
-            Iterator& first, Iterator const& last
-          , Context& context, Skipper const& skipper)
-          : first(first)
-          , last(last)
-          , context(context)
-          , skipper(skipper)
+            Iterator& first_, Iterator const& last_
+          , Context& context_, Skipper const& skipper_)
+          : first(first_)
+          , last(last_)
+          , context(context_)
+          , skipper(skipper_)
         {
         }
 
@@ -35,22 +35,6 @@ namespace boost { namespace spirit { namespace qi { namespace detail
             // return true if the parser succeeds and the slot is not yet taken
             if (!*taken && component.parse(first, last, context, skipper, attr))
             {
-                *taken = true;
-                ++taken;
-                return true;
-            }
-            ++taken;
-            return false;
-        }
-
-        template <typename Component, typename Attribute>
-        bool operator()(Component const& component, boost::optional<Attribute>& attr)
-        {
-            // return true if the parser succeeds and the slot is not yet taken
-            Attribute val;
-            if (!*taken && component.parse(first, last, context, skipper, val))
-            {
-                attr = val;
                 *taken = true;
                 ++taken;
                 return true;
@@ -79,9 +63,8 @@ namespace boost { namespace spirit { namespace qi { namespace detail
         Skipper const& skipper;
         bool* taken;
 
-    private:
         // silence MSVC warning C4512: assignment operator could not be generated
-        permute_function& operator= (permute_function const&);
+        BOOST_DELETED_FUNCTION(permute_function& operator= (permute_function const&))
     };
 }}}}
 

@@ -3,8 +3,8 @@
 //  Distributed under the Boost Software License, Version 1.0. (See accompanying 
 //  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-#if !defined(SPIRIT_STRICT_RELAXED_APR_22_2010_0959AM)
-#define SPIRIT_STRICT_RELAXED_APR_22_2010_0959AM
+#ifndef BOOST_SPIRIT_KARMA_DIRECTIVE_STRICT_RELAXED_HPP
+#define BOOST_SPIRIT_KARMA_DIRECTIVE_STRICT_RELAXED_HPP
 
 #if defined(_MSC_VER)
 #pragma once
@@ -66,9 +66,11 @@ namespace boost { namespace spirit
 
     namespace karma
     {
+#ifndef BOOST_SPIRIT_NO_PREDEFINED_TERMINALS
         using boost::spirit::strict;
-        using boost::spirit::strict_type;
         using boost::spirit::relaxed;
+#endif
+        using boost::spirit::strict_type;
         using boost::spirit::relaxed_type;
     }
 }}

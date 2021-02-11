@@ -52,7 +52,7 @@
 #include "DGtal/kernel/domains/CDomain.h"
 
 #include "DGtal/images/DefaultConstImageRange.h"
-#include <tr1/tuple>
+#include <tuple>
 //////////////////////////////////////////////////////////////////////////////
 
 namespace DGtal

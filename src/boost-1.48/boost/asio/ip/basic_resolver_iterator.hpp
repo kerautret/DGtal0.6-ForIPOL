@@ -2,7 +2,7 @@
 // ip/basic_resolver_iterator.hpp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2011 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2020 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -16,14 +16,19 @@
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
-#include <boost/iterator.hpp>
+#include <cstddef>
 #include <cstring>
+#include <iterator>
 #include <string>
 #include <vector>
-#include <boost/asio/detail/shared_ptr.hpp>
+#include <boost/asio/detail/memory.hpp>
 #include <boost/asio/detail/socket_ops.hpp>
 #include <boost/asio/detail/socket_types.hpp>
 #include <boost/asio/ip/basic_resolver_entry.hpp>
+
+#if defined(BOOST_ASIO_WINDOWS_RUNTIME)
+# include <boost/asio/detail/winrt_utils.hpp>
+#endif // defined(BOOST_ASIO_WINDOWS_RUNTIME)
 
 #include <boost/asio/detail/push_options.hpp>
 
@@ -45,68 +50,68 @@ namespace ip {
  */
 template <typename InternetProtocol>
 class basic_resolver_iterator
-#if defined(GENERATING_DOCUMENTATION)
-  : public std::iterator<
-#else // defined(GENERATING_DOCUMENTATION)
-  : public boost::iterator<
-#endif // defined(GENERATING_DOCUMENTATION)
-      std::forward_iterator_tag,
-      const basic_resolver_entry<InternetProtocol> >
 {
 public:
+  /// The type used for the distance between two iterators.
+  typedef std::ptrdiff_t difference_type;
+
+  /// The type of the value pointed to by the iterator.
+  typedef basic_resolver_entry<InternetProtocol> value_type;
+
+  /// The type of the result of applying operator->() to the iterator.
+  typedef const basic_resolver_entry<InternetProtocol>* pointer;
+
+  /// The type of the result of applying operator*() to the iterator.
+  typedef const basic_resolver_entry<InternetProtocol>& reference;
+
+  /// The iterator category.
+  typedef std::forward_iterator_tag iterator_category;
+
   /// Default constructor creates an end iterator.
   basic_resolver_iterator()
     : index_(0)
   {
   }
 
-  /// Create an iterator from an addrinfo list returned by getaddrinfo.
-  static basic_resolver_iterator create(
-      boost::asio::detail::addrinfo_type* address_info,
-      const std::string& host_name, const std::string& service_name)
+  /// Copy constructor.
+  basic_resolver_iterator(const basic_resolver_iterator& other)
+    : values_(other.values_),
+      index_(other.index_)
   {
-    basic_resolver_iterator iter;
-    if (!address_info)
-      return iter;
+  }
 
-    std::string actual_host_name = host_name;
-    if (address_info->ai_canonname)
-      actual_host_name = address_info->ai_canonname;
+#if defined(BOOST_ASIO_HAS_MOVE) || defined(GENERATING_DOCUMENTATION)
+  /// Move constructor.
+  basic_resolver_iterator(basic_resolver_iterator&& other)
+    : values_(BOOST_ASIO_MOVE_CAST(values_ptr_type)(other.values_)),
+      index_(other.index_)
+  {
+    other.index_ = 0;
+  }
+#endif // defined(BOOST_ASIO_HAS_MOVE) || defined(GENERATING_DOCUMENTATION)
 
-    iter.values_.reset(new values_type);
+  /// Assignment operator.
+  basic_resolver_iterator& operator=(const basic_resolver_iterator& other)
+  {
+    values_ = other.values_;
+    index_ = other.index_;
+    return *this;
+  }
 
-    while (address_info)
+#if defined(BOOST_ASIO_HAS_MOVE) || defined(GENERATING_DOCUMENTATION)
+  /// Move-assignment operator.
+  basic_resolver_iterator& operator=(basic_resolver_iterator&& other)
+  {
+    if (this != &other)
     {
-      if (address_info->ai_family == PF_INET
-          || address_info->ai_family == PF_INET6)
-      {
-        using namespace std; // For memcpy.
-        typename InternetProtocol::endpoint endpoint;
-        endpoint.resize(static_cast<std::size_t>(address_info->ai_addrlen));
-        memcpy(endpoint.data(), address_info->ai_addr,
-            address_info->ai_addrlen);
-        iter.values_->push_back(
-            basic_resolver_entry<InternetProtocol>(endpoint,
-              actual_host_name, service_name));
-      }
-      address_info = address_info->ai_next;
+      values_ = BOOST_ASIO_MOVE_CAST(values_ptr_type)(other.values_);
+      index_ = other.index_;
+      other.index_ = 0;
     }
 
-    return iter;
+    return *this;
   }
-
-  /// Create an iterator from an endpoint, host name and service name.
-  static basic_resolver_iterator create(
-      const typename InternetProtocol::endpoint& endpoint,
-      const std::string& host_name, const std::string& service_name)
-  {
-    basic_resolver_iterator iter;
-    iter.values_.reset(new values_type);
-    iter.values_->push_back(
-        basic_resolver_entry<InternetProtocol>(
-          endpoint, host_name, service_name));
-    return iter;
-  }
+#endif // defined(BOOST_ASIO_HAS_MOVE) || defined(GENERATING_DOCUMENTATION)
 
   /// Dereference an iterator.
   const basic_resolver_entry<InternetProtocol>& operator*() const
@@ -149,7 +154,7 @@ public:
     return !a.equal(b);
   }
 
-private:
+protected:
   void increment()
   {
     if (++index_ == values_->size())
@@ -175,7 +180,8 @@ private:
   }
 
   typedef std::vector<basic_resolver_entry<InternetProtocol> > values_type;
-  boost::asio::detail::shared_ptr<values_type> values_;
+  typedef boost::asio::detail::shared_ptr<values_type> values_ptr_type;
+  values_ptr_type values_;
   std::size_t index_;
 };
 

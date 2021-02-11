@@ -8,8 +8,8 @@
     http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
 
-#if !defined(TREE_TO_XML_IPP)
-#define TREE_TO_XML_IPP
+#ifndef BOOST_SPIRIT_CLASSIC_TREE_IMPL_TREE_TO_XML_IPP
+#define BOOST_SPIRIT_CLASSIC_TREE_IMPL_TREE_TO_XML_IPP
 
 #include <cstdio>
 #include <cstdarg>
@@ -21,6 +21,7 @@
 #include <iostream>
 #include <boost/config.hpp>
 #include <boost/assert.hpp>
+#include <boost/scoped_array.hpp>
 
 #ifdef BOOST_NO_STRINGSTREAM
 #include <strstream>
@@ -68,7 +69,7 @@ namespace impl {
         {
             using namespace std;        // some systems have size_t in ns std
             size_t len = strlen(source);
-            std::auto_ptr<wchar_t> result (new wchar_t[len+1]);
+            boost::scoped_array<wchar_t> result (new wchar_t[len+1]);
             result.get()[len] = '\0';
 
             // working with wide character streams is supported only if the
@@ -523,4 +524,4 @@ BOOST_SPIRIT_CLASSIC_NAMESPACE_END
 #undef BOOST_SPIRIT_OSSTREAM
 #undef BOOST_SPIRIT_GETSTRING
 
-#endif // !defined(PARSE_TREE_XML_HPP)
+#endif

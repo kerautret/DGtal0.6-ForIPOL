@@ -78,7 +78,9 @@ namespace boost { namespace spirit
 ///////////////////////////////////////////////////////////////////////////////
 namespace boost { namespace spirit { namespace karma
 {
+#ifndef BOOST_SPIRIT_NO_PREDEFINED_TERMINALS
     using spirit::lit;
+#endif
     using spirit::lit_type;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -125,7 +127,7 @@ namespace boost { namespace spirit { namespace karma
             // providing any attribute, as the generator doesn't 'know' what
             // character to output. The following assertion fires if this
             // situation is detected in your code.
-            BOOST_SPIRIT_ASSERT_MSG(false, string_not_usable_without_attribute, ());
+            BOOST_SPIRIT_ASSERT_FAIL(OutputIterator, string_not_usable_without_attribute, ());
             return false;
         }
 
@@ -172,9 +174,6 @@ namespace boost { namespace spirit { namespace karma
 
             // fail if attribute isn't matched by immediate literal
             typedef typename attribute<Context>::type attribute_type;
-
-            typedef typename spirit::result_of::extract_from<attribute_type, Attribute>::type
-                extracted_string_type;
 
             using spirit::traits::get_c_string;
             if (!detail::string_compare(

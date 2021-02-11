@@ -20,7 +20,7 @@ namespace boost{namespace icl
 template 
 <
     typename                         DomainT, 
-    ICL_COMPARE                      Compare  = ICL_COMPARE_INSTANCE(std::less, DomainT),
+    ICL_COMPARE                      Compare  = ICL_COMPARE_INSTANCE(ICL_COMPARE_DEFAULT, DomainT),
     ICL_INTERVAL(ICL_COMPARE) Interval = ICL_INTERVAL_INSTANCE(ICL_INTERVAL_DEFAULT, DomainT, Compare),
     ICL_ALLOC                        Alloc    = std::allocator
 > 
@@ -82,7 +82,6 @@ public:
     /// const_iterator for iteration over intervals
     typedef typename ImplSetT::const_iterator const_iterator;
 
-
     enum { fineness = 2 };
 
 public:
@@ -107,15 +106,6 @@ public:
     /// Constructor for a single interval
     explicit separate_interval_set(const interval_type& itv): base_type() { this->add(itv); }
 
-    /// Assignment operator
-    template<class SubType>
-    separate_interval_set& operator =
-        (const interval_base_set<SubType,DomainT,Compare,Interval,Alloc>& src)
-    { 
-        this->assign(src); 
-        return *this; 
-    }
-
     /// Assignment from a base interval_set.
     template<class SubType>
     void assign(const interval_base_set<SubType,DomainT,Compare,Interval,Alloc>& src)
@@ -124,6 +114,42 @@ public:
         this->_set.insert(src.begin(), src.end());
     }
 
+    /// Assignment operator for base type
+    template<class SubType>
+    separate_interval_set& operator =
+        (const interval_base_set<SubType,DomainT,Compare,Interval,Alloc>& src)
+    { 
+        this->assign(src); 
+        return *this; 
+    }
+
+#   ifndef BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
+    //==========================================================================
+    //= Move semantics
+    //==========================================================================
+
+    /// Move constructor
+    separate_interval_set(separate_interval_set&& src)
+        : base_type(boost::move(src))
+    {}
+
+    /// Move assignment operator
+    separate_interval_set& operator = (separate_interval_set src)
+    { 
+        base_type::operator=(boost::move(src));
+        return *this;
+    }
+    //==========================================================================
+#   else
+
+    /// Assignment operator
+    separate_interval_set& operator = (const separate_interval_set& src)
+    { 
+        base_type::operator=(src);
+        return *this;
+    }
+
+#   endif // BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
 
 private:
     // Private functions that shall be accessible by the baseclass:

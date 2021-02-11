@@ -15,10 +15,10 @@
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/iterator/iterator_adaptor.hpp>
 #include <boost/range/detail/any_iterator.hpp>
+#include <boost/range/concepts.hpp>
 #include <boost/range/reference.hpp>
 #include <boost/range/value_type.hpp>
 #include <boost/range/iterator_range_core.hpp>
-#include <boost/cast.hpp>
 
 namespace boost
 {
@@ -74,8 +74,8 @@ namespace boost
         template<
             class Value
           , class Traversal
-          , class Reference
-          , class Difference
+          , class Reference = Value&
+          , class Difference = std::ptrdiff_t
           , class Buffer = use_default
         >
         class any_range
