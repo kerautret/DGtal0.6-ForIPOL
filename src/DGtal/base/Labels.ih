@@ -314,8 +314,8 @@ DGtal::Labels<L, TWord>::
 getLabels( std::vector<Label> & labels ) const
 {
   labels.clear();
-  register Word w;
-  register Word fsb;
+  Word w;
+  Word fsb;
   const Word* p1 = myLabels;
   const Word* p2 = myLabels + __DGTAL_LABELS_NBWORDS;
   Label l = 0;
@@ -342,7 +342,7 @@ index( Label l ) const
   ASSERT( l < L );
   const Word* p1 = myLabels;
   const Word* p2 = myLabels + _word( l );
-  register SizeType i = 0;
+  SizeType i = 0;
   while ( p1 != p2 ) 
     i += Bits::nbSetBits( *p1++ );
   return ( _mask( l ) & *p1 ) 
