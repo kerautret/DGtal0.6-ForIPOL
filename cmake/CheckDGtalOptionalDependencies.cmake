@@ -22,13 +22,6 @@ OPTION(WITH_COIN3D-SOQT "With COIN3D & SOQT for 3D visualization (Qt required)."
 OPTION(WITH_OPENMP "With OpenMP (compiler multithread programming) features." OFF)
 
 
-IF(WITH_C11)
-SET (LIST_OPTION ${LIST_OPTION} [c++11]\ )
-message(STATUS "      WITH_C11          true")
-ELSE(WITH_C11)
-message(STATUS "      WITH_C11          false")
-ENDIF(WITH_C11)
-
 IF(WITH_GMP)
 SET (LIST_OPTION ${LIST_OPTION} [GMP]\ )
 message(STATUS "      WITH_GMP          true")

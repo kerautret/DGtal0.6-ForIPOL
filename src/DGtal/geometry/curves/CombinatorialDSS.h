@@ -104,7 +104,7 @@ namespace DGtal
       typedef DGtal::PointVector<2,Integer> Vector;
 
 
-      typedef typename iterator_traits<ConstIterator>::value_type Code;
+    typedef typename std::iterator_traits<ConstIterator>::value_type Code;
       typedef int Size;
       typedef int Index;
 
@@ -119,7 +119,7 @@ namespace DGtal
        * @tparam TIterator an iterator on the codes.
        * @tparam iterator_type the type of iterations services provided by TIterator.
        */ 
-      template < class TIterator, class iterator_type = typename iterator_traits<TIterator>::iterator_category >
+    template < class TIterator, class iterator_type = typename  std::iterator_traits<TIterator>::iterator_category >
       class CodeHandler
         {
         public :
@@ -146,7 +146,7 @@ namespace DGtal
             }
 
         private :
-          vector<Code> myCodes;
+          std::vector<Code> myCodes;
           TIterator myIter;
         };
 
@@ -155,7 +155,7 @@ namespace DGtal
        * cartegory bidirectional
        */
       template < class TIterator >
-      class CodeHandler< TIterator, bidirectional_iterator_tag > 
+      class CodeHandler< TIterator, std::bidirectional_iterator_tag > 
         {
         public :
           CodeHandler()
@@ -199,8 +199,8 @@ namespace DGtal
             }
 
         private :
-          vector<Code> myPosCodes;
-          vector<Code> myNegCodes;
+          std::vector<Code> myPosCodes;
+          std::vector<Code> myNegCodes;
           TIterator myFirst;
           TIterator myLast;
         };
@@ -209,7 +209,7 @@ namespace DGtal
        * Partial template specialization for random access iterators.
        */ 
       template < class TIterator>
-        class CodeHandler<TIterator, random_access_iterator_tag >
+      class CodeHandler<TIterator, std::random_access_iterator_tag >
           {
           public :
             CodeHandler()
@@ -243,7 +243,7 @@ namespace DGtal
       struct ConstPointIterator
         {
 
-          typedef bidirectional_iterator_tag iterator_category;
+          typedef  std::bidirectional_iterator_tag iterator_category;
           typedef Point value_type;
           typedef Index difference_type;
           typedef Point * pointer;
@@ -400,7 +400,7 @@ namespace DGtal
        */
       void init( const ConstIterator & it, 
                 const Point & start = Point(0,0),
-                Vector (*displacements) (Code) = defaultMoves );
+                 Vector (*displacements) (Code) = defaultMoves );
 
 
 
