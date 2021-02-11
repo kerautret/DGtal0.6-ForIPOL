@@ -98,7 +98,7 @@ namespace DGtal
      * @param filename the file name to import.
      * @return an instance of the ImageContainer.
      */
-    static ImageContainer importVol(const std::string & filename) s;
+    static ImageContainer importVol(const std::string & filename) ;
     
    
     
