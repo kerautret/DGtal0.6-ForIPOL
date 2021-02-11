@@ -37,7 +37,7 @@
 template <typename T>
 inline
 T
-DGtal::LongvolReader<T>::importLongvol( const std::string & filename )   throw( DGtal::IOException )
+DGtal::LongvolReader<T>::importLongvol( const std::string & filename )   
 {
   FILE * fin;
   DGtal::IOException dgtalexception;
