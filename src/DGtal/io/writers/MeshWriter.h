@@ -109,7 +109,7 @@ namespace DGtal
      */
     
     static bool export2OFF(std::ostream &out, const  MeshFromPoints<TPoint>  &aMesh, 
-      bool exportColor=false) throw(DGtal::IOException);
+      bool exportColor=false) ;
   
   
 
@@ -122,7 +122,7 @@ namespace DGtal
      * @return true if no errors occur.
      */
     
-    static bool export2OBJ(std::ostream &out, const  MeshFromPoints<TPoint>  &aMesh) throw(DGtal::IOException);
+    static bool export2OBJ(std::ostream &out, const  MeshFromPoints<TPoint>  &aMesh) ;
        
  
     /** 
@@ -134,7 +134,7 @@ namespace DGtal
      * @return true if no errors occur.
      */
     static bool export2OBJcolor(std::ostream &out, std::ostream &outMTL, 
-				std::string mtlName, const  MeshFromPoints<TPoint>  &aMesh) throw(DGtal::IOException);
+				std::string mtlName, const  MeshFromPoints<TPoint>  &aMesh) ;
        
     
   };

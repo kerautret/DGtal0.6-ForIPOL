@@ -46,7 +46,7 @@ template<typename TPoint>
 inline
 bool 
 DGtal::MeshWriter<TPoint>::export2OFF(std::ostream & out, 
-                                      const  DGtal::MeshFromPoints<TPoint> & aMesh, bool exportColor) throw(DGtal::IOException){
+                                      const  DGtal::MeshFromPoints<TPoint> & aMesh, bool exportColor) {
   DGtal::IOException dgtalio;
   try
     {
@@ -87,7 +87,7 @@ template<typename TPoint>
 inline
 bool 
 DGtal::MeshWriter<TPoint>::export2OBJ(std::ostream &out, 
-                                      const  DGtal::MeshFromPoints<TPoint> & aMesh) throw(DGtal::IOException){
+                                      const  DGtal::MeshFromPoints<TPoint> & aMesh) {
   DGtal::IOException dgtalio;
   try
     {
@@ -128,7 +128,7 @@ inline
 bool 
 DGtal::MeshWriter<TPoint>::export2OBJcolor(std::ostream &out, std::ostream &outMTL, 
 					   std::string mtlName,
-					   const  DGtal::MeshFromPoints<TPoint>  &aMesh) throw(DGtal::IOException)
+					   const  DGtal::MeshFromPoints<TPoint>  &aMesh) 
 
 {
   DGtal::IOException dgtalio;

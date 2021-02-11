@@ -37,7 +37,7 @@
 template <typename T>
 inline
 T 
-DGtal::RawReader<T>::importRaw8 (const std::string & filename, const Vector & extent ) throw(DGtal::IOException)
+DGtal::RawReader<T>::importRaw8 (const std::string & filename, const Vector & extent ) 
 {
   FILE * fin;
   DGtal::IOException dgtalerror;

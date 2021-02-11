@@ -334,7 +334,7 @@ void DGtal::Display2DFactory::draw( DGtal::Board2D & board,
     
   VERIFY(Domain::Space::dimension == 2);
   for(ConstIterator it =  s.begin(); it != s.end(); ++it)       
-    draw(board, *it);
+    draw<Domain::Space::dimension,typename Point::Component>(board, *it);
 }
 // DigitalSetBySTLSet
 
@@ -743,8 +743,8 @@ void DGtal::Display2DFactory::draw( DGtal::Board2D & aBoard,
 					      Board2D::Shape::SolidStyle,
 					      Board2D::Shape::RoundCap,
 					      Board2D::Shape::RoundJoin ) );       
-	draw(aBoard, shift, a.first);
-      }
+                draw(aBoard, shift, a.first);
+  }
 }
 // ArrowsRange
 
@@ -1095,33 +1095,33 @@ void DGtal::Display2DFactory::drawAsGrid( DGtal::Board2D & board,
                    (float) NumberTraits<TComponent>::castToDouble(p.myArray[1]),0.1);
 }
   
-template<DGtal::Dimension dim, typename TComponent>
+template<typename TComponent>
 inline
 void DGtal::Display2DFactory::draw( DGtal::Board2D & board, 
-           const DGtal::PointVector<dim,TComponent> & p )
+           const DGtal::PointVector<2,TComponent> & p )
 {
+ // VERIFY(dim == 2);
   std::string mode = board.getMode( p.className() );
   VERIFY( (mode=="Paving" || mode=="Grid" || mode=="Both" || mode=="") ||
     ("draw( DGtal::Board2D & board, const DGtal::PointVector<dim,TComponent> & p ): Unknown mode "+mode)==""  );
 
   if ( mode == "Paving"  || ( mode == "" )  )
-    drawAsPaving( board, p );
+    drawAsPaving<2, TComponent>( board, p );
   else if ( mode == "Grid" )
-    drawAsGrid( board, p );
+    drawAsGrid<2, TComponent>( board, p );
   else if ( ( mode == "Both" ))
     {
-      drawAsPaving( board, p );
-      drawAsGrid( board, p );
+      drawAsPaving<2, TComponent>( board, p );
+      drawAsGrid<2, TComponent>( board, p );
     }
 }
 
-template<DGtal::Dimension dim, typename TComponent>
+template<typename TComponent>
 inline
 void DGtal::Display2DFactory::draw( DGtal::Board2D & board, 
-          const DGtal::PointVector<dim,TComponent> & p, 
-          const DGtal::PointVector<dim,TComponent> & apoint )
+          const DGtal::PointVector<2,TComponent> & p,
+          const DGtal::PointVector<2,TComponent> & apoint )
 {
-  VERIFY(dim == 2);
 
   board.drawArrow((float)apoint[0], (float) apoint[1],
       (float) apoint[0] + p.myArray[0], (float)apoint[1] + p.myArray[1],

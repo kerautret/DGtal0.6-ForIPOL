@@ -66,6 +66,8 @@
 #include "DGtal/shapes/fromPoints/StraightLineFrom2Points.h"
 #include "DGtal/arithmetic/LatticePolytope2D.h"
 
+#include "DGtal/helpers/StdDefs.h"
+
 //#include "DGtal/io/boards/Board2D.h"
 
 //////////////////////////////////////////////////////////////////////////////
@@ -83,7 +85,8 @@ namespace DGtal
   struct Display2DFactory
  {
 
-    
+ public:
+   
 // AngleLinearMinimizer
 static void draw( DGtal::Board2D & board, const DGtal::AngleLinearMinimizer & );
 // AngleLinearMinimizer
@@ -296,13 +299,13 @@ template<Dimension dim, typename TComponent>
 template<Dimension dim, typename TComponent>
   static void drawAsGrid( DGtal::Board2D & board, const DGtal::PointVector<dim,TComponent> & );
 
-template<Dimension dim, typename TComponent>
-  static void draw( DGtal::Board2D & board, const DGtal::PointVector<dim,TComponent> & );
+template< typename TComponent>
+  static void draw( DGtal::Board2D & board, const DGtal::PointVector<2,TComponent> & );
 
-template<Dimension dim, typename TComponent>
+template<typename TComponent>
   static void draw( DGtal::Board2D & board, 
-	     const DGtal::PointVector<dim,TComponent> &, 
-	     const DGtal::PointVector<dim,TComponent> & );
+	     const DGtal::PointVector<2,TComponent> &,
+	     const DGtal::PointVector<2,TComponent> & );
 // PointVector
     
     

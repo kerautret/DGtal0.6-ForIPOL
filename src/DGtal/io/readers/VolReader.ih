@@ -41,7 +41,7 @@
 template <typename T>
 inline
 T
-DGtal::VolReader<T>::importVol( const std::string & filename )   throw( DGtal::IOException )
+DGtal::VolReader<T>::importVol( const std::string & filename )   
 {
   FILE * fin;
   DGtal::IOException dgtalexception;

@@ -112,7 +112,7 @@ namespace DGtal
      * @return an instance of the ImageContainer.
      */
     static  ImageContainer importPGM(const std::string & aFilename, 
-                                     bool topbotomOrder = true) throw(DGtal::IOException);
+                                     bool topbotomOrder = true) ;
 
 
     /** 
@@ -122,7 +122,7 @@ namespace DGtal
      * @param aFilename the file name to import.
      * @return an instance of the ImageContainer.
      */
-    static ImageContainer importPGM3D(const std::string & aFilename) throw(DGtal::IOException);
+    static ImageContainer importPGM3D(const std::string & aFilename) ;
     
     
     
