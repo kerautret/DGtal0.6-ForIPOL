@@ -78,7 +78,7 @@ namespace DGtal
    * Copy of the std::minus binary operator (not implemented on MS-VS)
    */
   template <class T> 
-  struct MinusFunctor : std::binary_function <T,T,T>
+  struct MinusFunctor 
   {
     T operator() (const T& x, const T& y) const
     {return x-y;}
@@ -88,7 +88,7 @@ namespace DGtal
    * Abs functor. 
    */
   template <class T>
-  struct AbsFunctor : std::unary_function<T,T>
+  struct AbsFunctor 
   { 
     inline
     T operator() (const T &x) const
@@ -104,7 +104,7 @@ namespace DGtal
    * Unary minus functor. 
    */
   template <class T>
-  struct UnaryMinusFunctor : std::unary_function<T,T>
+  struct UnaryMinusFunctor 
   { 
     /**
        @param x any value.
@@ -121,7 +121,7 @@ namespace DGtal
    * Unary minus functor. 
    */
   template <class T>
-  struct MultiplicationByScalarFunctor : std::unary_function<T,T>
+  struct MultiplicationByScalarFunctor 
   {
     inline
     MultiplicationByScalarFunctor( const T & aValue )
