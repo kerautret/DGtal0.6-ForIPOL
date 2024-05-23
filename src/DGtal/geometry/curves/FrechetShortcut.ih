@@ -159,7 +159,7 @@ void DGtal::FrechetShortcut<TIterator,TInteger>::Backpath::updateOcculters()
   else
     {
       typename occulter_list::iterator iter = myOcculters.begin();
-      for(int i = 0 ; i < myOcculters.size() ;++i)
+      for(int i = 0 ; i < myOcculters.size() && ok ;++i)
 	{
 	  pi = Point(*(iter->first));
 	  v = p-pi;
@@ -169,7 +169,6 @@ void DGtal::FrechetShortcut<TIterator,TInteger>::Backpath::updateOcculters()
 	    {
             ok = false;
             occ = false;
-            iter++;
 	    }
 	  else
 	    // p is after pi for all directions -> pi is not an occulter
@@ -229,7 +228,7 @@ void DGtal::FrechetShortcut<TIterator,TInteger>::Backpath::updateOcculters()
 		    if(beta < iter->second.angle_min)
 		      {
 			//pi is not an occulter anymore 
-            iter = myOcculters.erase(iter);
+                        iter = myOcculters.erase(iter);
 			occ=true;
 			angle_min = 0;
 			angle_max = M_PI_4;
