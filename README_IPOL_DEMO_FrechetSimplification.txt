@@ -6,7 +6,7 @@ Author: Isabelle Sivignon
 Copyright (c) 2014 by Isabelle Sivignon
 License: GNU LESSER GENERAL PUBLIC LICENSE (the "LGPL").
 
-Version 1.2 16/02/2021:
+Version 1.3 26/05/2024:
 
 
 The program by default doesn't need to import external libraries (the static boost lib is already in the archive)
@@ -49,6 +49,8 @@ credits and acknowledgments:
 Image from data are given from LEMS Vision Group at Brown University, under Professor Ben Kimia (http://www.lems.brown.edu/~dmc)/ 
 
 
+Version 1.3 26/05/2024:
+        - Fix an error related to element erase and iterator in the FrechetShortcut class.
 
 Version 1.2 11/02/2021:
         - Fix various compilation errors from the DGtal Library (./src/DGtal; ./examples;
