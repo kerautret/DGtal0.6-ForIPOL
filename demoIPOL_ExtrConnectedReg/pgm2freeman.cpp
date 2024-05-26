@@ -1,3 +1,30 @@
+/**
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as
+ *  published by the Free Software Foundation, either version 3 of the
+ *  License, or  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ **/
+/**
+ * @file pgm2freeman.cpp
+ * @authors David Coeurjolly, Bertrand Kerautret, Jacques-Olivier Lachaud
+ *
+ * @date 2014/28/02
+ *
+ * Convert grey scales image to fremann contour. 
+ *
+ * This file is part of the IPOL source demo (http://dx.doi.org/10.5201/ipol.2014.74).
+ */
+
+
 #include "DGtal/io/colormaps/GrayscaleColorMap.h"
 #include "DGtal/io/readers/PNMReader.h"
 #include "DGtal/images/ImageContainerBySTLVector.h"
@@ -16,15 +43,15 @@
 using namespace DGtal;
 
 static ImaGene::Arguments args;
-
+static const std::string PROG_VERSION=" 1.2 (17-04-2014)";
 
 typedef ImageSelector < Z2i::Domain, unsigned char>::Type Image;
-static const std::string PROG_VERSION="version 1.2 (17-04-2014)";
+
 
 
 std::vector<unsigned int> getHistoFromImage(const Image &image){
   const Image::Domain &imgDom = image.domain();
-  std::vector<unsigned int> vectHisto(UCHAR_MAX+1);
+  std::vector<unsigned int> vectHisto(UCHAR_MAX);
   for(Image::Domain::ConstIterator it=imgDom.begin(); it!= imgDom.end(); ++it){
     vectHisto[image(*it)]++;
   }
@@ -179,21 +206,25 @@ int main( int argc, char** argv )
   args.addBooleanOption("-invertVerticalAxis", "-invertVerticalAxis used to transform the contour representation (need for DGtal), used o nly for the contour displayed, not for the contour selection (-selectContour). ");
   args.addBooleanOption("-outputSDP", "-outputSDP export as a sequence of discrete points instead of freemanchain (use the largest contour if more contours appears)");
   args.addBooleanOption("-outputSDPAll", "-outputSDPAll export as a sequence of discrete points instead of freemanchain (all contours are exported: one per line)");
-  args.addBooleanOption("-version", "-version : display version");  
-    
+  args.addBooleanOption("-version", "-version : display version");    
+
+ 
   if ( ( argc <= 1 ) ||  ! args.readArguments( argc, argv ) ) 
     {
       std::cerr << args.usage( "pgm2freeman: ", 
 			       "Extracts all 2D contours from a PGM image given on the standard input and writes them on the standard output as FreemanChain's. \nTypical use: \n pgm2freeman -threshold 200 -image image.pgm > imageContour.fc \n  Note that if you don't specify any threshold a threshold t is automatically defined from the Otsu algorithm. ",
-			  "" )
-	   << std::endl;
+                               "" )
+                << std::endl;
       return 1;
     }  
 
-  if(args.check("-version")){
+ if(args.check("-version")){
     std::cout << "version: " << PROG_VERSION << std::endl;
     return 0;
   }
+
+  
+ 
 
   
  

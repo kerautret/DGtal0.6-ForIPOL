@@ -158,9 +158,8 @@ void DGtal::FrechetShortcut<TIterator,TInteger>::Backpath::updateOcculters()
     }
   else
     {
-      typename occulter_list::iterator iter;
-      
-      for(iter = myOcculters.begin();ok && iter!=myOcculters.end() ;++iter)	
+      typename occulter_list::iterator iter = myOcculters.begin();
+      for(int i = 0 ; i < myOcculters.size() && ok ;++i)
 	{
 	  pi = Point(*(iter->first));
 	  v = p-pi;
@@ -168,15 +167,15 @@ void DGtal::FrechetShortcut<TIterator,TInteger>::Backpath::updateOcculters()
 	  // pi is after p for all directions -> p is not an occulter
 	  if(ic.dotProduct(v,u1) < 0 && ic.dotProduct(v,u2) <0)
 	    {
-	      ok = false; 
-	      occ = false;
+            ok = false;
+            occ = false;
 	    }
 	  else
 	    // p is after pi for all directions -> pi is not an occulter
 	    // anymore, p is a new occulter.
 	    if(ic.dotProduct(v,u1) > 0 && ic.dotProduct(v,u2) > 0)
 	      {
-		myOcculters.erase(iter);
+              iter = myOcculters.erase(iter);
 		occ = true;
 		angle_min = 0;
 		angle_max = M_PI_4;
@@ -189,23 +188,23 @@ void DGtal::FrechetShortcut<TIterator,TInteger>::Backpath::updateOcculters()
 		  
 		  if(beta >= iter->second.angle_min && beta <=
 		     iter->second.angle_max)
-		    {
-		      // p is a new occulter
-		      occ = true;
-		      angle_min = 0;
-		      angle_max = beta;
-		      // pi's angle_min is updated
-		      iter->second.angle_min = beta;
-		    }
-		  else
-		    if(beta > iter->second.angle_max)
-		      {
-			//pi is not an occulter anymore 
-			myOcculters.erase(iter);
+             {
+                 // p is a new occulter
+                 occ = true;
+                 angle_min = 0;
+                 angle_max = beta;
+                 // pi's angle_min is updated
+                 iter->second.angle_min = beta;
+                 iter++;
+             }
+		  else if(beta > iter->second.angle_max)
+          {
+			//pi is not an occulter anymore
+            iter = myOcculters.erase(iter);
 			occ=true;
 			angle_min = 0;
 			angle_max = M_PI_4;
-		      }
+		   }
 		  // if beta < iter->second.angle_min, pi does not
 		  // change, p may be an occulter -> do nothing
 		} 
@@ -223,21 +222,24 @@ void DGtal::FrechetShortcut<TIterator,TInteger>::Backpath::updateOcculters()
 		      angle_max = M_PI_4;
 		      // pi's angle_max is updated
 		      iter->second.angle_max = beta;
+              iter++;
 		    }
 		  else
 		    if(beta < iter->second.angle_min)
 		      {
 			//pi is not an occulter anymore 
-			myOcculters.erase(iter);
+                        iter = myOcculters.erase(iter);
 			occ=true;
 			angle_min = 0;
 			angle_max = M_PI_4;
-		      }
+		      }else{
+                  iter++;
+              }
 		  // if(beta > iter->second.angle_max), pi does not
 		  // change, p may be an occulter -> do nothing
 		  
 		}
-	}
+        }
     }
   
   if(occ)

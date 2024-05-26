@@ -293,11 +293,11 @@ template <typename TDigitalTopology, typename TDigitalSet>
     
     
 // PointVector
-template<Dimension dim, typename TComponent>
-  static void drawAsPaving( DGtal::Board2D & board, const DGtal::PointVector<dim,TComponent> & );
+template< typename TComponent>
+  static void drawAsPaving( DGtal::Board2D & board, const DGtal::PointVector<2,TComponent> & );
 
-template<Dimension dim, typename TComponent>
-  static void drawAsGrid( DGtal::Board2D & board, const DGtal::PointVector<dim,TComponent> & );
+template< typename TComponent>
+  static void drawAsGrid( DGtal::Board2D & board, const DGtal::PointVector<2,TComponent> & );
 
 template< typename TComponent>
   static void draw( DGtal::Board2D & board, const DGtal::PointVector<2,TComponent> & );
