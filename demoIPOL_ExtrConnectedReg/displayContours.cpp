@@ -15,15 +15,13 @@
  **/
 /**
  * @file displayContours.cpp
- * @ingroup Tools
- * @author Bertrand Kerautret (\c kerautre@loria.fr)
- * LORIA (CNRS, UMR 7503), University of Nancy, France
+ * @authors David Coeurjolly, Bertrand Kerautret, Jacques-Olivier Lachaud
  *
- * @date 2011/27/04
+ * @date 2014/28/02
  *
- * DGtal convert grey scales image to fremann contour. 
+ * Display digital contours. 
  *
- * This file is part of the DGtal library.
+ * This file is part of the IPOL source demo (http://dx.doi.org/10.5201/ipol.2014.74).
  */
 
 ///////////////////////////////////////////////////////////////////////////////
