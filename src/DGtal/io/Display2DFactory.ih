@@ -334,7 +334,7 @@ void DGtal::Display2DFactory::draw( DGtal::Board2D & board,
     
   VERIFY(Domain::Space::dimension == 2);
   for(ConstIterator it =  s.begin(); it != s.end(); ++it)       
-    draw<Domain::Space::dimension,typename Point::Component>(board, *it);
+    draw(board, *it);
 }
 // DigitalSetBySTLSet
 
@@ -743,7 +743,7 @@ void DGtal::Display2DFactory::draw( DGtal::Board2D & aBoard,
 					      Board2D::Shape::SolidStyle,
 					      Board2D::Shape::RoundCap,
 					      Board2D::Shape::RoundJoin ) );       
-                draw(aBoard, shift, a.first);
+        draw(aBoard, shift, a.first);
   }
 }
 // ArrowsRange
@@ -1075,22 +1075,20 @@ void DGtal::Display2DFactory::draw( DGtal::Board2D & board,
 
 
 // PointVector
-template<DGtal::Dimension dim, typename TComponent>
+template<typename TComponent>
 inline
 void DGtal::Display2DFactory::drawAsPaving( DGtal::Board2D & board, 
-           const DGtal::PointVector<dim,TComponent> & p )
+           const DGtal::PointVector<2,TComponent> & p )
 {
-  VERIFY(dim == 2);
   board.drawRectangle( (float) NumberTraits<TComponent>::castToDouble(p.myArray[0]) - 0.5f, 
                        (float) NumberTraits<TComponent>::castToDouble(p.myArray[1]) + 0.5f, 1, 1 );     
 }
 
-template<DGtal::Dimension dim, typename TComponent>
+template<typename TComponent>
 inline
 void DGtal::Display2DFactory::drawAsGrid( DGtal::Board2D & board, 
-           const DGtal::PointVector<dim,TComponent> & p )
+           const DGtal::PointVector<2,TComponent> & p )
 {
-  VERIFY(dim == 2);
   board.fillCircle((float) NumberTraits<TComponent>::castToDouble(p.myArray[0]), 
                    (float) NumberTraits<TComponent>::castToDouble(p.myArray[1]),0.1);
 }
@@ -1106,13 +1104,13 @@ void DGtal::Display2DFactory::draw( DGtal::Board2D & board,
     ("draw( DGtal::Board2D & board, const DGtal::PointVector<dim,TComponent> & p ): Unknown mode "+mode)==""  );
 
   if ( mode == "Paving"  || ( mode == "" )  )
-    drawAsPaving<2, TComponent>( board, p );
+    drawAsPaving( board, p );
   else if ( mode == "Grid" )
-    drawAsGrid<2, TComponent>( board, p );
+    drawAsGrid( board, p );
   else if ( ( mode == "Both" ))
     {
-      drawAsPaving<2, TComponent>( board, p );
-      drawAsGrid<2, TComponent>( board, p );
+      drawAsPaving( board, p );
+      drawAsGrid( board, p );
     }
 }
 
